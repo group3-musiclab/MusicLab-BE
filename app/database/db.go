@@ -3,6 +3,7 @@ package database
 import (
 	"fmt"
 	"log"
+	"musiclab-be/app/config"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
