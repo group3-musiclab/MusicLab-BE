@@ -1,0 +1,153 @@
+openapi: 3.0.3
+info:
+  title: Music Lab
+  description: This is API for Music Lab Capstone Project
+  version: "1.0.0"
+  contact:
+    email: alifmuhamadhafidz23@gmail.com
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+
+servers:
+  # Added by API Auto Mocking Plugin
+  - description: SwaggerHub API Auto Mocking
+    url: https://virtserver.swaggerhub.com/KHARISMAJANUAR/MusicLab-API/1.0.0
+  - url: https://baggioshop.site
+    description: primarry link
+
+paths:
+  /register:
+    post:
+      tags:
+        - "Auth"
+      description: register feature for new users
+      summary: register feature for new users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                role:
+                  type: string
+                  format: array
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+            example:
+              name: "Alif Muhamad Hafidz"
+              role: ["Mentor", "Student"]
+              email: "alifmuhamadhafidz23@gmail.com"
+              password: "123"
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success create account"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /login:
+    post:
+      tags:
+        - "Auth"
+      description: login feature for users
+      summary: login feature for users
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+            example:
+              email: "alifmuhamadhafidz23@gmail.com"
+              password: "123"
+      responses:
+        200:
+          description: "login success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  name: "Alif Muhamad Hafidz"
+                  role: "Student"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk"
+                message: "login success"
+                
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "account not registered"
+        500:
+          $ref: "#/components/responses/500"
+
+components:
+  securitySchemes:
+    JWTAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    responseObject:
+      type: object
+      properties:
+        data:
+          type: object
+        message:
+          type: string
+  responses:
+    400:
+      description: "error from user"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          example:
+            message: "bad request"
+    500:
+      description: "error from server"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+          example:
+            message: "internal server error"
