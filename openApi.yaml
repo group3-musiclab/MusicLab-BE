@@ -586,9 +586,9 @@ paths:
               type: object
               properties:
                 instrument:
-                  type: string
+                  type: integer
             example:
-              instrument: "guitar"
+              instrument: 1
       responses:
         201:
           description: "success insert data"
@@ -598,7 +598,7 @@ paths:
                 type: object
                 properties:
                   message:
-                    type: string
+                    type: integer
               example:
                 message: "success add mentor instrument"
         400:
@@ -662,9 +662,9 @@ paths:
               type: object
               properties:
                 instrument:
-                  type: string
+                  type: integer
             example:
-              genre: "Jazz"
+              genre: 1
       responses:
         201:
           description: "success insert data"
@@ -674,7 +674,7 @@ paths:
                 type: object
                 properties:
                   message:
-                    type: string
+                    type: integer
               example:
                 message: "success add mentor genre"
         400:
@@ -722,7 +722,53 @@ paths:
                   message: "data not found"
         500:
           $ref: "#/components/responses/500"
-
+  /mentors/credentials:
+    post:
+      tags:
+        - "Mentor"
+      description: post mentor credential
+      summary: post mentor credential
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                certificate:
+                  type: string
+                  format: binary
+            example:
+              certificate: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
+          application/json:
+            schema:
+              type: object
+              properties:
+                type:
+                  type: string
+                name:
+                  type: string
+            example:
+              type: "International"
+              name: "Guitar Master"
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success add mentor credential"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
 components:
   securitySchemes:
     JWTAuth:
