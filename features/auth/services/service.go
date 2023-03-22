@@ -20,7 +20,11 @@ func New(ud auth.AuthData) auth.AuthService {
 // Register implements auth.AuthService
 func (auc *authUseCase) Register(newUser auth.Core) error {
 	if len(newUser.Password) != 0 {
-		return errors.New("password min 5 character")
+		//validation
+		err := helper.RegistrationValidate(newUser)
+		if err != nil {
+			return errors.New("validate: " + err.Error())
+		}
 	}
 	hashed := helper.GeneratePassword(newUser.Password)
 	newUser.Password = string(hashed)

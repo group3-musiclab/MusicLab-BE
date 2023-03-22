@@ -32,7 +32,7 @@ func (ac *authControll) Register() echo.HandlerFunc {
 			if strings.Contains(err.Error(), "already") {
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "email already registered"})
 			} else if strings.Contains(err.Error(), "is not min") {
-				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "validate: password length minimum 5 character"})
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "validate: password length minimum 3 character"})
 			} else if strings.Contains(err.Error(), "validate") {
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
 			} else {
@@ -46,5 +46,5 @@ func (ac *authControll) Register() echo.HandlerFunc {
 
 // Login implements auth.AuthHandler
 func (*authControll) Login() echo.HandlerFunc {
-	panic("unimplemented")
+	return nil
 }

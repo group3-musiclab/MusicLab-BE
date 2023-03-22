@@ -3,10 +3,12 @@ package helper
 import (
 	"errors"
 	"fmt"
+	"io"
 	"log"
 	"math/rand"
 	"mime/multipart"
 	"musiclab-be/app/config"
+	"net/http"
 	"time"
 
 	"github.com/aws/aws-sdk-go/aws"
@@ -110,4 +112,19 @@ func GenerateRandomString() string {
 	// Displaying the random string
 	// fmt.Println(string(shuff))
 	return string(shuff)
+}
+
+func TypeFile(test multipart.File) (string, error) {
+	fileByte, _ := io.ReadAll(test)
+	fileType := http.DetectContentType(fileByte)
+	TipenamaFile := ""
+	if fileType == "image/png" {
+		TipenamaFile = ".png"
+	} else {
+		TipenamaFile = ".jpg"
+	}
+	if fileType == "image/png" || fileType == "image/jpeg" || fileType == "image/jpg" {
+		return TipenamaFile, nil
+	}
+	return "", errors.New("file type not match")
 }

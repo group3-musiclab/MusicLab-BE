@@ -33,9 +33,10 @@ type Student struct {
 	Address  string
 }
 
-func StudentToCore(data Student) auth.Core {
+func ToCore(data Student) auth.Core {
 	return auth.Core{
 		ID:       data.ID,
+		Avatar:   data.Avatar,
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,
@@ -43,29 +44,10 @@ func StudentToCore(data Student) auth.Core {
 	}
 }
 
-func CoreToDataStudent(data auth.Core) Student {
+func CoreToData(data auth.Core) Student {
 	return Student{
 		Model:    gorm.Model{ID: data.ID},
-		Name:     data.Name,
-		Email:    data.Email,
-		Password: data.Password,
-		Role:     data.Role,
-	}
-}
-
-func MentorToCore(data Mentor) auth.Core {
-	return auth.Core{
-		ID:       data.ID,
-		Name:     data.Name,
-		Email:    data.Email,
-		Password: data.Password,
-		Role:     data.Role,
-	}
-}
-
-func CoreToDataMentor(data auth.Core) Mentor {
-	return Mentor{
-		Model:    gorm.Model{ID: data.ID},
+		Avatar:   data.Avatar,
 		Name:     data.Name,
 		Email:    data.Email,
 		Password: data.Password,

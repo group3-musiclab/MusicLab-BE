@@ -19,25 +19,27 @@ func New(db *gorm.DB) auth.AuthData {
 }
 
 func (aq *authQuery) Register(newUser auth.Core) error {
-	dupEmail := CoreToDataStudent(newUser)
+	dupEmail := CoreToData(newUser)
 	err := aq.db.Where("email = ?", newUser.Email).First(&dupEmail).Error
 	if err == nil {
 		log.Println("duplicated")
 		return errors.New("email duplicated")
 	}
-	student := CoreToDataStudent(newUser)
-	if err = aq.db.Create(&student).Error; err != nil {
-		mentor := CoreToDataMentor(newUser)
-		if err = aq.db.Create(&mentor).Error; err != nil {
-			log.Println("query error", err.Error())
-			return errors.New("server error")
-		}
-		return nil
+
+	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
+	cnv := CoreToData(newUser)
+	err = aq.db.Create(&cnv).Error
+	if err != nil {
+		log.Println("query error", err.Error())
+		return errors.New("server error")
 	}
+
+	newUser.ID = cnv.ID
 	return nil
 }
 
 // Login implements auth.AuthData
 func (*authQuery) Login(email string) (auth.Core, error) {
-	panic("unimplemented")
+	return auth.Core{}, errors.New("data not found")
 }
