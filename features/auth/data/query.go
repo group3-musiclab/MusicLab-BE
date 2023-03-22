@@ -39,7 +39,16 @@ func (aq *authQuery) Register(newUser auth.Core) error {
 	return nil
 }
 
-// Login implements auth.AuthData
-func (*authQuery) Login(email string) (auth.Core, error) {
-	return auth.Core{}, errors.New("data not found")
+func (aq *authQuery) Login(email string) (auth.Core, error) {
+	if email == "" {
+		log.Println("data empty, query error")
+		return auth.Core{}, errors.New("email not allowed empty")
+	}
+	res := Student{}
+	if err := aq.db.Where("email = ?", email).First(&res).Error; err != nil {
+		log.Println("login query error", err.Error())
+		return auth.Core{}, errors.New("data not found")
+	}
+
+	return ToCore(res), nil
 }
