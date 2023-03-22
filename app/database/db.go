@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"musiclab-be/app/config"
+	authData "musiclab-be/features/auth/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -21,11 +22,9 @@ func InitDB(dc config.DBConfig) *gorm.DB {
 	return db
 }
 
-// func Migrate(db *gorm.DB) {
-// 	db.AutoMigrate(
-// 		user.User{},
-// 		rooms.Room{},
-// 		reservations.Reservation{},
-// 		feedback.Feedback{},
-// 	)
-// }
+func Migrate(db *gorm.DB) {
+	db.AutoMigrate(
+		authData.Student{},
+		authData.Mentor{},
+	)
+}
