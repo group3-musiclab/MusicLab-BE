@@ -302,6 +302,426 @@ paths:
                   message: "data not found"
         500:
           $ref: "#/components/responses/500"
+  /mentors:
+    get:
+      tags:
+        - "Mentor"
+      description: get all mentor
+      summary: get all mentor
+      parameters:
+      - in: query
+        name: q
+        schema:
+          type: string
+          maximum: 50
+        examples:       
+          none:         
+            value: ""    
+            summary: "to get all mentor list"
+          name: 
+            value: "Alif"   
+            summary: "to search mentor by it's name"
+          genre: 
+            value: "Jazz"   
+            summary: "to search mentor by music genre"
+          rating: 
+            value: 3   
+            summary: "to search mentor by their rating"
+          price: 
+            value: 230000   
+            summary: "to search mentor by their class price"
+          qualification:
+            value: "international"
+            summary: "to search mentor by their qualification"
+      responses:
+        200:
+          description: "to get all mentor list"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Alif Muhamad Hafidz",
+                      rating: 3,
+                      price: 300000,
+                      qualification: "National Sertification",
+                    },
+                    {
+                      id: 2,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Kharisma",
+                      rating: 4,
+                      price: 500000,
+                      qualification: "International Sertification",
+                    },
+                  ]
+                message: "success show all mentor"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+    put:
+      tags:
+        - "Mentor"
+      description: edit mentor profile
+      summary: edit mentor profile
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+            example:
+              avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                sex:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+                instagram:
+                  type: string
+                price:
+                  type: number
+                about:
+                  type: string
+            example:
+              name: "Alif Muhamad Hafidz"
+              email: "alifmuhamadhafidz23@gmail.com"
+              sex: "Male"
+              phone: "0813456"
+              address: "Bangka"
+              instagram: "@alifhfdz"
+              price: 350000
+              about: "senior musical teacher"
+      responses:
+        200:
+          description: success update student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
+                  name: "Alif Muhamad Hafidz"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  sex: "Male"
+                  phone: "0813456"
+                  address: "Bangka"
+                  instagram: "@alifhfdz"
+                  price: 350000
+                  about: "senior musical teacher"
+                message: "success update mentor profile"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+    delete:
+      tags:
+        - "Mentor"
+      description: deactivate mentor
+      summary: deactivate mentor
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success deactivate mentor
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "succes deactivate mentor"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/profile:
+    get:
+      tags:
+        - "Mentor"
+      description: get mentor profile
+      summary: get mentor profile
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success show mentor profile
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  id: 1
+                  avatar: "https://fauziawsbucket.s3.ap-southeast-1.amazonaws.com/559d75ff-88c8-40af-8740-233667b36feco.png"
+                  name: "Alif Muhamad Hafidz"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  sex: "Male"
+                  phone: "0813456"
+                  address: "Bangka"
+                  instagram: "@alifhfdz"
+                  price: 350000
+                  about: "senior musical teacher"
+                  genre: "Jazz"
+                  instrument: "Guitar"
+                  count_reviews: 47000
+                message: "success show mentor profile"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/password:
+    put:
+      tags:
+        - "Mentor"
+      description: edit mentor password
+      summary: edit mentor password
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  format: password
+                new_password:
+                  type: string
+                  format: password
+                password_confirmation:
+                  type: string
+                  format: password
+            example:
+              old_password: "1234"
+              new_password: "5678"
+              password_confirmation: "5678"
+      responses:
+        200:
+          description: success update mentor password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success update mentor password"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/instruments:
+    post:
+      tags:
+        - "Mentor"
+      description: post mentor instrument
+      summary: post mentor instrument
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instrument:
+                  type: string
+            example:
+              instrument: "guitar"
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success add mentor instrument"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/instruments/{instrument_id}:
+    delete:
+      tags:
+        - "Mentor"
+      description: delete mentor instrument by instrument id
+      summary: delete mentor instrument by instrument id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: instrument_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete mentor instrument
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success delete mentor instrument"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/genres:
+    post:
+      tags:
+        - "Mentor"
+      description: post mentor genres
+      summary: post mentor genres
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instrument:
+                  type: string
+            example:
+              genre: "Jazz"
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success add mentor genre"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/genres/{genre_id}:
+    delete:
+      tags:
+        - "Mentor"
+      description: delete mentor genres by genre id
+      summary: delete mentor genres by genre id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete mentor genre
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success delete mentor genre"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
 
 components:
   securitySchemes:
