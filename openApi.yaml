@@ -113,6 +113,195 @@ paths:
                   message: "account not registered"
         500:
           $ref: "#/components/responses/500"
+  /students/profile:
+    get:
+      tags:
+        - "Student"
+      description: get student profile
+      summary: get student profile
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success show student profile
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  id: 2
+                  avatar: "https://fauziawsbucket.s3.ap-southeast-1.amazonaws.com/559d75ff-88c8-40af-8740-233667b36feco.png"
+                  name: "Alif Muhamad Hafidz"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  sex: "Male"
+                  phone: "0813456"
+                  address: "Bangka"
+                message: "success show student profile"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /students:
+    put:
+      tags:
+        - "Student"
+      description: edit student profile
+      summary: edit student profile
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                avatar:
+                  type: string
+                  format: binary
+            example:
+              avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                sex:
+                  type: string
+                phone:
+                  type: string
+                address:
+                  type: string
+            example:
+              name: "Alif Muhamad Hafidz"
+              email: "alifmuhamadhafidz23@gmail.com"
+              sex: "Male"
+              phone: "0813456"
+              address: "Bangka"
+      responses:
+        200:
+          description: success update student profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
+                  name: "Alif Muhamad Hafidz"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  sex: "Male"
+                  phone: "0813456"
+                  address: "Bangka"
+                message: "success update student profile"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+    delete:
+      tags:
+        - "Student"
+      description: deactivate student
+      summary: deactivate student
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success deactivate student
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "succes deactivate student"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /students/password:
+    put:
+      tags:
+        - "Student"
+      description: edit student password
+      summary: edit student password
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                old_password:
+                  type: string
+                  format: password
+                new_password:
+                  type: string
+                  format: password
+                password_confirmation:
+                  type: string
+                  format: password
+            example:
+              old_password: "1234"
+              new_password: "5678"
+              password_confirmation: "5678"
+      responses:
+        200:
+          description: success update student password
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success update student password"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
 
 components:
   securitySchemes:
