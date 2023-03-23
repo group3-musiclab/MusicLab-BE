@@ -2,6 +2,7 @@ package data
 
 import (
 	_modelChat "musiclab-be/features/chats/data"
+	_modelReview "musiclab-be/features/reviews/data"
 
 	"gorm.io/gorm"
 )
@@ -17,4 +18,5 @@ type Student struct {
 	Phone    string `gorm:"type:varchar(12)"`
 	Address  string `gorm:"type:varchar(100)"`
 	Chats    []_modelChat.Chat
+	Reviews  []_modelReview.Review
 }
