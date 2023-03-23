@@ -8,6 +8,8 @@ type Core struct {
 	GenreID  uint
 }
 
+//s
+
 type GenreHandler interface {
 	AddMentorGenre() echo.HandlerFunc
 	GetGenre(e echo.Context) echo.HandlerFunc
