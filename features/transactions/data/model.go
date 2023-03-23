@@ -8,12 +8,13 @@ import (
 
 type Transaction struct {
 	gorm.Model
-	OrderID   string
-	Status    string
-	StudentID uint
-	MentorID  uint
-	ClassID   uint
-	StartDate time.Time
-	EndDate   time.Time
-	Price     float64 `gorm:"type:float"`
+	OrderID    string
+	Status     string
+	StudentID  uint
+	MentorID   uint
+	ClassID    uint
+	ScheduleID uint
+	StartDate  time.Time `gorm:"type:date"`
+	EndDate    time.Time `gorm:"type:date"`
+	Price      float64   `gorm:"type:float"`
 }
