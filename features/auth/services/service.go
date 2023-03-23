@@ -3,13 +3,8 @@ package services
 import (
 	"errors"
 	"log"
-	"musiclab-be/app/config"
 	"musiclab-be/features/auth"
 	"musiclab-be/helper"
-	"strings"
-	"time"
-
-	"github.com/golang-jwt/jwt"
 )
 
 type authUseCase struct {
@@ -34,43 +29,46 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 	hashed := helper.GeneratePassword(newUser.Password)
 	newUser.Password = string(hashed)
 
-	err := auc.qry.Register(newUser)
-	if err != nil {
-		msg := ""
-		if strings.Contains(err.Error(), "duplicated") {
-			msg = "email already registered"
-		} else {
-			msg = "server error"
+	if newUser.Role == "Mentor" {
+		errMentor := auc.qry.RegisterMentor(newUser)
+		if errMentor != nil {
+			return errMentor
 		}
-		return errors.New(msg)
+	} else if newUser.Role == "Student" {
+		errStudent := auc.qry.RegisterStudent(newUser)
+		if errStudent != nil {
+			return errStudent
+		}
 	}
 
 	return nil
 }
 
-func (auc *authUseCase) Login(email string, password string) (string, auth.Core, error) {
-	res, err := auc.qry.Login(email)
-	if err != nil {
-		msg := ""
-		if strings.Contains(err.Error(), "not found") {
-			msg = "data not found"
-		} else {
-			msg = "there is a problem with the server"
+func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
+	res := auth.Core{}
+	if user.Role == "Mentor" {
+		var err error
+		res, err = auc.qry.LoginMentor(user.Email)
+		if err != nil {
+			return "", auth.Core{}, err
 		}
-		return "", auth.Core{}, errors.New(msg)
+	} else if user.Role == "Student" {
+		var err error
+		res, err = auc.qry.LoginStudent(user.Email)
+		if err != nil {
+			return "", auth.Core{}, err
+		}
 	}
 
-	if err := helper.ComparePassword(res.Password, password); err != nil {
+	if err := helper.ComparePassword(res.Password, user.Password); err != nil {
 		log.Println("login compare", err.Error())
 		return "", auth.Core{}, errors.New("password not matched")
 	}
 
-	claims := jwt.MapClaims{}
-	claims["authorized"] = true
-	claims["userID"] = res.ID
-	claims["exp"] = time.Now().Add(time.Hour * 48).Unix()
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	useToken, _ := token.SignedString([]byte(config.JWTKey))
+	token, errToken := helper.CreateToken(user.ID, user.Role)
+	if errToken != nil {
+		return "", auth.Core{}, errToken
+	}
 
-	return useToken, res, nil
+	return token, res, nil
 }
