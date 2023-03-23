@@ -16,14 +16,14 @@ type GenreHandler interface {
 }
 
 type GenreService interface {
-	AddMentorGenre(token interface{}, genreID uint, newGenre Core) error
+	AddMentorGenre(token interface{}, genreID uint, newGenre Core) (Core, error)
 	GetMentorGenre(token interface{}) ([]Core, error)
 	GetGenre() ([]Core, error)
 	Delete(token interface{}, genreID uint) error
 }
 
 type GenreData interface {
-	AddMentorGenre(mentorID uint, genreID uint, newGenre Core) error
+	AddMentorGenre(mentorID uint, genreID uint, newGenre Core) (Core, error)
 	GetMentorGenre(mentorID uint) ([]Core, error)
 	GetGenre() ([]Core, error)
 	Delete(mentorID uint, genreID uint) error
