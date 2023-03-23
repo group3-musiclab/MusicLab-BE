@@ -1,7 +1,10 @@
 package services
 
 import (
+	"errors"
+	"log"
 	"musiclab-be/features/genres"
+	"strings"
 )
 
 type genreUseCase struct {
@@ -15,7 +18,18 @@ func New(gd genres.GenreData) genres.GenreService {
 }
 
 func (guu *genreUseCase) AddMentorGenre(genreID uint, newGenre genres.Core) (genres.Core, error) {
-
+	res, err := guu.qry.AddMentorGenre(genreID, newGenre)
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "data not found"
+		} else {
+			msg = "server problem"
+		}
+		log.Println("error add query in service: ", err.Error())
+		return genres.Core{}, errors.New(msg)
+	}
+	return res, nil
 }
 
 // Delete implements genres.GenreService

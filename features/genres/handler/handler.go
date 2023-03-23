@@ -18,7 +18,7 @@ func New(srv genres.GenreService) genres.GenreHandler {
 	}
 }
 
-func (gc *genreControll) AddMentorGenre(e echo.Context) echo.HandlerFunc {
+func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		// mentorID := helper.ExtractTokenUserId(e)
 		input := AddMentorGenre{}
@@ -34,7 +34,7 @@ func (gc *genreControll) AddMentorGenre(e echo.Context) echo.HandlerFunc {
 		log.Println(res)
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"data":    res,
-			"message": "success add book to cart",
+			"message": "success add mentor genre",
 		})
 	}
 }
