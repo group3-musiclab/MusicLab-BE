@@ -7,6 +7,7 @@ import (
 	_modelMentorInstruments "musiclab-be/features/instruments/data"
 	_modelReview "musiclab-be/features/reviews/data"
 	_modelSchedule "musiclab-be/features/schedules/data"
+	_modelTransaction "musiclab-be/features/transactions/data"
 
 	"gorm.io/gorm"
 )
@@ -31,6 +32,7 @@ type Mentor struct {
 	Classes           []_modelClass.Class
 	Chats             []_modelChat.Chat
 	Reviews           []_modelReview.Review
+	Transactions      []_modelTransaction.Transaction
 }
 
 type Credential struct {
