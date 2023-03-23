@@ -27,7 +27,7 @@ func (ac *authControll) Register() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
 
-		err = ac.srv.Register(*ReqToCore(input))
+		err = ac.srv.Register(registerToCore(input))
 		if err != nil {
 			if strings.Contains(err.Error(), "already") {
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "email already registered"})
@@ -40,7 +40,6 @@ func (ac *authControll) Register() echo.HandlerFunc {
 			}
 		}
 		return c.JSON(http.StatusCreated, map[string]interface{}{"message": "success create account"})
-
 	}
 }
 
@@ -58,7 +57,7 @@ func (ac *authControll) Login() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "password not allowed empty"})
 		}
 
-		token, res, err := ac.srv.Login(input.Email, input.Password)
+		token, res, err := ac.srv.Login(loginToCore(input))
 		if err != nil {
 			if strings.Contains(err.Error(), "password") {
 				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "password not match"})

@@ -18,10 +18,12 @@ type AuthHandler interface {
 
 type AuthService interface {
 	Register(newUser Core) error
-	Login(email, password string) (string, Core, error)
+	Login(user Core) (string, Core, error)
 }
 
 type AuthData interface {
-	Register(newUser Core) error
-	Login(email string) (Core, error)
+	RegisterMentor(newUser Core) error
+	RegisterStudent(newUser Core) error
+	LoginMentor(email string) (Core, error)
+	LoginStudent(email string) (Core, error)
 }
