@@ -11,13 +11,26 @@ type mentorQuery struct {
 }
 
 // Login implements mentors.MentorData
-func (*mentorQuery) Login(email string) (mentors.Core, error) {
-	panic("unimplemented")
+func (mq *mentorQuery) Login(email string) (mentors.Core, error) {
+	userLogin := Mentor{}
+	txSelect := mq.db.Where("email = ?", email).First(&userLogin)
+	if txSelect.Error != nil {
+		return mentors.Core{}, txSelect.Error
+	}
+	return ToCore(userLogin), nil
 }
 
 // Register implements mentors.MentorData
-func (*mentorQuery) Register(newUser mentors.Core) error {
-	panic("unimplemented")
+func (mq *mentorQuery) Register(newUser mentors.Core) error {
+	dataModel := CoreToData(newUser)
+	txInsert := mq.db.Create(&dataModel)
+	if txInsert.Error != nil {
+		return txInsert.Error
+	}
+	if txInsert.RowsAffected == 0 {
+		return txInsert.Error
+	}
+	return nil
 }
 
 func New(db *gorm.DB) mentors.MentorData {
