@@ -661,7 +661,7 @@ paths:
             schema:
               type: object
               properties:
-                instrument:
+                genre:
                   type: integer
             example:
               genre: 1
@@ -765,6 +765,622 @@ paths:
                     type: string
               example:
                 message: "success add mentor credential"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/reviews:
+    post:
+      tags:
+        - "Review"
+      description: make a review in mentor class
+      summary: make a review in mentor class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                rating:
+                  type: number
+                comment:
+                  type: string
+            example:
+              rating: 3
+              comment: "Very Good"
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success make a review"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+    get:
+      tags:
+        - "Review"
+      description: get mentor review
+      summary: get mentor review
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success get mentor review
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Alif Muhamad Hafidz",
+                      rating: 3,
+                      comment: "Very Good",
+                      created_at: "2023-03-23"
+                    },
+                    {
+                      id: 2,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Kharisma",
+                      rating: 4,
+                      comment: "Perfect",
+                      created_at: "2023-03-22"
+                    },
+                  ]
+                message: "success show all mentor review"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/chat:
+    post:
+      tags:
+       - "Chat"
+      description: chat from mentor to student
+      summary: chat from mentor to student
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                student_id:
+                  type: integer
+                chat:
+                  type: string
+            example:
+              student_id: 3
+              chat: "Hallo guys"
+      responses:
+        201:
+          description: "success chat to student"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success chat to student"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+    get:
+      tags:
+        - "Chat"
+      description: get a chat from student
+      summary: get a chat from student
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "get a chat from student"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      sender_name: "Alif",
+                      chat: "Hallo sir"
+                    },
+                    {
+                      id: 2,
+                      sender_name: "Alif",
+                      chat: "How Are You"
+                    },
+                  ]
+                message: "success show a chat from student"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /students/chat:
+    post:
+      tags:
+       - "Chat"
+      description: chat from student to mentor
+      summary: chat from student to mentor
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mentor_id:
+                  type: integer
+                chat:
+                  type: string
+            example:
+              mentor_id: 3
+              chat: "Hallo sir"
+      responses:
+        201:
+          description: "success chat to mentor"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success chat to student"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+    get:
+      tags:
+        - "Chat"
+      description: get a chat from mentor
+      summary: get a chat from mentor
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "get a chat from mentor"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      sender_name: "Joko",
+                      chat: "Hallo guys"
+                    },
+                    {
+                      id: 2,
+                      sender_name: "Joko",
+                      chat: "How's today?"
+                    },
+                  ]
+                message: "success show a chat from mentor"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/classes:
+    post:
+      tags:
+        - "Class"
+      description: make a class
+      summary: make a class
+      security:
+        - JWTAuth: []
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                level:
+                  type: string
+                  format: array
+                description:
+                  type: string
+                syllabus:
+                  type: string
+                for_whom:
+                  type: string
+                requirement:
+                  type: string
+                price:
+                  type: number
+                duration:
+                  type: integer
+            example:
+              image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
+              name: "Guitar Class"
+              level: ["Basic", "Intermediate", "Advance"]
+              description: "Best Guitar Course"
+              syllabus: "In here we will master the guitar class under 3 month"
+              from_whom: "Newbie"
+              requirement: "Have a Guitar"
+              price: 325000
+              duration: 3
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                level:
+                  type: string
+                  format: array
+                description:
+                  type: string
+                syllabus:
+                  type: string
+                for_whom:
+                  type: string
+                requirement:
+                  type: string
+                price:
+                  type: number
+                duration:
+                  type: integer
+            example:
+              image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
+              name: "Guitar Class"
+              level: ["Basic", "Intermediate", "Advance"]
+              description: "Best Guitar Course"
+              syllabus: "In here we will master the guitar class under 3 month"
+              from_whom: "Newbie"
+              requirement: "Have a Guitar"
+              price: 325000
+              duration: 3
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success make a class"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/class:
+    get:
+      tags:
+        - "Class"
+      description: get mentor class
+      summary: get mentor class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success get mentor class
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      image: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Guitar Class",
+                      price: 425000,
+                    },
+                    {
+                      id: 2,
+                      image: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Piano Class",
+                      price: 525000,
+                    },
+                  ]
+                message: "success show all mentor class"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/class/{class_id}:
+    get:
+      tags:
+        - "Class"
+      description: get mentor class detail
+      summary: get mentor class detail
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success get mentor class detail
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  id: 1
+                  image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
+                  name: "Guitar Class"
+                  level: "Basic"
+                  description: "Best Guitar Course"
+                  syllabus: "In here we will master the guitar class under 3 month"
+                  from_whom: "Newbie"
+                  requirement: "Have a Guitar"
+                  price: 325000
+                  duration: 3
+                message: "success show mentor class detail"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/schedules:
+    post:
+      tags:
+       - "Schedule"
+      description: post mentor schedule
+      summary: post mentor schedule
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                start_date:
+                  type: string
+                end_date:
+                  type: string
+                time:
+                  type: string
+            example:
+              start_date: "2023-03-23"
+              end_date: "2023-03-29"
+              time: "09:00 to 11:00"
+      responses:
+        201:
+          description: "success post a schedule"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success post a schedule"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/schedules:
+    get:
+      tags:
+        - "Schedule"
+      description: get mentor schedule
+      summary: get mentor schedule
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success get mentor schedule
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      start_date: "2023-03-23",
+                      end_date: "2023-03-29",
+                      time: "09:00 to 11:00"
+                    },
+                    {
+                      id: 2,
+                      start_date: "2023-04-23",
+                      end_date: "2023-04-29",
+                      time: "09:00 to 11:00"
+                    },
+                  ]
+                message: "success show all mentor schedule"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /transactions:
+    post:
+      tags:
+       - "Transaction"
+      description: make a transaction
+      summary: make a transaction
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mentor_id:
+                  type: integer
+                class_id:
+                  type: integer
+            example:
+              mentor_id: 1
+              class_id: 1
+      responses:
+        201:
+          description: "login success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  class_id: 1
+                  payment_url: "midtrans.com/payment"
+                message: "success make transaction"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/transactions:
+    get:
+      tags:
+        - "Transaction"
+      description: get mentor transaction
+      summary: get mentor transaction
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success get mentor transaction
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      student_name: "Alif",
+                      class_name: "Guitar Class",
+                      start_date: "2023-03-23",
+                      end_date: "2023-03-29",
+                      price: 325000,
+                      status_payment: "Settlement"
+                    },
+                    {
+                      id: 2,
+                      student_name: "Kharisma",
+                      class_name: "Piano Class",
+                      start_date: "2023-04-23",
+                      end_date: "2023-04-29",
+                      price: 325000,
+                      status_payment: "Pending"
+                    },
+                  ]
+                message: "success show mentor transaction history"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /students/transactions:
+    get:
+      tags:
+        - "Transaction"
+      description: get mentor student
+      summary: get mentor student
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: success get student transaction
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      mentor_name: "Joko",
+                      class_name: "Guitar Class",
+                      start_date: "2023-03-23",
+                      end_date: "2023-03-29",
+                      price: 325000,
+                      status_payment: "Settlement"
+                    },
+                    {
+                      id: 2,
+                      mentor_name: "Budi",
+                      class_name: "Piano Class",
+                      start_date: "2023-04-23",
+                      end_date: "2023-04-29",
+                      price: 325000,
+                      status_payment: "Pending"
+                    },
+                  ]
+                message: "success show student transaction history"
         400:
           $ref: "#/components/responses/400"
         500:
