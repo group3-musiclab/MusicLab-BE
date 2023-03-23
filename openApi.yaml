@@ -13,8 +13,6 @@ servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/KHARISMAJANUAR/MusicLab-API/1.0.0
-  - url: https://baggioshop.site
-    description: primarry link
 
 paths:
   /register:
@@ -42,7 +40,7 @@ paths:
                   format: password
             example:
               name: "Alif Muhamad Hafidz"
-              role: ["Mentor", "Student"]
+              role: "Mentor"
               email: "alifmuhamadhafidz23@gmail.com"
               password: "123"
       responses:
@@ -79,9 +77,12 @@ paths:
                 password:
                   type: string
                   format: password
+                role:
+                  type: string
             example:
               email: "alifmuhamadhafidz23@gmail.com"
               password: "123"
+              role: Mentor
       responses:
         200:
           description: "login success"
@@ -93,8 +94,7 @@ paths:
                 data:
                   id: 1
                   name: "Alif Muhamad Hafidz"
-                  role: "Student"
-                  email: "alifmuhamadhafidz23@gmail.com"
+                  role: "Mentor"
                   token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk"
                 message: "login success"
                 
@@ -189,17 +189,12 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseObject"
-              example:
-                data:
-                  id: 1
-                  avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
-                  name: "Alif Muhamad Hafidz"
-                  email: "alifmuhamadhafidz23@gmail.com"
-                  sex: "Male"
-                  phone: "0813456"
-                  address: "Bangka"
-                message: "success update student profile"
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "success update student profile"
         400:
           $ref: "#/components/responses/400"
         404:
@@ -346,19 +341,21 @@ paths:
                     {
                       id: 1,
                       avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
-                      name: "Alif Muhamad Hafidz",
-                      rating: 3,
-                      price: 300000,
-                      qualification: "National Sertification",
+                      name: "Alif",
+                      instrument_name: "Bass",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      rating: 4.9,
                     },
                     {
                       id: 2,
                       avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
                       name: "Kharisma",
-                      rating: 4,
-                      price: 500000,
-                      qualification: "International Sertification",
-                    },
+                      instrument_name: "Guitar",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      rating: 4.9,
+                      },
                   ]
                 message: "success show all mentor"
         400:
@@ -415,24 +412,16 @@ paths:
               about: "senior musical teacher"
       responses:
         200:
-          description: success update student profile
+          description: success update mentor profile
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/responseObject"
-              example:
-                data:
-                  id: 1
-                  avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg"
-                  name: "Alif Muhamad Hafidz"
-                  email: "alifmuhamadhafidz23@gmail.com"
-                  sex: "Male"
-                  phone: "0813456"
-                  address: "Bangka"
-                  instagram: "@alifhfdz"
-                  price: 350000
-                  about: "senior musical teacher"
-                message: "success update mentor profile"
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "success update mentor profile"
         400:
           $ref: "#/components/responses/400"
         404:
@@ -480,6 +469,64 @@ paths:
                   message: "data not found"
         500:
           $ref: "#/components/responses/500"
+  /mentors/topweek:
+    get:
+      tags:
+        - "Mentor"
+      description: get top mentor by rating per weeks
+      summary: get top mentor by rating per weeks
+      responses:
+        200:
+          description: "to get all mentor by rating"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Alif",
+                      instrument_name: "Bass",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      rating: 4.9,
+                    },
+                    {
+                      id: 3,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Ana",
+                      instrument_name: "Guitar",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      },
+                      rating: 4.9,
+                    {
+                      id: 4,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Mike Tyson",
+                      instrument_name: "Piano",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      rating: 4.9,
+                      },
+                    {
+                      id: 2,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      name: "Kharisma",
+                      instrument_name: "Drum",
+                      about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
+                      instagram: "https://www.instagram.com/ana_d_armas/",
+                      rating: 4.9,
+                      },
+                  ]
+                message: "success show all mentor"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
   /mentors/profile:
     get:
       tags:
@@ -504,11 +551,78 @@ paths:
                   sex: "Male"
                   phone: "0813456"
                   address: "Bangka"
-                  instagram: "@alifhfdz"
+                  instagram: "https://www.instagram.com/ana_d_armas/"
                   price: 350000
                   about: "senior musical teacher"
-                  genre: "Jazz"
-                  instrument: "Guitar"
+                  genre: [
+                      {
+                        genre_name: "Rock",
+                     },
+                      {
+                        genre_name: "Religi",
+                     },
+                  ]
+                  instrument: [
+                      {
+                        instrument_name: "Bass",
+                     },
+                      {
+                        instrument_name: "Guitar",
+                     },
+                  ]
+                  count_reviews: 47000
+                message: "success show mentor profile"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}:
+    get:
+      tags:
+        - "Mentor"
+      description: get mentor profile by id mentor
+      summary: get mentor profile by id mentor
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success show mentor profile
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  id: 1
+                  avatar: "https://fauziawsbucket.s3.ap-southeast-1.amazonaws.com/559d75ff-88c8-40af-8740-233667b36feco.png"
+                  name: "Alif Muhamad Hafidz"
+                  email: "alifmuhamadhafidz23@gmail.com"
+                  sex: "Male"
+                  phone: "0813456"
+                  address: "Bangka"
+                  instagram: "https://www.instagram.com/ana_d_armas/"
+                  price: 350000
+                  about: "senior musical teacher"
+                  genre: [
+                      {
+                        genre_name: "Rock",
+                     },
+                      {
+                        genre_name: "Religi",
+                     },
+                  ]
+                  instrument: [
+                      {
+                        instrument_name: "Bass",
+                     },
+                      {
+                        instrument_name: "Guitar",
+                     },
+                  ]
                   count_reviews: 47000
                 message: "success show mentor profile"
         400:
@@ -555,158 +669,6 @@ paths:
                     type: string
               example:
                 message: "success update mentor password"
-        400:
-          $ref: "#/components/responses/400"
-        404:
-          description: data not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "data not found"
-        500:
-          $ref: "#/components/responses/500"
-  /mentors/instruments:
-    post:
-      tags:
-        - "Mentor"
-      description: post mentor instrument
-      summary: post mentor instrument
-      security:
-        - JWTAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                instrument:
-                  type: integer
-            example:
-              instrument: 1
-      responses:
-        201:
-          description: "success insert data"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: integer
-              example:
-                message: "success add mentor instrument"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
-  /mentors/instruments/{instrument_id}:
-    delete:
-      tags:
-        - "Mentor"
-      description: delete mentor instrument by instrument id
-      summary: delete mentor instrument by instrument id
-      security:
-        - JWTAuth: []
-      parameters:
-        - name: instrument_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: success delete mentor instrument
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: "success delete mentor instrument"
-        400:
-          $ref: "#/components/responses/400"
-        404:
-          description: data not found
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                example:
-                  message: "data not found"
-        500:
-          $ref: "#/components/responses/500"
-  /mentors/genres:
-    post:
-      tags:
-        - "Mentor"
-      description: post mentor genres
-      summary: post mentor genres
-      security:
-        - JWTAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                genre:
-                  type: integer
-            example:
-              genre: 1
-      responses:
-        201:
-          description: "success insert data"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: integer
-              example:
-                message: "success add mentor genre"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
-  /mentors/genres/{genre_id}:
-    delete:
-      tags:
-        - "Mentor"
-      description: delete mentor genres by genre id
-      summary: delete mentor genres by genre id
-      security:
-        - JWTAuth: []
-      parameters:
-        - name: genre_id
-          in: path
-          required: true
-          schema:
-            type: integer
-      responses:
-        200:
-          description: success delete mentor genre
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-              example:
-                message: "success delete mentor genre"
         400:
           $ref: "#/components/responses/400"
         404:
@@ -769,6 +731,222 @@ paths:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
+  /instruments:
+    get:
+      tags:
+        - "Instrument"
+      description: get all instruments
+      summary: get all instruments
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "to get all mentor list"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      name: "Drum",
+                    },
+                    {
+                      id: 2,
+                      name: "Guitar",
+                      },
+                  ]
+                message: "success show all instruments"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/instruments:
+    post:
+      tags:
+        - "Instrument"
+      description: post mentor instrument
+      summary: post mentor instrument
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                instrument:
+                  type: integer
+            example:
+              instrument_id: 1
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success add mentor instrument"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/instruments/{instrument_id}:
+    delete:
+      tags:
+        - "Instrument"
+      description: delete mentor instrument by instrument id
+      summary: delete mentor instrument by instrument id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: instrument_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete mentor instrument
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success delete mentor instrument"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /genres:
+    get:
+      tags:
+        - "Genre"
+      description: get all genres
+      summary: get all genres
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "to get all genres list"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      id: 1,
+                      name: "Dangdut",
+                    },
+                    {
+                      id: 2,
+                      name: "Rock",
+                      },
+                  ]
+                message: "success show all instruments"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/genres:
+    post:
+      tags:
+        - "Genre"
+      description: post mentor genres
+      summary: post mentor genres
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: integer
+            example:
+              genre_id: 1
+      responses:
+        201:
+          description: "success insert data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success add mentor genre"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/genres/{genre_id}:
+    delete:
+      tags:
+        - "Genre"
+      description: delete mentor genres by genre id
+      summary: delete mentor genres by genre id
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: genre_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete mentor genre
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success delete mentor genre"
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
   /mentors/{mentor_id}/reviews:
     post:
       tags:
@@ -818,8 +996,6 @@ paths:
         - "Review"
       description: get mentor review
       summary: get mentor review
-      security:
-        - JWTAuth: []
       parameters:
         - name: mentor_id
           in: path
@@ -858,12 +1034,12 @@ paths:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
-  /mentors/chat:
+  /chats:
     post:
       tags:
        - "Chat"
-      description: chat from mentor to student
-      summary: chat from mentor to student
+      description: send message to student or teacher
+      summary: send message to student or teacher
       security:
         - JWTAuth: []
       requestBody:
@@ -873,16 +1049,19 @@ paths:
             schema:
               type: object
               properties:
+                mentor_id:
+                  type: integer
                 student_id:
                   type: integer
                 chat:
                   type: string
             example:
+              mentor_id: 2
               student_id: 3
               chat: "Hallo guys"
       responses:
         201:
-          description: "success chat to student"
+          description: "success send message"
           content:
             application/json:
               schema:
@@ -891,21 +1070,33 @@ paths:
                   message:
                     type: integer
               example:
-                message: "success chat to student"
+                message: "success send message"
         400:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
+  /chats/mentors/{mentor_id}/students/{student_id}:
     get:
       tags:
         - "Chat"
-      description: get a chat from student
-      summary: get a chat from student
+      description: get all chat by id student and id mentor
+      summary: get all chat by id student and id mentor
       security:
         - JWTAuth: []
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+        - name: student_id
+          in: path
+          required: true
+          schema:
+            type: integer
       responses:
         200:
-          description: "get a chat from student"
+          description: "get all chat by id student and id mentor"
           content:
             application/json:
               schema:
@@ -920,82 +1111,11 @@ paths:
                     },
                     {
                       id: 2,
-                      sender_name: "Alif",
+                      sender_name: "Kharisma",
                       chat: "How Are You"
                     },
                   ]
-                message: "success show a chat from student"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
-  /students/chat:
-    post:
-      tags:
-       - "Chat"
-      description: chat from student to mentor
-      summary: chat from student to mentor
-      security:
-        - JWTAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                mentor_id:
-                  type: integer
-                chat:
-                  type: string
-            example:
-              mentor_id: 3
-              chat: "Hallo sir"
-      responses:
-        201:
-          description: "success chat to mentor"
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: integer
-              example:
-                message: "success chat to student"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
-    get:
-      tags:
-        - "Chat"
-      description: get a chat from mentor
-      summary: get a chat from mentor
-      security:
-        - JWTAuth: []
-      responses:
-        200:
-          description: "get a chat from mentor"
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                data:
-                  [
-                    {
-                      id: 1,
-                      sender_name: "Joko",
-                      chat: "Hallo guys"
-                    },
-                    {
-                      id: 2,
-                      sender_name: "Joko",
-                      chat: "How's today?"
-                    },
-                  ]
-                message: "success show a chat from mentor"
+                message: "success show a chat by id student and id mentor"
         400:
           $ref: "#/components/responses/400"
         500:
@@ -1021,7 +1141,6 @@ paths:
                   type: string
                 level:
                   type: string
-                  format: array
                 description:
                   type: string
                 syllabus:
@@ -1037,7 +1156,7 @@ paths:
             example:
               image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
               name: "Guitar Class"
-              level: ["Basic", "Intermediate", "Advance"]
+              level: "Intermediate"
               description: "Best Guitar Course"
               syllabus: "In here we will master the guitar class under 3 month"
               from_whom: "Newbie"
@@ -1098,8 +1217,8 @@ paths:
     get:
       tags:
         - "Class"
-      description: get mentor class
-      summary: get mentor class
+      description: get all class by id mentor
+      summary: get all class by id mentor
       security:
         - JWTAuth: []
       parameters:
@@ -1136,7 +1255,7 @@ paths:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
-  /mentors/{mentor_id}/class/{class_id}:
+  /class/{class_id}:
     get:
       tags:
         - "Class"
@@ -1145,11 +1264,6 @@ paths:
       security:
         - JWTAuth: []
       parameters:
-        - name: mentor_id
-          in: path
-          required: true
-          schema:
-            type: integer
         - name: class_id
           in: path
           required: true
@@ -1179,6 +1293,142 @@ paths:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
+    put:
+      tags:
+        - "Class"
+      description: edit a class
+      summary: edit a class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                level:
+                  type: string
+                description:
+                  type: string
+                syllabus:
+                  type: string
+                for_whom:
+                  type: string
+                requirement:
+                  type: string
+                price:
+                  type: number
+                duration:
+                  type: integer
+            example:
+              image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
+              name: "Guitar Class"
+              level: "Intermediate"
+              description: "Best Guitar Course"
+              syllabus: "In here we will master the guitar class under 3 month"
+              from_whom: "Newbie"
+              requirement: "Have a Guitar"
+              price: 325000
+              duration: 3
+          application/json:
+            schema:
+              type: object
+              properties:
+                image:
+                  type: string
+                  format: binary
+                name:
+                  type: string
+                level:
+                  type: string
+                  format: array
+                description:
+                  type: string
+                syllabus:
+                  type: string
+                for_whom:
+                  type: string
+                requirement:
+                  type: string
+                price:
+                  type: number
+                duration:
+                  type: integer
+            example:
+              image: "https://1.bp.blogspot.com/-e8s4FEI8wKs/WgpNDkIWdhI/AAAAAAAAAyQ/SUryjPXhJ28zqb32zPCyGZLjXCT0khK2wCLcBGAs/s1600/Contoh%2BSurat%2BKeterangan%2BSakit.png"
+              name: "Guitar Class"
+              level: ["Basic", "Intermediate", "Advance"]
+              description: "Best Guitar Course"
+              syllabus: "In here we will master the guitar class under 3 month"
+              from_whom: "Newbie"
+              requirement: "Have a Guitar"
+              price: 325000
+              duration: 3
+      responses:
+        201:
+          description: "success edit data"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "success edit class"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+    delete:
+      tags:
+        - "Class"
+      description: delete class
+      summary: delete class
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: class_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete class
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "succes delete class"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
   /mentors/schedules:
     post:
       tags:
@@ -1194,16 +1444,16 @@ paths:
             schema:
               type: object
               properties:
-                start_date:
+                day:
                   type: string
-                end_date:
+                start_time:
                   type: string
-                time:
+                end_time:
                   type: string
             example:
-              start_date: "2023-03-23"
-              end_date: "2023-03-29"
-              time: "09:00 to 11:00"
+              day: "Monday"
+              start_time: "13:00"
+              end_time: "15:00"
       responses:
         201:
           description: "success post a schedule"
@@ -1246,18 +1496,98 @@ paths:
                   [
                     {
                       id: 1,
-                      start_date: "2023-03-23",
-                      end_date: "2023-03-29",
-                      time: "09:00 to 11:00"
+                      day: "Monday",
+                      start_date: "13:00",
+                      end_date: "15:00",
                     },
                     {
                       id: 2,
-                      start_date: "2023-04-23",
-                      end_date: "2023-04-29",
-                      time: "09:00 to 11:00"
+                      day: "Monday",
+                      start_date: "15:00",
+                      end_date: "17:00",
                     },
                   ]
                 message: "success show all mentor schedule"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /schedules/{schedule_id}:
+    delete:
+      tags:
+        - "Schedule"
+      description: delete schedule
+      summary: delete schedule
+      security:
+        - JWTAuth: []
+      parameters:
+        - name: schedule_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: success delete class
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+              example:
+                message: "succes delete schedule"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "data not found"
+        500:
+          $ref: "#/components/responses/500"
+  /schedules/check:
+    post:
+      tags:
+       - "Schedule"
+      description: check mentor's schedule availability
+      summary: check mentor's schedule availability
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                class_id:
+                  type: integer
+                start_time:
+                  type: string
+                end_time:
+                  type: string
+            example:
+              class_id: 1
+              start_date: "2023-23-03"
+              end_date: "2023-23-04"
+      responses:
+        200:
+          description: "schedule available"
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: integer
+              example:
+                message: "success post a schedule"
         400:
           $ref: "#/components/responses/400"
         500:
@@ -1281,12 +1611,15 @@ paths:
                   type: integer
                 class_id:
                   type: integer
+                schedule_id:
+                  type: integer
             example:
               mentor_id: 1
               class_id: 1
+              schedule_id: 1
       responses:
         201:
-          description: "login success"
+          description: "transaction success"
           content:
             application/json:
               schema:
@@ -1332,8 +1665,8 @@ paths:
                       id: 2,
                       student_name: "Kharisma",
                       class_name: "Piano Class",
-                      start_date: "2023-04-23",
-                      end_date: "2023-04-29",
+                      start_date: "",
+                      end_date: "",
                       price: 325000,
                       status_payment: "Pending"
                     },
@@ -1374,8 +1707,8 @@ paths:
                       id: 2,
                       mentor_name: "Budi",
                       class_name: "Piano Class",
-                      start_date: "2023-04-23",
-                      end_date: "2023-04-29",
+                      start_date: "",
+                      end_date: "",
                       price: 325000,
                       status_payment: "Pending"
                     },
