@@ -1568,14 +1568,11 @@ paths:
               properties:
                 class_id:
                   type: integer
-                start_time:
-                  type: string
-                end_time:
+                start_date:
                   type: string
             example:
               class_id: 1
               start_date: "2023-23-03"
-              end_date: "2023-23-04"
       responses:
         200:
           description: "schedule available"
@@ -1665,8 +1662,8 @@ paths:
                       id: 2,
                       student_name: "Kharisma",
                       class_name: "Piano Class",
-                      start_date: "",
-                      end_date: "",
+                      start_date: "2023-03-27",
+                      end_date: "2023-04-27",
                       price: 325000,
                       status_payment: "Pending"
                     },
@@ -1707,8 +1704,8 @@ paths:
                       id: 2,
                       mentor_name: "Budi",
                       class_name: "Piano Class",
-                      start_date: "",
-                      end_date: "",
+                      start_date: "2023-03-27",
+                      end_date: "2023-04-27",
                       price: 325000,
                       status_payment: "Pending"
                     },
