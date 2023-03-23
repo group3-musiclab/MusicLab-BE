@@ -4,7 +4,15 @@ import (
 	"fmt"
 	"log"
 	"musiclab-be/app/config"
-	authData "musiclab-be/features/auth/data"
+	_modelChat "musiclab-be/features/chats/data"
+	_modelClass "musiclab-be/features/classes/data"
+	_modelGenre "musiclab-be/features/genres/data"
+	_modelInstrument "musiclab-be/features/instruments/data"
+	_modelMentor "musiclab-be/features/mentors/data"
+	_modelReview "musiclab-be/features/reviews/data"
+	_modelSchedule "musiclab-be/features/schedules/data"
+	_modelStudent "musiclab-be/features/students/data"
+	_modelTransaction "musiclab-be/features/transactions/data"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -24,7 +32,17 @@ func InitDB(dc config.DBConfig) *gorm.DB {
 
 func Migrate(db *gorm.DB) {
 	db.AutoMigrate(
-		authData.Student{},
-		authData.Mentor{},
+		&_modelMentor.Mentor{},
+		&_modelMentor.Credential{},
+		&_modelInstrument.Instrument{},
+		&_modelInstrument.MentorInstrument{},
+		&_modelGenre.Genre{},
+		&_modelGenre.MentorGenre{},
+		&_modelStudent.Student{},
+		&_modelSchedule.Schedule{},
+		&_modelClass.Class{},
+		&_modelChat.Chat{},
+		&_modelTransaction.Transaction{},
+		&_modelReview.Review{},
 	)
 }
