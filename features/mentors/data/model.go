@@ -1,6 +1,7 @@
 package data
 
 import (
+	_modelChat "musiclab-be/features/chats/data"
 	_modelClass "musiclab-be/features/classes/data"
 	_modelMentorGenres "musiclab-be/features/genres/data"
 	_modelMentorInstruments "musiclab-be/features/instruments/data"
@@ -27,6 +28,7 @@ type Mentor struct {
 	Credentials       []Credential
 	Schedules         []_modelSchedule.Schedule
 	Classes           []_modelClass.Class
+	Chats             []_modelChat.Chat
 }
 
 type Credential struct {
