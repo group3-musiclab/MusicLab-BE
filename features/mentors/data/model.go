@@ -1,7 +1,8 @@
 package data
 
 import (
-	"musiclab-be/features/instruments/data"
+	_modelMentorGenres "musiclab-be/features/genres/data"
+	_modelMentorInstruments "musiclab-be/features/instruments/data"
 
 	"gorm.io/gorm"
 )
@@ -19,5 +20,6 @@ type Mentor struct {
 	Instagram         string
 	Price             float64 `gorm:"type:float not null"`
 	AvgRating         float32 `gorm:"type:float not null"`
-	MentorInstruments []data.MentorInstrument
+	MentorInstruments []_modelMentorInstruments.MentorInstrument
+	MentorGenres      []_modelMentorGenres.MentorGenre
 }
