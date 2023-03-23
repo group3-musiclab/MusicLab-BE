@@ -9,21 +9,21 @@ type Core struct {
 }
 
 type GenreHandler interface {
-	AddMentorGenre() echo.HandlerFunc
-	GetMentorGenre() echo.HandlerFunc
-	GetGenre() echo.HandlerFunc
-	Delete() echo.HandlerFunc
+	AddMentorGenre(e echo.Context) echo.HandlerFunc
+	GetMentorGenre(e echo.Context) echo.HandlerFunc
+	GetGenre(e echo.Context) echo.HandlerFunc
+	Delete(e echo.Context) echo.HandlerFunc
 }
 
 type GenreService interface {
-	AddMentorGenre(token interface{}, genreID uint, newGenre Core) (Core, error)
+	AddMentorGenre(genreID uint, newGenre Core) (Core, error)
 	GetMentorGenre(token interface{}) ([]Core, error)
 	GetGenre() ([]Core, error)
 	Delete(token interface{}, genreID uint) error
 }
 
 type GenreData interface {
-	AddMentorGenre(mentorID uint, genreID uint, newGenre Core) (Core, error)
+	AddMentorGenre(genreID uint, newGenre Core) (Core, error)
 	GetMentorGenre(mentorID uint) ([]Core, error)
 	GetGenre() ([]Core, error)
 	Delete(mentorID uint, genreID uint) error

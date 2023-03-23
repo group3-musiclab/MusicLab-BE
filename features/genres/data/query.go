@@ -18,7 +18,7 @@ func New(db *gorm.DB) genres.GenreData {
 	}
 }
 
-func (gq *genreQuery) AddMentorGenre(mentorID uint, genreID uint, newGenre genres.Core) (genres.Core, error) {
+func (gq *genreQuery) AddMentorGenre(genreID uint, newGenre genres.Core) (genres.Core, error) {
 	genre := Genre{}
 	err := gq.db.Where("id=?", genreID).First(&genre).Error
 	if err != nil {
@@ -27,7 +27,6 @@ func (gq *genreQuery) AddMentorGenre(mentorID uint, genreID uint, newGenre genre
 	}
 	cnv := CoreToData(newGenre)
 	cnv.GenreID = genre.ID
-	cnv.MentorID = mentorID
 	err = gq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query error", err.Error())
