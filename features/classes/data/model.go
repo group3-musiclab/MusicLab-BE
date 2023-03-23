@@ -15,6 +15,7 @@ type Class struct {
 	Description  string
 	Syllabus     string
 	Requirement  string
+	ForWhom      string
 	Price        string `gorm:"type:float not null"`
 	Duration     uint
 	Transactions []_modelTransaction.Transaction

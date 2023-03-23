@@ -15,16 +15,16 @@ import (
 type Mentor struct {
 	gorm.Model
 	Avatar            string
-	Name              string
-	Email             string `gorm:"unique"`
+	Name              string `gorm:"type:varchar(50) not null"`
+	Email             string `gorm:"not null;unique;type:varchar(50)"`
 	Password          string
 	Role              string `gorm:"type:varchar(25) not null default 'Mentor'"`
 	Sex               string
 	Phone             string `gorm:"type:varchar(12)"`
 	Address           string `gorm:"type:varchar(100)"`
 	Instagram         string
-	Price             float64 `gorm:"type:float not null"`
-	AvgRating         float32 `gorm:"type:float not null"`
+	Price             float64 `gorm:"type:float"`
+	AvgRating         float32 `gorm:"type:float"`
 	MentorInstruments []_modelMentorInstruments.MentorInstrument
 	MentorGenres      []_modelMentorGenres.MentorGenre
 	Credentials       []Credential

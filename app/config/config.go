@@ -65,24 +65,24 @@ func ReadEnv() *DBConfig {
 		isRead = false
 	}
 	// untuk mencari env gambar
-	// if val, found := os.LookupEnv("AWS_REGION"); found {
-	// 	app.AWS_REGION = val
-	// 	isRead = false
-	// }
-	// if val, found := os.LookupEnv("ACCESS_KEY_ID"); found {
-	// 	// cnv, _ := strconv.Atoi(val)
-	// 	app.ACCESS_KEY_ID = val
-	// 	isRead = false
-	// }
-	// if val, found := os.LookupEnv("ACCESS_KEY_SECRET"); found {
-	// 	app.ACCESS_KEY_SECRET = val
-	// 	isRead = false
-	// }
+	if val, found := os.LookupEnv("AWS_REGION"); found {
+		app.AWS_REGION = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("ACCESS_KEY_ID"); found {
+		// cnv, _ := strconv.Atoi(val)
+		app.ACCESS_KEY_ID = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("ACCESS_KEY_SECRET"); found {
+		app.ACCESS_KEY_SECRET = val
+		isRead = false
+	}
 
-	// if val, found := os.LookupEnv("SERVER_KEY_MIDTRANS"); found {
-	// 	app.SERVER_KEY_MIDTRANS = val
-	// 	isRead = false
-	// }
+	if val, found := os.LookupEnv("SERVER_KEY_MIDTRANS"); found {
+		app.SERVER_KEY_MIDTRANS = val
+		isRead = false
+	}
 
 	if isRead {
 		viper.AddConfigPath(".")
@@ -100,10 +100,10 @@ func ReadEnv() *DBConfig {
 		}
 	}
 	JWTKey = app.jwtKey
-	// AWS_REGION = app.AWS_REGION
-	// ACCESS_KEY_ID = app.ACCESS_KEY_ID
-	// ACCESS_KEY_SECRET = app.ACCESS_KEY_SECRET
-	// SERVER_KEY_MIDTRANS = app.SERVER_KEY_MIDTRANS
+	AWS_REGION = app.AWS_REGION
+	ACCESS_KEY_ID = app.ACCESS_KEY_ID
+	ACCESS_KEY_SECRET = app.ACCESS_KEY_SECRET
+	SERVER_KEY_MIDTRANS = app.SERVER_KEY_MIDTRANS
 
 	return &app
 }
