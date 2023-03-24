@@ -34,6 +34,7 @@ func (aq *authQuery) LoginStudent(email string) (auth.Core, error) {
 
 // RegisterMentor implements auth.AuthData
 func (aq *authQuery) RegisterMentor(newUser auth.Core) error {
+	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 	dataModel := CoreToDataMentor(newUser)
 	txInsert := aq.db.Create(&dataModel)
 	if txInsert.Error != nil {
@@ -47,6 +48,7 @@ func (aq *authQuery) RegisterMentor(newUser auth.Core) error {
 
 // RegisterStudent implements auth.AuthData
 func (aq *authQuery) RegisterStudent(newUser auth.Core) error {
+	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 	dataModel := CoreToDataStudent(newUser)
 	txInsert := aq.db.Create(&dataModel)
 	if txInsert.Error != nil {
