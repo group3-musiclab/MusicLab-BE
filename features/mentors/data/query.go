@@ -14,9 +14,9 @@ type mentorQuery struct {
 }
 
 // UpdateData implements mentors.MentorData
-func (mq *mentorQuery) UpdateData(idMentor uint, input mentors.Core) error {
+func (mq *mentorQuery) UpdateData(mentorID uint, input mentors.Core) error {
 	dataModel := CoreToModel(input)
-	tx := mq.db.Where("id = ?", idMentor).Updates(&dataModel)
+	tx := mq.db.Where("id = ?", mentorID).Updates(&dataModel)
 	if tx.Error != nil {
 		return errors.New(consts.QUERY_ErrorUpdateData)
 	}
@@ -27,15 +27,15 @@ func (mq *mentorQuery) UpdateData(idMentor uint, input mentors.Core) error {
 }
 
 // SelectProfile implements mentors.MentorData
-func (mq *mentorQuery) SelectProfile(idMentor uint) (mentors.Core, error) {
+func (mq *mentorQuery) SelectProfile(mentorID uint) (mentors.Core, error) {
 	var row int64
-	txRow := mq.db.Model(&data.Review{}).Where("mentor_id", idMentor).Count(&row)
+	txRow := mq.db.Model(&data.Review{}).Where("mentor_id", mentorID).Count(&row)
 	if txRow.Error != nil {
 		return mentors.Core{}, errors.New(consts.QUERY_ErrorSelect)
 	}
 
 	dataModel := Mentor{}
-	txSelect := mq.db.First(&dataModel, idMentor)
+	txSelect := mq.db.First(&dataModel, mentorID)
 	if txSelect.Error != nil {
 		return mentors.Core{}, errors.New(consts.QUERY_NotFound)
 	}

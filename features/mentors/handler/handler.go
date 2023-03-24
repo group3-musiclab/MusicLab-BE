@@ -14,6 +14,24 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// UpdatePassword implements mentors.MentorsHandler
+func (mc *mentorControl) UpdatePassword() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		input := UpdatePasswordRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		err := mc.srv.UpdatePassword(mentorID, updatePasswordRequestToCore(input))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.MENTOR_SuccessUpdatePassword))
+	}
+}
+
 // UpdateData implements mentors.MentorsHandler
 func (mc *mentorControl) UpdateData() echo.HandlerFunc {
 	return func(c echo.Context) error {

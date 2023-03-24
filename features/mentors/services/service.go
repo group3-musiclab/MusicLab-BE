@@ -14,8 +14,13 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// UpdatePassword implements mentors.MentorService
+func (*mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) error {
+	panic("unimplemented")
+}
+
 // UpdateData implements mentors.MentorService
-func (muc *mentorUseCase) UpdateData(idMentor uint, input mentors.Core) error {
+func (muc *mentorUseCase) UpdateData(mentorID uint, input mentors.Core) error {
 	errValidate := muc.validate.StructExcept(input, "Password")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
@@ -28,7 +33,7 @@ func (muc *mentorUseCase) UpdateData(idMentor uint, input mentors.Core) error {
 
 	input.Avatar = url
 
-	errUpdate := muc.qry.UpdateData(idMentor, input)
+	errUpdate := muc.qry.UpdateData(mentorID, input)
 	if errUpdate != nil {
 		return errUpdate
 	}
@@ -36,8 +41,8 @@ func (muc *mentorUseCase) UpdateData(idMentor uint, input mentors.Core) error {
 }
 
 // SelectProfile implements mentors.MentorService
-func (muc *mentorUseCase) SelectProfile(idMentor uint) (mentors.Core, error) {
-	dataCore, err := muc.qry.SelectProfile(idMentor)
+func (muc *mentorUseCase) SelectProfile(mentorID uint) (mentors.Core, error) {
+	dataCore, err := muc.qry.SelectProfile(mentorID)
 	if err != nil {
 		return mentors.Core{}, err
 	}
