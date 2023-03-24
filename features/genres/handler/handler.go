@@ -3,6 +3,7 @@ package handler
 import (
 	"log"
 	"musiclab-be/features/genres"
+	"musiclab-be/utils/helper"
 	"net/http"
 
 	"github.com/labstack/echo/v4"
@@ -20,13 +21,15 @@ func New(srv genres.GenreService) genres.GenreHandler {
 
 func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		// mentorID := helper.ExtractTokenUserId(e)
+		mentorID := helper.ExtractTokenUserId(c)
 		input := AddMentorGenre{}
 		err := c.Bind(&input)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
-		res, err := gc.srv.AddMentorGenre(input.GenreID, *ReqToCore(input))
+		mentorGenre := ReqToCore(input)
+		mentorGenre.MentorID = mentorID
+		res, err := gc.srv.AddMentorGenre(*ReqToCore(input))
 		if err != nil {
 			log.Println("error running add mentor genre service: ", err.Error())
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "server problem"})
