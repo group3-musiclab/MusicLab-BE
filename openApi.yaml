@@ -13,6 +13,8 @@ servers:
   # Added by API Auto Mocking Plugin
   - description: SwaggerHub API Auto Mocking
     url: https://virtserver.swaggerhub.com/KHARISMAJANUAR/MusicLab-API/1.0.0
+  - description: Server Development GCP
+    url: http://34.125.243.136
 
 paths:
   /register:
