@@ -554,24 +554,7 @@ paths:
                   phone: "0813456"
                   address: "Bangka"
                   instagram: "https://www.instagram.com/ana_d_armas/"
-                  price: 350000
                   about: "senior musical teacher"
-                  genre: [
-                      {
-                        genre_name: "Rock",
-                     },
-                      {
-                        genre_name: "Religi",
-                     },
-                  ]
-                  instrument: [
-                      {
-                        instrument_name: "Bass",
-                     },
-                      {
-                        instrument_name: "Guitar",
-                     },
-                  ]
                   count_reviews: 47000
                 message: "success show mentor profile"
         400:
@@ -607,24 +590,7 @@ paths:
                   phone: "0813456"
                   address: "Bangka"
                   instagram: "https://www.instagram.com/ana_d_armas/"
-                  price: 350000
                   about: "senior musical teacher"
-                  genre: [
-                      {
-                        genre_name: "Rock",
-                     },
-                      {
-                        genre_name: "Religi",
-                     },
-                  ]
-                  instrument: [
-                      {
-                        instrument_name: "Bass",
-                     },
-                      {
-                        instrument_name: "Guitar",
-                     },
-                  ]
                   count_reviews: 47000
                 message: "success show mentor profile"
         400:
@@ -743,7 +709,7 @@ paths:
         - JWTAuth: []
       responses:
         200:
-          description: "to get all mentor list"
+          description: "to get all instruments list"
           content:
             application/json:
               schema:
@@ -766,6 +732,35 @@ paths:
         500:
           $ref: "#/components/responses/500"
   /mentors/instruments:
+    get:
+      tags:
+        - "Instrument"
+      description: get all instruments by mentor id
+      summary: get all instruments by mentor id
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "to get all instrument by mentor id"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      name: "Drum",
+                    },
+                    {
+                      name: "Guitar",
+                      },
+                  ]
+                message: "success show all instruments"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
     post:
       tags:
         - "Instrument"
@@ -868,12 +863,41 @@ paths:
                       name: "Rock",
                       },
                   ]
-                message: "success show all instruments"
+                message: "success show all genres"
         400:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
   /mentors/genres:
+    get:
+      tags:
+        - "Genre"
+      description: get all genres
+      summary: get all genres
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "to get all genres by mentor id"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      name: "Dangdut",
+                    },
+                    {
+                      name: "Rock",
+                      },
+                  ]
+                message: "success show all genres"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
     post:
       tags:
         - "Genre"
@@ -1121,6 +1145,40 @@ paths:
                     },
                   ]
                 message: "success show a chat by id student and id mentor"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /inbox:
+    get:
+      tags:
+        - "Chat"
+      description: get all chat group by student
+      summary: get all chat group by student
+      security:
+        - JWTAuth: []
+      responses:
+        200:
+          description: "get all chat group by student"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      student_id: 1,
+                      student_name: "Alif",
+                    },
+                    {
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      student_id: 2,
+                      student_name: "Kharisma",
+                    },
+                  ]
+                message: "success show chat group by student"
         400:
           $ref: "#/components/responses/400"
         500:
