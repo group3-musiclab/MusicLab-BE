@@ -1077,7 +1077,6 @@ paths:
           $ref: "#/components/responses/400"
         500:
           $ref: "#/components/responses/500"
-  /chats/mentors/{mentor_id}/students/{student_id}:
     get:
       tags:
         - "Chat"
@@ -1086,16 +1085,20 @@ paths:
       security:
         - JWTAuth: []
       parameters:
-        - name: mentor_id
-          in: path
-          required: true
-          schema:
-            type: integer
-        - name: student_id
-          in: path
-          required: true
-          schema:
-            type: integer
+      - in: query
+        name: mentor
+        schema:
+          type: integer
+        examples:       
+          mentor_id:         
+            value: 1
+      - in: query
+        name: student
+        schema:
+          type: integer
+        examples:       
+          student_id:         
+            value: 1
       responses:
         200:
           description: "get all chat by id student and id mentor"
