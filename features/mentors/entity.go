@@ -7,19 +7,21 @@ import (
 )
 
 type Core struct {
-	ID        uint
-	Avatar    string
-	Name      string
-	Email     string
-	Password  string
-	Role      string
-	Sex       string
-	Phone     string
-	Address   string
-	Instagram string
-	AvgRating float32
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID           uint
+	Avatar       string
+	Name         string
+	Email        string
+	Password     string
+	Role         string
+	Sex          string
+	Phone        string
+	Address      string
+	Instagram    string
+	About        string
+	AvgRating    float32
+	CountReviews int
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type MentorsHandler interface {
