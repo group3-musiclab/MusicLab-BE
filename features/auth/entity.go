@@ -5,10 +5,10 @@ import "github.com/labstack/echo/v4"
 type Core struct {
 	ID       uint
 	Avatar   string
-	Name     string
-	Email    string
-	Password string
-	Role     string
+	Name     string `validate:"required"`
+	Email    string `validate:"required,email"`
+	Password string `validate:"required,min=3"`
+	Role     string `validate:"required"`
 }
 
 type AuthHandler interface {

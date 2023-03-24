@@ -1,6 +1,7 @@
 package helper
 
 import (
+	"musiclab-be/utils/consts"
 	"net/http"
 	"strings"
 )
@@ -33,19 +34,20 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusNotFound
 	case strings.Contains(msg, "server"):
 		code = http.StatusInternalServerError
-	case strings.Contains(msg, "format"):
-	case strings.Contains(msg, "not found"):
-		resp["message"] = "data not found"
+	case strings.Contains(msg, "data not found"):
 		code = http.StatusNotFound
 	case strings.Contains(msg, "conflict"):
 		code = http.StatusConflict
 	case strings.Contains(msg, "bad request"):
 		code = http.StatusBadRequest
-	case strings.Contains(msg, "hashedPassword"):
-		resp["message"] = "password do not match"
-		code = http.StatusForbidden
-	case strings.Contains(msg, "upload"):
+	case strings.Contains(msg, "validate"):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, consts.AUTH_ErrorCreateToken):
 		code = http.StatusInternalServerError
+	case strings.Contains(msg, consts.AUTH_ErrorHash):
+		code = http.StatusInternalServerError
+	case strings.Contains(msg, consts.AUTH_ErrorComparePassword):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }
