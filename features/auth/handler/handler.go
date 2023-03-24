@@ -5,7 +5,6 @@ import (
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
-	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -40,29 +39,21 @@ func (ac *authControll) Register() echo.HandlerFunc {
 func (ac *authControll) Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := LoginRequest{}
-		err := c.Bind(&input)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
 		}
 
-		if input.Email == "" {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "email not allowed empty"})
-		} else if input.Password == "" {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "password not allowed empty"})
+		token, res, errLogin := ac.srv.Login(loginToCore(input))
+		if errLogin != nil {
+			return c.JSON(helper.ErrorResponse(errLogin))
 		}
-
-		token, res, err := ac.srv.Login(loginToCore(input))
-		if err != nil {
-			if strings.Contains(err.Error(), "password") {
-				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "password not match"})
-			} else {
-				return c.JSON(http.StatusNotFound, map[string]interface{}{"message": "account not registered"})
-			}
+		dataResponse := map[string]any{
+			"id":    res.ID,
+			"name":  res.Name,
+			"role":  res.Role,
+			"token": token,
 		}
-		return c.JSON(http.StatusOK, map[string]interface{}{
-			"data":    ToResponse(res),
-			"token":   token,
-			"message": "success login",
-		})
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.AUTH_SuccessLogin, dataResponse))
 	}
 }

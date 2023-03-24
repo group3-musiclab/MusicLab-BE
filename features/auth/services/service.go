@@ -5,26 +5,27 @@ import (
 	"musiclab-be/features/auth"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type authUseCase struct {
-	qry auth.AuthData
+	qry      auth.AuthData
+	validate *validator.Validate
 }
 
 func New(ud auth.AuthData) auth.AuthService {
 	return &authUseCase{
-		qry: ud,
+		qry:      ud,
+		validate: validator.New(),
 	}
 }
 
 // Register implements auth.AuthService
 func (auc *authUseCase) Register(newUser auth.Core) error {
-	if len(newUser.Password) != 0 {
-		//validation
-		err := helper.RegistrationValidate(newUser)
-		if err != nil {
-			return errors.New("validate: " + err.Error())
-		}
+	errValidate := auc.validate.Struct(newUser)
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
 	}
 
 	hashed, errHash := helper.HashPassword(newUser.Password)
@@ -43,12 +44,18 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 		if errStudent != nil {
 			return errStudent
 		}
+	} else {
+		return errors.New(consts.AUTH_ErrorRole)
 	}
 
 	return nil
 }
 
 func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
+	errValidate := auc.validate.StructExcept(user, "Name")
+	if errValidate != nil {
+		return "", auth.Core{}, errors.New("validate: " + errValidate.Error())
+	}
 	res := auth.Core{}
 	if user.Role == "Mentor" {
 		var err error
@@ -62,6 +69,8 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 		if err != nil {
 			return "", auth.Core{}, err
 		}
+	} else {
+		return "", auth.Core{}, errors.New(consts.AUTH_ErrorRole)
 	}
 
 	if !helper.CompareHashPassword(res.Password, user.Password) {
