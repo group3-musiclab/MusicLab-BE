@@ -12,7 +12,7 @@ type ProfileResponse struct {
 	Address      string `json:"address"`
 	Instagram    string `json:"instagram"`
 	About        string `json:"about"`
-	CountReviews int    `json:"count_reviews"`
+	CountReviews int64  `json:"count_reviews"`
 }
 
 func coreToProfileResponse(data mentors.Core) ProfileResponse {

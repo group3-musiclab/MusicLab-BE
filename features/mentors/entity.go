@@ -19,7 +19,7 @@ type Core struct {
 	Instagram    string
 	About        string
 	AvgRating    float32
-	CountReviews int
+	CountReviews int64
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

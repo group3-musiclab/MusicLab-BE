@@ -12,8 +12,12 @@ type mentorUseCase struct {
 }
 
 // SelectProfile implements mentors.MentorService
-func (*mentorUseCase) SelectProfile(newUser mentors.Core) error {
-	panic("unimplemented")
+func (muc *mentorUseCase) SelectProfile(idMentor uint) (mentors.Core, error) {
+	dataCore, err := muc.qry.SelectProfile(idMentor)
+	if err != nil {
+		return mentors.Core{}, err
+	}
+	return dataCore, nil
 }
 
 func New(md mentors.MentorData) mentors.MentorService {
