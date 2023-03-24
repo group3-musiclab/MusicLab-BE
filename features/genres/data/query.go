@@ -70,7 +70,7 @@ func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 			log.Println("query error", err.Error())
 			return []genres.Core{}, errors.New("server error")
 		}
-		// result[i].Name = genre.Name
+
 	}
 	return result, nil
 }
