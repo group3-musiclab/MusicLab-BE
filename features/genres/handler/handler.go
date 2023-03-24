@@ -43,13 +43,25 @@ func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 	}
 }
 
-// Delete implements genres.GenreHandler
-func (*genreControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
+func (gc *genreControll) GetGenre() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		res, err := gc.srv.GetGenre()
+		if err != nil {
+			return c.JSON(helper.PrintErrorResponse(err.Error()))
+		}
+		result := []ShowAllGenre{}
+		for _, val := range res {
+			result = append(result, ShowAllGenreResponse(val))
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"data":    result,
+			"message": "success show all genres",
+		})
+	}
 }
 
-// GetGenre implements genres.GenreHandler
-func (*genreControll) GetGenre() echo.HandlerFunc {
+// Delete implements genres.GenreHandler
+func (*genreControll) Delete() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
