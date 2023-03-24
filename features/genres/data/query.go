@@ -18,6 +18,7 @@ func New(db *gorm.DB) genres.GenreData {
 	}
 }
 
+// s
 func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) (genres.Core, error) {
 	cnv := CoreToData(newGenre)
 	err := gq.db.Create(&cnv).Error
