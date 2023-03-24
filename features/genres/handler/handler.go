@@ -66,6 +66,6 @@ func (*genreControll) Delete() echo.HandlerFunc {
 }
 
 // GetMentorGenre implements genres.GenreHandler
-func (*genreControll) GetMentorGenre(e echo.Context) echo.HandlerFunc {
+func (*genreControll) GetMentorGenre() echo.HandlerFunc {
 	panic("unimplemented")
 }

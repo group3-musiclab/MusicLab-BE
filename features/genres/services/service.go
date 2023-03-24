@@ -53,6 +53,6 @@ func (*genreUseCase) Delete(token interface{}, genreID uint) error {
 }
 
 // GetMentorGenre implements genres.GenreService
-func (*genreUseCase) GetMentorGenre(token interface{}) ([]genres.Core, error) {
+func (*genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 	panic("unimplemented")
 }

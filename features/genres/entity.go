@@ -14,17 +14,20 @@ type Core struct {
 type GenreHandler interface {
 	AddMentorGenre() echo.HandlerFunc
 	GetGenre() echo.HandlerFunc
+	GetMentorGenre() echo.HandlerFunc
 	Delete() echo.HandlerFunc
 }
 
 type GenreService interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
+	GetMentorGenre(mentorID uint) ([]Core, error)
 	Delete(token interface{}, genreID uint) error
 }
 
 type GenreData interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
+	GetMentorGenre(mentorID uint) ([]Core, error)
 	Delete(mentorID uint, genreID uint) error
 }

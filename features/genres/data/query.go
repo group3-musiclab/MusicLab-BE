@@ -46,11 +46,34 @@ func (gq *genreQuery) GetGenre() ([]genres.Core, error) {
 	return result, nil
 }
 
-func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
-	panic("unimplemented")
+func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+	res := []Genre{}
+	err := gq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
+
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []genres.Core{}, errors.New("server error")
+	}
+	result := []genres.Core{}
+	for i := 0; i < len(res); i++ {
+		result = append(result, GenreToCore(res[i]))
+		// cari data user berdasarkan cart user_id
+
+		genre := MentorGenre{}
+		err = gq.db.Where("id = ?", res[i].ID).First(&genre).Error
+		if err != nil {
+			log.Println("query error", err.Error())
+			return []genres.Core{}, errors.New("server error")
+		}
+		err = gq.db.Where("mentor_id = ?", genre.MentorID).First(&genre).Error
+		if err != nil {
+			log.Println("query error", err.Error())
+			return []genres.Core{}, errors.New("server error")
+		}
+	}
+	return result, nil
 }
 
-// GetMentorGenre implements genres.GenreData
-func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
 	panic("unimplemented")
 }
