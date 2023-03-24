@@ -1,6 +1,7 @@
 package mentors
 
 import (
+	"mime/multipart"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -8,10 +9,11 @@ import (
 
 type Core struct {
 	ID           uint
+	AvatarFile   multipart.FileHeader
 	Avatar       string
-	Name         string
-	Email        string
-	Password     string
+	Name         string `validate:"required"`
+	Email        string `validate:"required,email"`
+	Password     string `validate:"required,min=3"`
 	Role         string
 	Sex          string
 	Phone        string
@@ -32,8 +34,10 @@ type MentorsHandler interface {
 
 type MentorService interface {
 	SelectProfile(idMentor uint) (Core, error)
+	UpdateData(idMentor uint, input Core) error
 }
 
 type MentorData interface {
 	SelectProfile(idMentor uint) (Core, error)
+	UpdateData(idMentor uint, input Core) error
 }

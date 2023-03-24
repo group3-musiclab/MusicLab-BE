@@ -15,9 +15,29 @@ type mentorControl struct {
 }
 
 // UpdateData implements mentors.MentorsHandler
-func (*mentorControl) UpdateData() echo.HandlerFunc {
+func (mc *mentorControl) UpdateData() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		return c.JSON(http.StatusOK, helper.Response("ok"))
+		mentorID := helper.ExtractTokenUserId(c)
+		input := UpdateRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		checkFile, _, _ := c.Request().FormFile("avatar_file")
+		if checkFile != nil {
+			formHeader, err := c.FormFile("avatar_file")
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, helper.Response(consts.HANDLER_ErrorFormFile))
+			}
+			input.AvatarFile = *formHeader
+		}
+
+		err := mc.srv.UpdateData(mentorID, updateRequestToCore(input))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.MENTOR_SuccessUpdateProfile))
 	}
 }
 

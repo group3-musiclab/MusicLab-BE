@@ -54,6 +54,10 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusInternalServerError
 	case strings.Contains(msg, consts.AUTH_ErrorRole):
 		code = http.StatusBadRequest
+	case strings.Contains(msg, consts.AWS_ErrorUpload):
+		code = http.StatusInternalServerError
+	case strings.Contains(msg, consts.QUERY_ErrorUpdateData):
+		code = http.StatusInternalServerError
 	}
 	return code, resp
 }

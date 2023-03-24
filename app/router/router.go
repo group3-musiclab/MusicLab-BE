@@ -39,6 +39,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Mentors
 	e.GET("/mentors/profile", mHdl.GetProfile(), helper.JWTMiddleware())
 	e.GET("/mentors/:id", mHdl.GetProfileByIdParam())
+	e.PUT("/mentors", mHdl.UpdateData(), helper.JWTMiddleware())
 
 	// Mentor Genre
 	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())
