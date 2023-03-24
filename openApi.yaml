@@ -1171,13 +1171,11 @@ paths:
                       avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
                       student_id: 1,
                       student_name: "Alif",
-                      last_chat: "Hallo sir"
                     },
                     {
                       avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
                       student_id: 2,
                       student_name: "Kharisma",
-                      last_chat: "Hallo sir"
                     },
                   ]
                 message: "success show chat group by student"
