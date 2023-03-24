@@ -13,6 +13,11 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
+// UpdateData implements mentors.MentorData
+func (*mentorQuery) UpdateData(idMentor uint, input mentors.Core) error {
+	panic("unimplemented")
+}
+
 // SelectProfile implements mentors.MentorData
 func (mq *mentorQuery) SelectProfile(idMentor uint) (mentors.Core, error) {
 	var row int64

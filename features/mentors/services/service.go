@@ -11,6 +11,11 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// UpdateData implements mentors.MentorService
+func (*mentorUseCase) UpdateData(idMentor uint, input mentors.Core) error {
+	panic("unimplemented")
+}
+
 // SelectProfile implements mentors.MentorService
 func (muc *mentorUseCase) SelectProfile(idMentor uint) (mentors.Core, error) {
 	dataCore, err := muc.qry.SelectProfile(idMentor)

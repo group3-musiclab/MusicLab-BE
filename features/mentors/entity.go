@@ -34,8 +34,10 @@ type MentorsHandler interface {
 
 type MentorService interface {
 	SelectProfile(idMentor uint) (Core, error)
+	UpdateData(idMentor uint, input Core) error
 }
 
 type MentorData interface {
 	SelectProfile(idMentor uint) (Core, error)
+	UpdateData(idMentor uint, input Core) error
 }
