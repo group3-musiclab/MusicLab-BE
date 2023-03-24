@@ -29,9 +29,9 @@ type MentorsHandler interface {
 }
 
 type MentorService interface {
-	SelectProfile(newUser Core) error
+	SelectProfile(idMentor uint) (Core, error)
 }
 
 type MentorData interface {
-	SelectProfile(newUser Core) error
+	SelectProfile(idMentor uint) (Core, error)
 }

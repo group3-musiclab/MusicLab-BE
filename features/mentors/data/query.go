@@ -11,7 +11,7 @@ type mentorQuery struct {
 }
 
 // SelectProfile implements mentors.MentorData
-func (*mentorQuery) SelectProfile(newUser mentors.Core) error {
+func (*mentorQuery) SelectProfile(idMentor uint) (mentors.Core, error) {
 	panic("unimplemented")
 }
 
