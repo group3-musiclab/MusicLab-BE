@@ -17,8 +17,8 @@ func New(gd genres.GenreData) genres.GenreService {
 	}
 }
 
-func (guu *genreUseCase) AddMentorGenre(genreID uint, newGenre genres.Core) (genres.Core, error) {
-	res, err := guu.qry.AddMentorGenre(genreID, newGenre)
+func (guu *genreUseCase) AddMentorGenre(newGenre genres.Core) (genres.Core, error) {
+	res, err := guu.qry.AddMentorGenre(newGenre)
 	if err != nil {
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
