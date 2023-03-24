@@ -30,7 +30,6 @@ func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) (genres.Core, error) 
 	return result, nil
 }
 
-// Delete implements genres.GenreData
 func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
 	panic("unimplemented")
 }
