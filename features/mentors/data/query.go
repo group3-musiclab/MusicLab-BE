@@ -14,8 +14,16 @@ type mentorQuery struct {
 }
 
 // UpdateData implements mentors.MentorData
-func (*mentorQuery) UpdateData(idMentor uint, input mentors.Core) error {
-	panic("unimplemented")
+func (mq *mentorQuery) UpdateData(idMentor uint, input mentors.Core) error {
+	dataModel := CoreToModel(input)
+	tx := mq.db.Where("id = ?", idMentor).Updates(&dataModel)
+	if tx.Error != nil {
+		return errors.New(consts.QUERY_ErrorUpdateData)
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 // SelectProfile implements mentors.MentorData
@@ -23,7 +31,7 @@ func (mq *mentorQuery) SelectProfile(idMentor uint) (mentors.Core, error) {
 	var row int64
 	txRow := mq.db.Model(&data.Review{}).Where("mentor_id", idMentor).Count(&row)
 	if txRow.Error != nil {
-		return mentors.Core{}, errors.New(consts.QUERY_NotFound)
+		return mentors.Core{}, errors.New(consts.QUERY_ErrorSelect)
 	}
 
 	dataModel := Mentor{}
