@@ -501,8 +501,8 @@ paths:
                       instrument_name: "Guitar",
                       about: "Ana de arnas is a internationally certified teacher for guitar, has experienced...",
                       instagram: "https://www.instagram.com/ana_d_armas/",
-                      },
                       rating: 4.9,
+                      },
                     {
                       id: 4,
                       avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
