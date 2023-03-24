@@ -44,12 +44,12 @@ func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 }
 
 // Delete implements genres.GenreHandler
-func (*genreControll) Delete(e echo.Context) echo.HandlerFunc {
+func (*genreControll) Delete() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
 // GetGenre implements genres.GenreHandler
-func (*genreControll) GetGenre(e echo.Context) echo.HandlerFunc {
+func (*genreControll) GetGenre() echo.HandlerFunc {
 	panic("unimplemented")
 }
 

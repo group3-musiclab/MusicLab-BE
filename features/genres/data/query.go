@@ -30,12 +30,23 @@ func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) (genres.Core, error) 
 	return result, nil
 }
 
-func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
-	panic("unimplemented")
+func (gq *genreQuery) GetGenre() ([]genres.Core, error) {
+	genre := []Genre{}
+	err := gq.db.Find(&genre).Error
+	if err != nil {
+		log.Println("data not found", err.Error())
+		return []genres.Core{}, errors.New("data not found")
+	}
+
+	result := []genres.Core{}
+	for _, val := range genre {
+		result = append(result, GenreToCore(val))
+	}
+
+	return result, nil
 }
 
-// GetGenre implements genres.GenreData
-func (gq *genreQuery) GetGenre() ([]genres.Core, error) {
+func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
 	panic("unimplemented")
 }
 

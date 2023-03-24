@@ -33,3 +33,17 @@ func CoreToData(data genres.Core) MentorGenre {
 		GenreID:  data.GenreID,
 	}
 }
+
+func GenreToCore(data Genre) genres.Core {
+	return genres.Core{
+		ID:   data.ID,
+		Name: data.Name,
+	}
+}
+
+func CoreToGenreData(data genres.Core) Genre {
+	return Genre{
+		Model: gorm.Model{ID: data.ID},
+		Name:  data.Name,
+	}
+}
