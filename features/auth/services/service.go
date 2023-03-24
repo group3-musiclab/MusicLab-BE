@@ -4,7 +4,7 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/auth"
-	"musiclab-be/helper"
+	"musiclab-be/utils/helper"
 )
 
 type authUseCase struct {
