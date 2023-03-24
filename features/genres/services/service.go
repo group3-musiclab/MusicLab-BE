@@ -56,7 +56,11 @@ func (guc *genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 	return res, nil
 }
 
-// Delete implements genres.GenreService
-func (*genreUseCase) Delete(token interface{}, genreID uint) error {
-	panic("unimplemented")
+func (guc *genreUseCase) Delete(genreID uint) error {
+	err := guc.qry.Delete(genreID)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return errors.New("query error, problem with server")
+	}
+	return nil
 }
