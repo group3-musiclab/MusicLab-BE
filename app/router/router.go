@@ -1,17 +1,16 @@
 package router
 
 import (
-	"musiclab-be/app/config"
 	authData "musiclab-be/features/auth/data"
 	authHdl "musiclab-be/features/auth/handler"
 	authSrv "musiclab-be/features/auth/services"
+	"musiclab-be/utils/helper"
 
 	genreData "musiclab-be/features/genres/data"
 	genreHdl "musiclab-be/features/genres/handler"
 	genreSrv "musiclab-be/features/genres/services"
 
 	"github.com/labstack/echo/v4"
-	"github.com/labstack/echo/v4/middleware"
 	"gorm.io/gorm"
 )
 
@@ -30,6 +29,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/register", aHdl.Register())
 
 	// Mentor Genre
-	e.POST("/mentors/genres", gHdl.AddMentorGenre(), middleware.JWT([]byte(config.JWTKey)))
+	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())
 
 }

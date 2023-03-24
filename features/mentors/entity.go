@@ -17,7 +17,6 @@ type Core struct {
 	Phone     string
 	Address   string
 	Instagram string
-	Price     float64
 	AvgRating float32
 	CreatedAt time.Time
 	UpdatedAt time.Time

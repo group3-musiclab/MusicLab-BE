@@ -32,7 +32,7 @@ func (ac *authControll) Register() echo.HandlerFunc {
 		if errRegister != nil {
 			return c.JSON(helper.ErrorResponse(errRegister))
 		}
-		return c.JSON(http.StatusCreated, consts.AUTH_SuccessCreate)
+		return c.JSON(http.StatusCreated, helper.Response(consts.AUTH_SuccessCreate))
 	}
 }
 
