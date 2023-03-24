@@ -47,7 +47,7 @@ func (gq *genreQuery) GetGenre() ([]genres.Core, error) {
 }
 
 func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
-	res := []Genre{}
+	res := []MentorGenre{}
 	err := gq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
 
 	if err != nil {
@@ -56,7 +56,7 @@ func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 	}
 	result := []genres.Core{}
 	for i := 0; i < len(res); i++ {
-		result = append(result, GenreToCore(res[i]))
+		result = append(result, ToCore(res[i]))
 		// cari data user berdasarkan cart user_id
 
 		genre := MentorGenre{}
@@ -65,15 +65,32 @@ func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 			log.Println("query error", err.Error())
 			return []genres.Core{}, errors.New("server error")
 		}
-		err = gq.db.Where("mentor_id = ?", genre.MentorID).First(&genre).Error
+		err = gq.db.Where("mentor_id = ?", mentorID).First(&genre).Error
 		if err != nil {
 			log.Println("query error", err.Error())
 			return []genres.Core{}, errors.New("server error")
 		}
+		// result[i].Name = genre.Name
 	}
 	return result, nil
 }
 
-func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
-	panic("unimplemented")
+func (gq *genreQuery) Delete(genreID uint) error {
+	data := MentorGenre{}
+
+	qry := gq.db.Where("genre_id = ?", genreID).Delete(&data)
+
+	affrows := qry.RowsAffected
+	if affrows <= 0 {
+		log.Println("no rows affected")
+		return errors.New("no mentor genre deleted")
+	}
+
+	err := qry.Error
+	if err != nil {
+		log.Println("delete query error", err.Error())
+		return errors.New("delete data fail")
+	}
+
+	return nil
 }

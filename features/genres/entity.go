@@ -22,12 +22,12 @@ type GenreService interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
 	GetMentorGenre(mentorID uint) ([]Core, error)
-	Delete(token interface{}, genreID uint) error
+	Delete(genreID uint) error
 }
 
 type GenreData interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
 	GetMentorGenre(mentorID uint) ([]Core, error)
-	Delete(mentorID uint, genreID uint) error
+	Delete(genreID uint) error
 }
