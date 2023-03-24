@@ -18,16 +18,10 @@ func New(db *gorm.DB) genres.GenreData {
 	}
 }
 
-func (gq *genreQuery) AddMentorGenre(genreID uint, newGenre genres.Core) (genres.Core, error) {
-	genre := Genre{}
-	err := gq.db.Where("id=?", genreID).First(&genre).Error
-	if err != nil {
-		log.Println("query error", err.Error())
-		return genres.Core{}, errors.New("server error")
-	}
+// s
+func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) (genres.Core, error) {
 	cnv := CoreToData(newGenre)
-	cnv.GenreID = genre.ID
-	err = gq.db.Create(&cnv).Error
+	err := gq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return genres.Core{}, errors.New("server error")
@@ -36,7 +30,6 @@ func (gq *genreQuery) AddMentorGenre(genreID uint, newGenre genres.Core) (genres
 	return result, nil
 }
 
-// Delete implements genres.GenreData
 func (gq *genreQuery) Delete(mentorID uint, genreID uint) error {
 	panic("unimplemented")
 }
