@@ -47,12 +47,16 @@ func (guc *genreUseCase) GetGenre() ([]genres.Core, error) {
 	return res, nil
 }
 
-// Delete implements genres.GenreService
-func (*genreUseCase) Delete(token interface{}, genreID uint) error {
-	panic("unimplemented")
+func (guc *genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+	res, err := guc.qry.GetMentorGenre(mentorID)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []genres.Core{}, errors.New("query error, problem with server")
+	}
+	return res, nil
 }
 
-// GetMentorGenre implements genres.GenreService
-func (*genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+// Delete implements genres.GenreService
+func (*genreUseCase) Delete(token interface{}, genreID uint) error {
 	panic("unimplemented")
 }
