@@ -14,6 +14,13 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// UpdateData implements mentors.MentorsHandler
+func (*mentorControl) UpdateData() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.JSON(http.StatusOK, helper.Response("ok"))
+	}
+}
+
 // GetProfileByIdParam implements mentors.MentorsHandler
 func (mc *mentorControl) GetProfileByIdParam() echo.HandlerFunc {
 	return func(c echo.Context) error {
