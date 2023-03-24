@@ -32,17 +32,35 @@ func (guu *genreUseCase) AddMentorGenre(newGenre genres.Core) (genres.Core, erro
 	return res, nil
 }
 
-// Delete implements genres.GenreService
-func (*genreUseCase) Delete(token interface{}, genreID uint) error {
-	panic("unimplemented")
-}
-
 // GetGenre implements genres.GenreService
-func (*genreUseCase) GetGenre() ([]genres.Core, error) {
-	panic("unimplemented")
+func (guc *genreUseCase) GetGenre() ([]genres.Core, error) {
+	res, err := guc.qry.GetGenre()
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "genre not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []genres.Core{}, errors.New(msg)
+	}
+	return res, nil
 }
 
-// GetMentorGenre implements genres.GenreService
-func (*genreUseCase) GetMentorGenre(token interface{}) ([]genres.Core, error) {
-	panic("unimplemented")
+func (guc *genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+	res, err := guc.qry.GetMentorGenre(mentorID)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []genres.Core{}, errors.New("query error, problem with server")
+	}
+	return res, nil
+}
+
+func (guc *genreUseCase) Delete(genreID uint) error {
+	err := guc.qry.Delete(genreID)
+	if err != nil {
+		log.Println("query error", err.Error())
+		return errors.New("query error, problem with server")
+	}
+	return nil
 }
