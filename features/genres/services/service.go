@@ -32,13 +32,23 @@ func (guu *genreUseCase) AddMentorGenre(newGenre genres.Core) (genres.Core, erro
 	return res, nil
 }
 
-// Delete implements genres.GenreService
-func (*genreUseCase) Delete(token interface{}, genreID uint) error {
-	panic("unimplemented")
+// GetGenre implements genres.GenreService
+func (guc *genreUseCase) GetGenre() ([]genres.Core, error) {
+	res, err := guc.qry.GetGenre()
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "genre not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []genres.Core{}, errors.New(msg)
+	}
+	return res, nil
 }
 
-// GetGenre implements genres.GenreService
-func (*genreUseCase) GetGenre() ([]genres.Core, error) {
+// Delete implements genres.GenreService
+func (*genreUseCase) Delete(token interface{}, genreID uint) error {
 	panic("unimplemented")
 }
 
