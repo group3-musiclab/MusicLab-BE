@@ -28,6 +28,9 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 		return errors.New("validate: " + errValidate.Error())
 	}
 
+	// avatar value
+	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
 	hashed, errHash := helper.HashPassword(newUser.Password)
 	if errHash != nil {
 		return errors.New(consts.AUTH_ErrorHash)
@@ -77,7 +80,7 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 		return "", auth.Core{}, errors.New(consts.AUTH_ErrorComparePassword)
 	}
 
-	token, errToken := helper.CreateToken(user.ID, user.Role)
+	token, errToken := helper.CreateToken(res.ID, res.Role)
 	if errToken != nil {
 		return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
 	}

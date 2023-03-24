@@ -17,7 +17,6 @@ type Mentor struct {
 	Phone     string
 	Address   string
 	Instagram string
-	Price     float64
 	AvgRating float32
 }
 
@@ -57,11 +56,12 @@ func studentToCore(data Student) auth.Core {
 
 func CoreToDataMentor(data auth.Core) Mentor {
 	return Mentor{
-		Avatar:   data.Avatar,
-		Name:     data.Name,
-		Email:    data.Email,
-		Password: data.Password,
-		Role:     data.Role,
+		Avatar:    data.Avatar,
+		Name:      data.Name,
+		Email:     data.Email,
+		Password:  data.Password,
+		Role:      data.Role,
+		AvgRating: data.AvgRating,
 	}
 }
 

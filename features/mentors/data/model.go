@@ -24,7 +24,6 @@ type Mentor struct {
 	Phone             string `gorm:"type:varchar(12)"`
 	Address           string `gorm:"type:varchar(100)"`
 	Instagram         string
-	Price             float64 `gorm:"type:float"`
 	AvgRating         float32 `gorm:"type:float"`
 	MentorInstruments []_modelMentorInstruments.MentorInstrument
 	MentorGenres      []_modelMentorGenres.MentorGenre
@@ -56,7 +55,6 @@ func ToCore(data Mentor) mentors.Core {
 		Phone:     data.Phone,
 		Address:   data.Address,
 		Instagram: data.Instagram,
-		Price:     data.Price,
 		AvgRating: data.AvgRating,
 		CreatedAt: data.CreatedAt,
 		UpdatedAt: data.UpdatedAt,
@@ -74,7 +72,6 @@ func CoreToData(data mentors.Core) Mentor {
 		Phone:     data.Phone,
 		Address:   data.Address,
 		Instagram: data.Instagram,
-		Price:     data.Price,
 		AvgRating: data.AvgRating,
 	}
 }
