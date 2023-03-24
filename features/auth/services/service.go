@@ -73,7 +73,7 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 		return "", auth.Core{}, errors.New(consts.AUTH_ErrorRole)
 	}
 
-	if !helper.CompareHashPassword(res.Password, user.Password) {
+	if !helper.CompareHashPassword(user.Password, res.Password) {
 		return "", auth.Core{}, errors.New(consts.AUTH_ErrorComparePassword)
 	}
 
