@@ -78,18 +78,8 @@ func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
 func (gq *genreQuery) Delete(genreID uint) error {
 	data := MentorGenre{}
 
-	qry := gq.db.Where("genre_id = ?", genreID).Delete(&data)
-
-	affrows := qry.RowsAffected
-	if affrows <= 0 {
-		log.Println("no rows affected")
-		return errors.New("no mentor genre deleted")
-	}
-
-	err := qry.Error
-	if err != nil {
-		log.Println("delete query error", err.Error())
-		return errors.New("delete data fail")
+	if err := gq.db.Where("genre_id = ?", genreID).Delete(&data); err.Error != nil {
+		return errors.New("no data was deleted")
 	}
 
 	return nil
