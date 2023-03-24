@@ -22,7 +22,6 @@ func New(srv genres.GenreService) genres.GenreHandler {
 func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		mentorID := helper.ExtractTokenUserId(c)
-		log.Println(mentorID)
 		input := AddMentorGenre{}
 		err := c.Bind(&input)
 		if err != nil {
@@ -60,12 +59,26 @@ func (gc *genreControll) GetGenre() echo.HandlerFunc {
 	}
 }
 
-// Delete implements genres.GenreHandler
-func (*genreControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
+// GetMentorGenre implements genres.GenreHandler
+func (gc *genreControll) GetMentorGenre() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		res, err := gc.srv.GetMentorGenre(mentorID)
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "internal server error"})
+		}
+		result := []ShowAllGenre{}
+		for _, val := range res {
+			result = append(result, ShowAllGenreResponse(val))
+		}
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"data":    result,
+			"message": "success show all genres",
+		})
+	}
 }
 
-// GetMentorGenre implements genres.GenreHandler
-func (*genreControll) GetMentorGenre() echo.HandlerFunc {
+// Delete implements genres.GenreHandler
+func (*genreControll) Delete() echo.HandlerFunc {
 	panic("unimplemented")
 }
