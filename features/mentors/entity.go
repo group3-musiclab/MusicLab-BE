@@ -1,6 +1,7 @@
 package mentors
 
 import (
+	"mime/multipart"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -8,6 +9,7 @@ import (
 
 type Core struct {
 	ID           uint
+	AvatarFile   multipart.File
 	Avatar       string
 	Name         string
 	Email        string
