@@ -1,7 +1,9 @@
 package data
 
 import (
+	"errors"
 	"musiclab-be/features/auth"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -15,7 +17,7 @@ func (aq *authQuery) LoginMentor(email string) (auth.Core, error) {
 	userLogin := Mentor{}
 	txSelect := aq.db.Where("email = ?", email).First(&userLogin)
 	if txSelect.Error != nil {
-		return auth.Core{}, txSelect.Error
+		return auth.Core{}, errors.New(consts.QUERY_NotFound)
 	}
 	return (mentorToCore(userLogin)), nil
 }
@@ -25,7 +27,7 @@ func (aq *authQuery) LoginStudent(email string) (auth.Core, error) {
 	userLogin := Student{}
 	txSelect := aq.db.Where("email = ?", email).First(&userLogin)
 	if txSelect.Error != nil {
-		return auth.Core{}, txSelect.Error
+		return auth.Core{}, errors.New(consts.QUERY_NotFound)
 	}
 	return (studentToCore(userLogin)), nil
 }
@@ -35,10 +37,10 @@ func (aq *authQuery) RegisterMentor(newUser auth.Core) error {
 	dataModel := CoreToDataMentor(newUser)
 	txInsert := aq.db.Create(&dataModel)
 	if txInsert.Error != nil {
-		return txInsert.Error
+		return errors.New(consts.QUERY_ErrorInsertData)
 	}
 	if txInsert.RowsAffected == 0 {
-		return txInsert.Error
+		return errors.New(consts.QUERY_NoRowsAffected)
 	}
 	return nil
 }
@@ -48,10 +50,10 @@ func (aq *authQuery) RegisterStudent(newUser auth.Core) error {
 	dataModel := CoreToDataStudent(newUser)
 	txInsert := aq.db.Create(&dataModel)
 	if txInsert.Error != nil {
-		return txInsert.Error
+		return errors.New(consts.QUERY_ErrorInsertData)
 	}
 	if txInsert.RowsAffected == 0 {
-		return txInsert.Error
+		return errors.New(consts.QUERY_NoRowsAffected)
 	}
 	return nil
 }
