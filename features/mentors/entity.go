@@ -23,16 +23,13 @@ type Core struct {
 }
 
 type MentorsHandler interface {
-	Register() echo.HandlerFunc
-	Login() echo.HandlerFunc
+	GetProfile() echo.HandlerFunc
 }
 
 type MentorService interface {
-	Register(newUser Core) error
-	Login(email, password string) (string, Core, error)
+	SelectProfile(newUser Core) error
 }
 
 type MentorData interface {
-	Register(newUser Core) error
-	Login(email string) (Core, error)
+	SelectProfile(newUser Core) error
 }
