@@ -5,12 +5,29 @@ import (
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 type mentorControl struct {
 	srv mentors.MentorService
+}
+
+// GetProfileByIdParam implements mentors.MentorsHandler
+func (mc *mentorControl) GetProfileByIdParam() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("id")
+		idConv, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+		dataCore, err := mc.srv.SelectProfile(uint(idConv))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.MENTOR_SuccessGetProfile, coreToProfileResponse(dataCore)))
+	}
 }
 
 // GetProfile implements mentors.MentorsHandler

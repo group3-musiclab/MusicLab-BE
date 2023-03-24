@@ -26,6 +26,7 @@ type Core struct {
 
 type MentorsHandler interface {
 	GetProfile() echo.HandlerFunc
+	GetProfileByIdParam() echo.HandlerFunc
 }
 
 type MentorService interface {
