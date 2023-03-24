@@ -7,32 +7,33 @@ import (
 )
 
 type Core struct {
-	ID        uint
-	Avatar    string
-	Name      string
-	Email     string
-	Password  string
-	Role      string
-	Sex       string
-	Phone     string
-	Address   string
-	Instagram string
-	AvgRating float32
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID           uint
+	Avatar       string
+	Name         string
+	Email        string
+	Password     string
+	Role         string
+	Sex          string
+	Phone        string
+	Address      string
+	Instagram    string
+	About        string
+	AvgRating    float32
+	CountReviews int64
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 type MentorsHandler interface {
-	Register() echo.HandlerFunc
-	Login() echo.HandlerFunc
+	GetProfile() echo.HandlerFunc
+	GetProfileByIdParam() echo.HandlerFunc
+	UpdateData() echo.HandlerFunc
 }
 
 type MentorService interface {
-	Register(newUser Core) error
-	Login(email, password string) (string, Core, error)
+	SelectProfile(idMentor uint) (Core, error)
 }
 
 type MentorData interface {
-	Register(newUser Core) error
-	Login(email string) (Core, error)
+	SelectProfile(idMentor uint) (Core, error)
 }

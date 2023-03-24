@@ -1,7 +1,10 @@
 package data
 
 import (
+	"errors"
 	"musiclab-be/features/mentors"
+	"musiclab-be/features/reviews/data"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -10,27 +13,23 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
-// Login implements mentors.MentorData
-func (mq *mentorQuery) Login(email string) (mentors.Core, error) {
-	userLogin := Mentor{}
-	txSelect := mq.db.Where("email = ?", email).First(&userLogin)
-	if txSelect.Error != nil {
-		return mentors.Core{}, txSelect.Error
+// SelectProfile implements mentors.MentorData
+func (mq *mentorQuery) SelectProfile(idMentor uint) (mentors.Core, error) {
+	var row int64
+	txRow := mq.db.Model(&data.Review{}).Where("mentor_id", idMentor).Count(&row)
+	if txRow.Error != nil {
+		return mentors.Core{}, errors.New(consts.QUERY_NotFound)
 	}
-	return ToCore(userLogin), nil
-}
 
-// Register implements mentors.MentorData
-func (mq *mentorQuery) Register(newUser mentors.Core) error {
-	dataModel := CoreToData(newUser)
-	txInsert := mq.db.Create(&dataModel)
-	if txInsert.Error != nil {
-		return txInsert.Error
+	dataModel := Mentor{}
+	txSelect := mq.db.First(&dataModel, idMentor)
+	if txSelect.Error != nil {
+		return mentors.Core{}, errors.New(consts.QUERY_NotFound)
 	}
-	if txInsert.RowsAffected == 0 {
-		return txInsert.Error
-	}
-	return nil
+
+	dataModel.CountReviews = row
+
+	return ModelToCore(dataModel), nil
 }
 
 func New(db *gorm.DB) mentors.MentorData {

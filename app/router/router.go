@@ -10,6 +10,10 @@ import (
 	genreHdl "musiclab-be/features/genres/handler"
 	genreSrv "musiclab-be/features/genres/services"
 
+	mentorData "musiclab-be/features/mentors/data"
+	mentorHdl "musiclab-be/features/mentors/handler"
+	mentorSrv "musiclab-be/features/mentors/services"
+
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
 )
@@ -24,9 +28,17 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	gSrv := genreSrv.New(gData)
 	gHdl := genreHdl.New(gSrv)
 
-	// AUTH
+	mData := mentorData.New(db)
+	mSrv := mentorSrv.New(mData)
+	mHdl := mentorHdl.New(mSrv)
+
+	// Auth
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
+
+	// Mentors
+	e.GET("/mentors/profile", mHdl.GetProfile(), helper.JWTMiddleware())
+	e.GET("/mentors/:id", mHdl.GetProfileByIdParam())
 
 	// Mentor Genre
 	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())

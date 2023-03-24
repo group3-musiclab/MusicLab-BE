@@ -9,18 +9,18 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-type authControll struct {
+type authControl struct {
 	srv auth.AuthService
 }
 
 func New(srv auth.AuthService) auth.AuthHandler {
-	return &authControll{
+	return &authControl{
 		srv: srv,
 	}
 }
 
 // Register implements auth.AuthHandler
-func (ac *authControll) Register() echo.HandlerFunc {
+func (ac *authControl) Register() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := RegisterRequest{}
 		errBind := c.Bind(&input)
@@ -36,7 +36,7 @@ func (ac *authControll) Register() echo.HandlerFunc {
 	}
 }
 
-func (ac *authControll) Login() echo.HandlerFunc {
+func (ac *authControl) Login() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		input := LoginRequest{}
 		errBind := c.Bind(&input)

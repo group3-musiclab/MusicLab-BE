@@ -24,7 +24,9 @@ type Mentor struct {
 	Phone             string `gorm:"type:varchar(12)"`
 	Address           string `gorm:"type:varchar(100)"`
 	Instagram         string
+	About             string
 	AvgRating         float32 `gorm:"type:float"`
+	CountReviews      int64
 	MentorInstruments []_modelMentorInstruments.MentorInstrument
 	MentorGenres      []_modelMentorGenres.MentorGenre
 	Credentials       []Credential
@@ -43,35 +45,39 @@ type Credential struct {
 	Certificate string
 }
 
-func ToCore(data Mentor) mentors.Core {
+func ModelToCore(data Mentor) mentors.Core {
 	return mentors.Core{
-		ID:        data.ID,
-		Avatar:    data.Avatar,
-		Name:      data.Name,
-		Email:     data.Email,
-		Password:  data.Password,
-		Role:      data.Role,
-		Sex:       data.Sex,
-		Phone:     data.Phone,
-		Address:   data.Address,
-		Instagram: data.Instagram,
-		AvgRating: data.AvgRating,
-		CreatedAt: data.CreatedAt,
-		UpdatedAt: data.UpdatedAt,
+		ID:           data.ID,
+		Avatar:       data.Avatar,
+		Name:         data.Name,
+		Email:        data.Email,
+		Password:     data.Password,
+		Role:         data.Role,
+		Sex:          data.Sex,
+		Phone:        data.Phone,
+		Address:      data.Address,
+		Instagram:    data.Instagram,
+		About:        data.About,
+		AvgRating:    data.AvgRating,
+		CountReviews: data.CountReviews,
+		CreatedAt:    data.CreatedAt,
+		UpdatedAt:    data.UpdatedAt,
 	}
 }
 
-func CoreToData(data mentors.Core) Mentor {
+func CoreToModel(data mentors.Core) Mentor {
 	return Mentor{
-		Avatar:    data.Avatar,
-		Name:      data.Name,
-		Email:     data.Email,
-		Password:  data.Password,
-		Role:      data.Role,
-		Sex:       data.Sex,
-		Phone:     data.Phone,
-		Address:   data.Address,
-		Instagram: data.Instagram,
-		AvgRating: data.AvgRating,
+		Avatar:       data.Avatar,
+		Name:         data.Name,
+		Email:        data.Email,
+		Password:     data.Password,
+		Role:         data.Role,
+		Sex:          data.Sex,
+		Phone:        data.Phone,
+		Address:      data.Address,
+		Instagram:    data.Instagram,
+		About:        data.About,
+		AvgRating:    data.AvgRating,
+		CountReviews: data.CountReviews,
 	}
 }
