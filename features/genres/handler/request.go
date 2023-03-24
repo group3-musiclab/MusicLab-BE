@@ -6,15 +6,8 @@ type AddMentorGenre struct {
 	GenreID uint `json:"genre_id" form:"genre_id"`
 }
 
-func ReqToCore(data interface{}) *genres.Core {
-	res := genres.Core{}
-
-	switch data.(type) {
-	case AddMentorGenre:
-		cnv := data.(AddMentorGenre)
-		res.GenreID = cnv.GenreID
-	default:
-		return nil
+func addMentorGenreToCore(data AddMentorGenre) genres.Core {
+	return genres.Core{
+		GenreID: data.GenreID,
 	}
-	return &res
 }

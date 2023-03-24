@@ -3,9 +3,9 @@ package genres
 import "github.com/labstack/echo/v4"
 
 type Core struct {
-	ID       uint
-	MentorID uint
-	GenreID  uint
+	ID       uint `json:"id"`
+	MentorID uint `json:"mentor_id"`
+	GenreID  uint `json:"genre_id"`
 }
 
 //s

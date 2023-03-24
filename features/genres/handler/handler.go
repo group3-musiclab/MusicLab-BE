@@ -22,14 +22,15 @@ func New(srv genres.GenreService) genres.GenreHandler {
 func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		mentorID := helper.ExtractTokenUserId(c)
+		log.Println(mentorID)
 		input := AddMentorGenre{}
 		err := c.Bind(&input)
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
-		mentorGenre := ReqToCore(input)
+		mentorGenre := addMentorGenreToCore(input)
 		mentorGenre.MentorID = mentorID
-		res, err := gc.srv.AddMentorGenre(*ReqToCore(input))
+		res, err := gc.srv.AddMentorGenre(mentorGenre)
 		if err != nil {
 			log.Println("error running add mentor genre service: ", err.Error())
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "server problem"})
