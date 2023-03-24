@@ -2,31 +2,36 @@ package services
 
 import (
 	"errors"
-	"log"
 	"musiclab-be/features/auth"
+	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type authUseCase struct {
-	qry auth.AuthData
+	qry      auth.AuthData
+	validate *validator.Validate
 }
 
 func New(ud auth.AuthData) auth.AuthService {
 	return &authUseCase{
-		qry: ud,
+		qry:      ud,
+		validate: validator.New(),
 	}
 }
 
 // Register implements auth.AuthService
 func (auc *authUseCase) Register(newUser auth.Core) error {
-	if len(newUser.Password) != 0 {
-		//validation
-		err := helper.RegistrationValidate(newUser)
-		if err != nil {
-			return errors.New("validate: " + err.Error())
-		}
+	errValidate := auc.validate.Struct(newUser)
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
 	}
-	hashed := helper.GeneratePassword(newUser.Password)
+
+	hashed, errHash := helper.HashPassword(newUser.Password)
+	if errHash != nil {
+		return errors.New(consts.AUTH_ErrorHash)
+	}
 	newUser.Password = string(hashed)
 
 	if newUser.Role == "Mentor" {
@@ -39,12 +44,18 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 		if errStudent != nil {
 			return errStudent
 		}
+	} else {
+		return errors.New(consts.AUTH_ErrorRole)
 	}
 
 	return nil
 }
 
 func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
+	errValidate := auc.validate.StructExcept(user, "Name")
+	if errValidate != nil {
+		return "", auth.Core{}, errors.New("validate: " + errValidate.Error())
+	}
 	res := auth.Core{}
 	if user.Role == "Mentor" {
 		var err error
@@ -58,16 +69,17 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 		if err != nil {
 			return "", auth.Core{}, err
 		}
+	} else {
+		return "", auth.Core{}, errors.New(consts.AUTH_ErrorRole)
 	}
 
-	if err := helper.ComparePassword(res.Password, user.Password); err != nil {
-		log.Println("login compare", err.Error())
-		return "", auth.Core{}, errors.New("password not matched")
+	if !helper.CompareHashPassword(user.Password, res.Password) {
+		return "", auth.Core{}, errors.New(consts.AUTH_ErrorComparePassword)
 	}
 
 	token, errToken := helper.CreateToken(user.ID, user.Role)
 	if errToken != nil {
-		return "", auth.Core{}, errToken
+		return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
 	}
 
 	return token, res, nil
