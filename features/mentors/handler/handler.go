@@ -14,6 +14,18 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// GetByRating implements mentors.MentorsHandler
+func (mc *mentorControl) GetByRating() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dataCore, err := mc.srv.SelectAllByRating()
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.MENTOR_SuccessGetAll, listCoreToResponse(dataCore)))
+	}
+}
+
 // GetAll implements mentors.MentorsHandler
 func (mc *mentorControl) GetAll() echo.HandlerFunc {
 	return func(c echo.Context) error {

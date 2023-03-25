@@ -14,6 +14,15 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// SelectAllByRating implements mentors.MentorService
+func (muc *mentorUseCase) SelectAllByRating() ([]mentors.Core, error) {
+	dataCore, err := muc.qry.SelectAllByRating()
+	if err != nil {
+		return []mentors.Core{}, err
+	}
+	return dataCore, nil
+}
+
 // SelectAll implements mentors.MentorService
 func (muc *mentorUseCase) SelectAll(page int, limit int) ([]mentors.Core, error) {
 	offset := (page - 1) * limit

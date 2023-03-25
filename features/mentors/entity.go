@@ -47,9 +47,11 @@ type MentorsHandler interface {
 	UpdatePassword() echo.HandlerFunc
 	AddCredential() echo.HandlerFunc
 	Delete() echo.HandlerFunc
+	GetByRating() echo.HandlerFunc
 }
 
 type MentorService interface {
+	SelectAllByRating() ([]Core, error)
 	SelectAll(page, limit int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
@@ -59,6 +61,7 @@ type MentorService interface {
 }
 
 type MentorData interface {
+	SelectAllByRating() ([]Core, error)
 	SelectAll(limit, offset int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
