@@ -100,7 +100,7 @@ func (muc *mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) erro
 
 // UpdateData implements mentors.MentorService
 func (muc *mentorUseCase) UpdateData(mentorID uint, input mentors.Core) error {
-	errValidate := muc.validate.StructExcept(input, "Password")
+	errValidate := muc.validate.StructExcept(input, "Password", "MentorInstrument")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
 	}
