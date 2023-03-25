@@ -15,7 +15,14 @@ type studentControl struct {
 
 // Delete implements students.StudentHandler
 func (sc *studentControl) Delete() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		id := helper.ExtractTokenUserId(c)
+		err := sc.srv.Delete(id)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.STUDENT_SuccessDelete))
+	}
 }
 
 // GetProfile implements students.StudentHandler

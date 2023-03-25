@@ -16,7 +16,11 @@ type studentUseCase struct {
 
 // Delete implements students.StudentService
 func (suc *studentUseCase) Delete(studentID uint) error {
-	panic("unimplemented")
+	err := suc.qry.Delete(studentID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // SelectProfile implements students.StudentService

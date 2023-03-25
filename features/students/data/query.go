@@ -14,7 +14,14 @@ type studentQuery struct {
 
 // Delete implements students.StudentData
 func (sq *studentQuery) Delete(studentID uint) error {
-	panic("unimplemented")
+	tx := sq.db.Delete(&Student{}, studentID)
+	if tx.Error != nil {
+		return errors.New(consts.QUERY_NotFound)
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 // SelectProfile implements students.StudentData
