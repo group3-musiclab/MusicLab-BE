@@ -4,6 +4,7 @@ import (
 	_modelChat "musiclab-be/features/chats/data"
 	_modelClass "musiclab-be/features/classes/data"
 	_modelMentorGenres "musiclab-be/features/genres/data"
+	"musiclab-be/features/instruments"
 	_modelMentorInstruments "musiclab-be/features/instruments/data"
 	"musiclab-be/features/mentors"
 	_modelReview "musiclab-be/features/reviews/data"
@@ -27,6 +28,7 @@ type Mentor struct {
 	About             string
 	AvgRating         float32 `gorm:"type:float"`
 	CountReviews      int64
+	MentorInstrument  _modelMentorInstruments.MentorInstrument
 	MentorInstruments []_modelMentorInstruments.MentorInstrument
 	MentorGenres      []_modelMentorGenres.MentorGenre
 	Credentials       []Credential
@@ -60,8 +62,13 @@ func ModelToCore(data Mentor) mentors.Core {
 		About:        data.About,
 		AvgRating:    data.AvgRating,
 		CountReviews: data.CountReviews,
-		CreatedAt:    data.CreatedAt,
-		UpdatedAt:    data.UpdatedAt,
+		MentorInstrument: instruments.MentorInstrumentCore{
+			Instrument: instruments.Core{
+				Name: data.MentorInstrument.Instrument.Name,
+			},
+		},
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
 	}
 }
 

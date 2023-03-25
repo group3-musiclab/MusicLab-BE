@@ -2,6 +2,7 @@ package mentors
 
 import (
 	"mime/multipart"
+	"musiclab-be/features/instruments"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -24,6 +25,7 @@ type Core struct {
 	About                string
 	AvgRating            float32
 	CountReviews         int64
+	MentorInstrument     instruments.MentorInstrumentCore
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 }

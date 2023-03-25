@@ -16,7 +16,7 @@ type mentorQuery struct {
 // SelectAll implements mentors.MentorData
 func (mq *mentorQuery) SelectAll(limit int, offset int) ([]mentors.Core, error) {
 	var dataModel []Mentor
-	txSelect := mq.db.Limit(limit).Offset(offset).Find(&dataModel)
+	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
 	if txSelect.Error != nil {
 		return nil, errors.New(consts.QUERY_ErrorReadData)
 	}

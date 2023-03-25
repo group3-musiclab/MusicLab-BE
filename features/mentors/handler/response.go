@@ -33,22 +33,24 @@ func coreToProfileResponse(data mentors.Core) ProfileResponse {
 }
 
 type MentorResponse struct {
-	ID        uint    `json:"id"`
-	Avatar    string  `json:"avatar"`
-	Name      string  `json:"name"`
-	About     string  `json:"about"`
-	Instagram string  `json:"instagram"`
-	AvgRating float32 `json:"rating"`
+	ID               uint    `json:"id"`
+	Avatar           string  `json:"avatar"`
+	Name             string  `json:"name"`
+	MentorInstrument string  `json:"instrument_name"`
+	About            string  `json:"about"`
+	Instagram        string  `json:"instagram"`
+	AvgRating        float32 `json:"rating"`
 }
 
 func coreToResponse(data mentors.Core) MentorResponse {
 	return MentorResponse{
-		ID:        data.ID,
-		Avatar:    data.Avatar,
-		Name:      data.Name,
-		About:     data.About,
-		Instagram: data.Instagram,
-		AvgRating: data.AvgRating,
+		ID:               data.ID,
+		Avatar:           data.Avatar,
+		Name:             data.Name,
+		MentorInstrument: data.MentorInstrument.Instrument.Name,
+		About:            data.About,
+		Instagram:        data.Instagram,
+		AvgRating:        data.AvgRating,
 	}
 }
 
