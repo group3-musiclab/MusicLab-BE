@@ -41,7 +41,7 @@ type Credential struct {
 	gorm.Model
 	MentorID    uint
 	Name        string
-	Type        string `gorm:"enum('International','National')"`
+	Type        string `gorm:"type:enum('International','National')"`
 	Certificate string
 }
 
@@ -79,5 +79,24 @@ func CoreToModel(data mentors.Core) Mentor {
 		About:        data.About,
 		AvgRating:    data.AvgRating,
 		CountReviews: data.CountReviews,
+	}
+}
+
+func CredentialModelToCore(data Credential) mentors.CredentialCore {
+	return mentors.CredentialCore{
+		ID:          data.ID,
+		MentorID:    data.MentorID,
+		Name:        data.Name,
+		Type:        data.Type,
+		Certificate: data.Certificate,
+	}
+}
+
+func CredentialCoreToModel(data mentors.CredentialCore) Credential {
+	return Credential{
+		MentorID:    data.MentorID,
+		Name:        data.Name,
+		Type:        data.Type,
+		Certificate: data.Certificate,
 	}
 }

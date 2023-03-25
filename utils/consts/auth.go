@@ -7,6 +7,7 @@ const (
 	AUTH_ErrorComparePassword string = "password not matched"
 	AUTH_ErrorCreateToken     string = "error create token"
 	AUTH_ErrorRole            string = "role must be student or mentor"
+	AUTH_ErrorNewPassword     string = "new password and confirmation password is not equal"
 )
 
 // Success Response
