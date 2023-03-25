@@ -11,6 +11,8 @@ type Core struct {
 	Mentor     Mentor
 	Student    Student
 	ReviewDate string
+	Avatar     string
+	Name       string
 }
 
 type Mentor struct {

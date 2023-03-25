@@ -15,6 +15,8 @@ type Review struct {
 	Mentor     Mentor
 	Student    Student
 	ReviewDate string
+	Avatar     string
+	Name       string
 }
 
 type Mentor struct {
@@ -39,6 +41,8 @@ func ToCore(data Review) reviews.Core {
 		StudentID:  data.StudentID,
 		Rating:     data.Rating,
 		Comment:    data.Comment,
+		Avatar:     data.Avatar,
+		Name:       data.Name,
 		ReviewDate: data.ReviewDate,
 		Mentor: reviews.Mentor{
 			ID:    data.Mentor.ID,
@@ -64,5 +68,7 @@ func CoreToData(data reviews.Core) Review {
 		Rating:     data.Rating,
 		Comment:    data.Comment,
 		ReviewDate: data.ReviewDate,
+		Avatar:     data.Avatar,
+		Name:       data.Name,
 	}
 }

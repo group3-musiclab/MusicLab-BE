@@ -67,7 +67,7 @@ func (rc *reviewControll) GetMentorReview() echo.HandlerFunc {
 		}
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"data":    result,
-			"message": "success make a review",
+			"message": "success show all mentor review",
 		})
 	}
 }
