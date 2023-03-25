@@ -32,7 +32,18 @@ func (ruc *reviewUseCase) PostMentorReview(mentorID uint, newReview reviews.Core
 	return nil
 }
 
-// GetMentorReview implements reviews.ReviewService
-func (*reviewUseCase) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
-	panic("unimplemented")
+func (ruc *reviewUseCase) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
+	res, err := ruc.qry.GetMentorReview(mentorID)
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "review not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []reviews.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
