@@ -30,7 +30,15 @@ func (sq *studentQuery) SelectProfile(studentID uint) (students.Core, error) {
 
 // UpdateData implements students.StudentData
 func (sq *studentQuery) UpdateData(studentID uint, input students.Core) error {
-	panic("unimplemented")
+	dataModel := CoreToModel(input)
+	tx := sq.db.Where("id = ?", studentID).Updates(&dataModel)
+	if tx.Error != nil {
+		return errors.New(consts.QUERY_ErrorUpdateData)
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 func New(db *gorm.DB) students.StudentData {

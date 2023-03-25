@@ -32,7 +32,29 @@ func (sc *studentControl) GetProfile() echo.HandlerFunc {
 
 // UpdateData implements students.StudentHandler
 func (sc *studentControl) UpdateData() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		id := helper.ExtractTokenUserId(c)
+		input := UpdateRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		checkFile, _, _ := c.Request().FormFile("avatar_file")
+		if checkFile != nil {
+			formHeader, err := c.FormFile("avatar_file")
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, helper.Response(consts.HANDLER_ErrorFormFile))
+			}
+			input.AvatarFile = *formHeader
+		}
+
+		err := sc.srv.UpdateData(id, updateRequestToCore(input))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.STUDENT_SuccessUpdateProfile))
+	}
 }
 
 // UpdatePassword implements students.StudentHandler

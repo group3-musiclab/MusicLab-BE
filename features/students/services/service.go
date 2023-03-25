@@ -1,7 +1,10 @@
 package services
 
 import (
+	"errors"
 	"musiclab-be/features/students"
+	"musiclab-be/utils/consts"
+	"musiclab-be/utils/helper"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -27,7 +30,23 @@ func (suc *studentUseCase) SelectProfile(studentID uint) (students.Core, error) 
 
 // UpdateData implements students.StudentService
 func (suc *studentUseCase) UpdateData(studentID uint, input students.Core) error {
-	panic("unimplemented")
+	errValidate := suc.validate.StructExcept(input, "Password")
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
+	url, errUpload := helper.GetUrlImagesFromAWS(input.AvatarFile)
+	if errUpload != nil {
+		return errors.New(consts.AWS_ErrorUpload)
+	}
+
+	input.Avatar = url
+
+	errUpdate := suc.qry.UpdateData(studentID, input)
+	if errUpdate != nil {
+		return errUpdate
+	}
+	return nil
 }
 
 // UpdatePassword implements students.StudentService
