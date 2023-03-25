@@ -55,7 +55,36 @@ func (suc *studentUseCase) UpdateData(studentID uint, input students.Core) error
 
 // UpdatePassword implements students.StudentService
 func (suc *studentUseCase) UpdatePassword(studentID uint, input students.Core) error {
-	panic("unimplemented")
+	if input.Password == "" || input.NewPassword == "" || input.ConfirmationPassword == "" {
+		return errors.New(consts.AUTH_ErrorEmptyPassword)
+	}
+
+	dataCore, errSelect := suc.qry.SelectProfile(studentID)
+	if errSelect != nil {
+		return errSelect
+	}
+
+	if !helper.CompareHashPassword(input.Password, dataCore.Password) {
+		return errors.New(consts.AUTH_ErrorComparePassword)
+	}
+
+	if input.NewPassword != input.ConfirmationPassword {
+		return errors.New(consts.AUTH_ErrorNewPassword)
+	}
+
+	hash, errHash := helper.HashPassword(input.NewPassword)
+	if errHash != nil {
+		return errors.New(consts.AUTH_ErrorHash)
+	}
+
+	input.Password = hash
+
+	errUpdate := suc.qry.UpdateData(studentID, input)
+	if errUpdate != nil {
+		return errUpdate
+	}
+
+	return nil
 }
 
 func New(sd students.StudentData) students.StudentService {

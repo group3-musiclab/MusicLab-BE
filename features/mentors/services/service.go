@@ -48,7 +48,7 @@ func (muc *mentorUseCase) InsertCredential(input mentors.CredentialCore) error {
 // UpdatePassword implements mentors.MentorService
 func (muc *mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) error {
 	if input.Password == "" || input.NewPassword == "" || input.ConfirmationPassword == "" {
-		return errors.New(consts.MENTOR_ErrorEmptyPassword)
+		return errors.New(consts.AUTH_ErrorEmptyPassword)
 	}
 
 	dataCore, errSelect := muc.qry.SelectProfile(mentorID)

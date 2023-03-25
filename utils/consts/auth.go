@@ -8,6 +8,7 @@ const (
 	AUTH_ErrorCreateToken     string = "error create token"
 	AUTH_ErrorRole            string = "role must be student or mentor"
 	AUTH_ErrorNewPassword     string = "new password and confirmation password is not equal"
+	AUTH_ErrorEmptyPassword   string = "old password, new password and confirmation password field cannot be empty"
 )
 
 // Success Response

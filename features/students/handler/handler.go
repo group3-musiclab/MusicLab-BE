@@ -66,7 +66,20 @@ func (sc *studentControl) UpdateData() echo.HandlerFunc {
 
 // UpdatePassword implements students.StudentHandler
 func (sc *studentControl) UpdatePassword() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		id := helper.ExtractTokenUserId(c)
+		input := UpdatePasswordRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		err := sc.srv.UpdatePassword(id, updatePasswordRequestToCore(input))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.STUDENT_SuccessUpdatePassword))
+	}
 }
 
 func New(srv students.StudentService) students.StudentHandler {
