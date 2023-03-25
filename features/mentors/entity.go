@@ -43,6 +43,7 @@ type MentorsHandler interface {
 	UpdateData() echo.HandlerFunc
 	UpdatePassword() echo.HandlerFunc
 	AddCredential() echo.HandlerFunc
+	Delete() echo.HandlerFunc
 }
 
 type MentorService interface {
@@ -50,10 +51,12 @@ type MentorService interface {
 	UpdateData(mentorID uint, input Core) error
 	UpdatePassword(mentorID uint, input Core) error
 	InsertCredential(input CredentialCore) error
+	Delete(mentorID uint) error
 }
 
 type MentorData interface {
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	InsertCredential(input CredentialCore) error
+	Delete(mentorID uint) error
 }

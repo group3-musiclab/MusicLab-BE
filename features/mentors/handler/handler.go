@@ -14,6 +14,11 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// Delete implements mentors.MentorsHandler
+func (*mentorControl) Delete() echo.HandlerFunc {
+	panic("unimplemented")
+}
+
 // AddCredential implements mentors.MentorsHandler
 func (mc *mentorControl) AddCredential() echo.HandlerFunc {
 	return func(c echo.Context) error {

@@ -13,6 +13,18 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
+// Delete implements mentors.MentorData
+func (mq *mentorQuery) Delete(mentorID uint) error {
+	tx := mq.db.Delete(&Mentor{}, mentorID)
+	if tx.Error != nil {
+		return errors.New(consts.QUERY_ErrorDeleteData)
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
+}
+
 // InsertCredential implements mentors.MentorData
 func (mq *mentorQuery) InsertCredential(input mentors.CredentialCore) error {
 	dataModel := CredentialCoreToModel(input)

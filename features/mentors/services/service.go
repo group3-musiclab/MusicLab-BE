@@ -14,6 +14,11 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// Delete implements mentors.MentorService
+func (*mentorUseCase) Delete(mentorID uint) error {
+	panic("unimplemented")
+}
+
 // InsertCredential implements mentors.MentorService
 func (muc *mentorUseCase) InsertCredential(input mentors.CredentialCore) error {
 	errValidate := muc.validate.Struct(input)
