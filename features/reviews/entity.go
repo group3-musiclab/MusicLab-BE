@@ -16,11 +16,11 @@ type ReviewHandler interface {
 }
 
 type ReviewService interface {
-	PostMentorReview(newReview Core) error
+	PostMentorReview(mentorID uint, newReview Core) error
 	GetMentorReview(mentorID uint) ([]Core, error)
 }
 
 type ReviewData interface {
-	PostMentorReview(newReview Core) error
+	PostMentorReview(mentorID uint, newReview Core) error
 	GetMentorReview(mentorID uint) ([]Core, error)
 }

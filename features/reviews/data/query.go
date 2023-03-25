@@ -19,9 +19,15 @@ func New(db *gorm.DB) reviews.ReviewData {
 }
 
 // PostMentorReview implements reviews.ReviewData
-func (rq *reviewQuery) PostMentorReview(newReview reviews.Core) error {
+func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) error {
+	res := Review{}
+	err := rq.db.Where("mentor_id = ?", mentorID).First(&res).Error
+	if err != nil {
+		log.Println("query error", err.Error())
+		return errors.New("server error")
+	}
 	cnv := CoreToData(newReview)
-	err := rq.db.Create(&cnv).Error
+	err = rq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return errors.New("server error")
