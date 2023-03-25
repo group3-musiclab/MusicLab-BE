@@ -15,8 +15,12 @@ type mentorUseCase struct {
 }
 
 // Delete implements mentors.MentorService
-func (*mentorUseCase) Delete(mentorID uint) error {
-	panic("unimplemented")
+func (muc *mentorUseCase) Delete(mentorID uint) error {
+	err := muc.qry.Delete(mentorID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // InsertCredential implements mentors.MentorService
