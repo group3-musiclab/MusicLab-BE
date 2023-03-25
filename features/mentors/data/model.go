@@ -41,7 +41,7 @@ type Credential struct {
 	gorm.Model
 	MentorID    uint
 	Name        string
-	Type        string `gorm:"enum('International','National')"`
+	Type        string `gorm:"type:enum('International','National')"`
 	Certificate string
 }
 
