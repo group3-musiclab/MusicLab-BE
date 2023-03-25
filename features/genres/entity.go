@@ -24,14 +24,14 @@ type GenreHandler interface {
 }
 
 type GenreService interface {
-	AddMentorGenre(newGenre Core) (Core, error)
+	AddMentorGenre(newGenre Core) error
 	GetGenre() ([]Core, error)
 	GetMentorGenre(mentorID uint) ([]MentorGenreCore, error)
 	Delete(mentorID, genreID uint) error
 }
 
 type GenreData interface {
-	AddMentorGenre(newGenre Core) (Core, error)
+	AddMentorGenre(newGenre Core) error
 	GetGenre() ([]Core, error)
 	GetMentorGenre(mentorID uint) ([]MentorGenreCore, error)
 	Delete(mentorID, genreID uint) error

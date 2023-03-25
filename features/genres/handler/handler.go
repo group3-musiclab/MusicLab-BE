@@ -31,14 +31,12 @@ func (gc *genreControll) AddMentorGenre() echo.HandlerFunc {
 		}
 		mentorGenre := addMentorGenreToCore(input)
 		mentorGenre.MentorID = mentorID
-		res, err := gc.srv.AddMentorGenre(mentorGenre)
+		err = gc.srv.AddMentorGenre(mentorGenre)
 		if err != nil {
 			log.Println("error running add mentor genre service: ", err.Error())
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "server problem"})
 		}
-		log.Println(res)
 		return c.JSON(http.StatusCreated, map[string]interface{}{
-			"data":    res,
 			"message": "success add mentor genre",
 		})
 	}

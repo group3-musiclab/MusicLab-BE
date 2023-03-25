@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/genres"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -19,15 +20,14 @@ func New(db *gorm.DB) genres.GenreData {
 }
 
 // s
-func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) (genres.Core, error) {
+func (gq *genreQuery) AddMentorGenre(newGenre genres.Core) error {
 	cnv := CoreToData(newGenre)
 	err := gq.db.Create(&cnv).Error
 	if err != nil {
 		log.Println("query error", err.Error())
-		return genres.Core{}, errors.New("server error")
+		return errors.New("server error")
 	}
-	result := ToCore(cnv)
-	return result, nil
+	return nil
 }
 
 func (gq *genreQuery) GetGenre() ([]genres.Core, error) {
@@ -60,9 +60,12 @@ func (gq *genreQuery) GetMentorGenre(mentorID uint) ([]genres.MentorGenreCore, e
 func (gq *genreQuery) Delete(mentorID, genreID uint) error {
 	data := MentorGenre{}
 
-	if err := gq.db.Where("mentor_id = ?", mentorID).Where("genre_id = ?", genreID).Delete(&data); err.Error != nil {
-		return errors.New("no data was deleted")
+	err := gq.db.Where("mentor_id = ?", mentorID).Where("genre_id = ?", genreID).Delete(&data)
+	if err.Error != nil {
+		return errors.New(consts.QUERY_NotFound)
 	}
-
+	if err.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
 	return nil
 }
