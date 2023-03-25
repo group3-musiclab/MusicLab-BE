@@ -5,6 +5,7 @@ import (
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -36,7 +37,21 @@ func (ic *instrumentControl) Add() echo.HandlerFunc {
 
 // Delete implements instruments.InstrumentHandler
 func (ic *instrumentControl) Delete() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		instrumentID := c.Param("id")
+		idConv, errConv := strconv.Atoi(instrumentID)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+
+		err := ic.srv.Delete(mentorID, uint(idConv))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, helper.Response(consts.INSTRUMENT_SuccessDelete))
+	}
 }
 
 // GetAll implements instruments.InstrumentHandler

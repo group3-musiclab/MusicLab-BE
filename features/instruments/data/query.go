@@ -13,8 +13,15 @@ type instrumentQuery struct {
 }
 
 // Delete implements instruments.InstrumentData
-func (iq *instrumentQuery) Delete(instrumentID uint) error {
-	panic("unimplemented")
+func (iq *instrumentQuery) Delete(mentorID uint, instrumentID uint) error {
+	tx := iq.db.Where("mentor_id = ?", mentorID).Where("instrument_id = ?", instrumentID).Delete(&MentorInstrument{})
+	if tx.Error != nil {
+		return errors.New(consts.QUERY_NotFound)
+	}
+	if tx.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 // Insert implements instruments.InstrumentData

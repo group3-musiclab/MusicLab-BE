@@ -13,8 +13,12 @@ type instrumentUseCase struct {
 }
 
 // Delete implements instruments.InstrumentService
-func (iuc *instrumentUseCase) Delete(instrumentID uint) error {
-	panic("unimplemented")
+func (iuc *instrumentUseCase) Delete(mentorID uint, instrumentID uint) error {
+	err := iuc.qry.Delete(mentorID, instrumentID)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 // Insert implements instruments.InstrumentService

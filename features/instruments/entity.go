@@ -32,12 +32,12 @@ type InstrumentService interface {
 	SelectAll() ([]Core, error)
 	SelectAllByMentorID(mentorID uint) ([]MentorInstrumentCore, error)
 	Insert(input MentorInstrumentCore) error
-	Delete(instrumentID uint) error
+	Delete(mentorID, instrumentID uint) error
 }
 
 type InstrumentData interface {
 	SelectAll() ([]Core, error)
 	SelectAllByMentorID(mentorID uint) ([]MentorInstrumentCore, error)
 	Insert(input MentorInstrumentCore) error
-	Delete(instrumentID uint) error
+	Delete(mentorID, instrumentID uint) error
 }
