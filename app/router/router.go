@@ -21,6 +21,10 @@ import (
 	instrumentHdl "musiclab-be/features/instruments/handler"
 	instrumentSrv "musiclab-be/features/instruments/services"
 
+	reviewData "musiclab-be/features/reviews/data"
+	reviewDataHdl "musiclab-be/features/reviews/handler"
+	reviewDataSrv "musiclab-be/features/reviews/services"
+
 	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
@@ -48,6 +52,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	iData := instrumentData.New(db)
 	iSrv := instrumentSrv.New(iData)
 	iHdl := instrumentHdl.New(iSrv)
+
+	rData := reviewData.New(db)
+	rSrv := reviewDataSrv.New(rData)
+	rHdl := reviewDataHdl.New(rSrv)
 
 	// Auth
 	e.POST("/login", aHdl.Login())
@@ -80,5 +88,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/genres", gHdl.GetGenre())
 	e.GET("/mentors/:id/genres", gHdl.GetMentorGenre())
 	e.DELETE("/mentors/genres/:genre_id", gHdl.Delete(), helper.JWTMiddleware())
+
+	// Mentor Review
+	e.POST("/mentors/:mentor_id/reviews", rHdl.PostMentorReview(), helper.JWTMiddleware())
+	e.GET("/mentors/:mentor_id/reviews", rHdl.GetMentorReview(), helper.JWTMiddleware())
 
 }
