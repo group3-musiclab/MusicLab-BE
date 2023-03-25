@@ -61,8 +61,12 @@ func (rc *reviewControll) GetMentorReview() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}
+		result := []ShowAllMentorReview{}
+		for _, val := range res {
+			result = append(result, ShowAllMentorReviewResponse(val))
+		}
 		return c.JSON(http.StatusCreated, map[string]interface{}{
-			"data":    res,
+			"data":    result,
 			"message": "success make a review",
 		})
 	}

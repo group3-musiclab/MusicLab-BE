@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"musiclab-be/features/reviews"
 
@@ -38,15 +39,22 @@ func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) e
 // GetMentorReview implements reviews.ReviewData
 func (rq *reviewQuery) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
 	res := []Review{}
-	err := rq.db.Where("mentor_id = ?", mentorID).First(&res).Error
+	err := rq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return []reviews.Core{}, errors.New("server error")
 	}
 
 	result := []reviews.Core{}
+	i := 0
 	for _, val := range res {
 		result = append(result, ToCore(val))
+		y := res[i].CreatedAt.Year()
+		m := int(res[i].CreatedAt.Month())
+		d := res[i].CreatedAt.Day()
+		result[i].ReviewDate = fmt.Sprintf("%d-%d-%d", y, m, d)
+
+		i++
 	}
 
 	return result, nil

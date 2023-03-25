@@ -91,5 +91,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// Mentor Review
 	e.POST("/mentors/:mentor_id/reviews", rHdl.PostMentorReview(), helper.JWTMiddleware())
+	e.GET("/mentors/:mentor_id/reviews", rHdl.GetMentorReview(), helper.JWTMiddleware())
 
 }

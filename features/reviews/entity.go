@@ -3,12 +3,14 @@ package reviews
 import "github.com/labstack/echo/v4"
 
 type Core struct {
-	ID        uint
-	MentorID  uint
-	StudentID uint
-	Rating    uint
-	Comment   string
-	Mentor    Mentor
+	ID         uint
+	MentorID   uint
+	StudentID  uint
+	Rating     uint
+	Comment    string
+	Mentor     Mentor
+	Student    Student
+	ReviewDate string
 }
 
 type Mentor struct {
@@ -16,6 +18,14 @@ type Mentor struct {
 	Name  string
 	Email string
 	Phone string
+}
+
+type Student struct {
+	ID     uint
+	Avatar string
+	Name   string
+	Email  string
+	Phone  string
 }
 
 type ReviewHandler interface {
