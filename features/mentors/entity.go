@@ -2,6 +2,7 @@ package mentors
 
 import (
 	"mime/multipart"
+	"musiclab-be/features/instruments"
 	"time"
 
 	"github.com/labstack/echo/v4"
@@ -24,6 +25,7 @@ type Core struct {
 	About                string
 	AvgRating            float32
 	CountReviews         int64
+	MentorInstrument     instruments.MentorInstrumentCore
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
 }
@@ -38,15 +40,19 @@ type CredentialCore struct {
 }
 
 type MentorsHandler interface {
+	GetAll() echo.HandlerFunc
 	GetProfile() echo.HandlerFunc
 	GetProfileByIdParam() echo.HandlerFunc
 	UpdateData() echo.HandlerFunc
 	UpdatePassword() echo.HandlerFunc
 	AddCredential() echo.HandlerFunc
 	Delete() echo.HandlerFunc
+	GetByRating() echo.HandlerFunc
 }
 
 type MentorService interface {
+	SelectAllByRating() ([]Core, error)
+	SelectAll(page, limit int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	UpdatePassword(mentorID uint, input Core) error
@@ -55,6 +61,8 @@ type MentorService interface {
 }
 
 type MentorData interface {
+	SelectAllByRating() ([]Core, error)
+	SelectAll(limit, offset int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	InsertCredential(input CredentialCore) error

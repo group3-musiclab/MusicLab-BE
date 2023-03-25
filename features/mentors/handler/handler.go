@@ -14,6 +14,52 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// GetByRating implements mentors.MentorsHandler
+func (mc *mentorControl) GetByRating() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		dataCore, err := mc.srv.SelectAllByRating()
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.MENTOR_SuccessGetAll, listCoreToResponse(dataCore)))
+	}
+}
+
+// GetAll implements mentors.MentorsHandler
+func (mc *mentorControl) GetAll() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 6
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
+
+		dataCore, err := mc.srv.SelectAll(page, limit)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.MENTOR_SuccessGetAll, listCoreToResponse(dataCore)))
+	}
+}
+
 // Delete implements mentors.MentorsHandler
 func (mc *mentorControl) Delete() echo.HandlerFunc {
 	return func(c echo.Context) error {

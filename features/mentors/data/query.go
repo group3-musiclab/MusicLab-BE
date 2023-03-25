@@ -13,6 +13,26 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
+// SelectAllByRating implements mentors.MentorData
+func (mq *mentorQuery) SelectAllByRating() ([]mentors.Core, error) {
+	var dataModel []Mentor
+	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(4).Order("avg_rating DESC").Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return ListModelToCore(dataModel), nil
+}
+
+// SelectAll implements mentors.MentorData
+func (mq *mentorQuery) SelectAll(limit int, offset int) ([]mentors.Core, error) {
+	var dataModel []Mentor
+	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return ListModelToCore(dataModel), nil
+}
+
 // Delete implements mentors.MentorData
 func (mq *mentorQuery) Delete(mentorID uint) error {
 	tx := mq.db.Delete(&Mentor{}, mentorID)

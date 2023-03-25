@@ -54,8 +54,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/register", aHdl.Register())
 
 	// Mentors
-	e.GET("/mentors/profile", mHdl.GetProfile(), helper.JWTMiddleware())
+	e.GET("/mentors", mHdl.GetAll())
 	e.GET("/mentors/:id", mHdl.GetProfileByIdParam())
+	e.GET("/mentors/topweek", mHdl.GetByRating())
+	e.GET("/mentors/profile", mHdl.GetProfile(), helper.JWTMiddleware())
 	e.PUT("/mentors", mHdl.UpdateData(), helper.JWTMiddleware())
 	e.PUT("/mentors/password", mHdl.UpdatePassword(), helper.JWTMiddleware())
 	e.POST("/mentors/credentials", mHdl.AddCredential(), helper.JWTMiddleware())
