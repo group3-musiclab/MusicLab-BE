@@ -13,3 +13,15 @@ func ShowAllGenreResponse(data genres.Core) ShowAllGenre {
 		Name: data.Name,
 	}
 }
+
+type ShowAllMentorGenre struct {
+	ID   uint   `json:"id"`
+	Name string `json:"name"`
+}
+
+func ShowAllMentorGenreResponse(data genres.MentorGenreCore) ShowAllMentorGenre {
+	return ShowAllMentorGenre{
+		ID:   data.ID,
+		Name: data.Genre.Name,
+	}
+}

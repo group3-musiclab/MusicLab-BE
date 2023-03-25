@@ -75,10 +75,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/mentors/instruments", iHdl.Add(), helper.JWTMiddleware())
 	e.DELETE("/mentors/instruments/:id", iHdl.Delete(), helper.JWTMiddleware())
 
-	// Mentor Genre
+	// Mentor Genres
 	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())
 	e.GET("/genres", gHdl.GetGenre())
-	e.GET("/mentors/genres", gHdl.GetMentorGenre(), helper.JWTMiddleware())
+	e.GET("/mentors/:id/genres", gHdl.GetMentorGenre())
 	e.DELETE("/mentors/genres/:genre_id", gHdl.Delete(), helper.JWTMiddleware())
 
 }
