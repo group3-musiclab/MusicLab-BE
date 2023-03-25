@@ -1,7 +1,9 @@
 package data
 
 import (
+	"errors"
 	"musiclab-be/features/instruments"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -22,7 +24,13 @@ func (iq *instrumentQuery) Insert(input instruments.MentorInstrumentCore) error 
 
 // SelectAll implements instruments.InstrumentData
 func (iq *instrumentQuery) SelectAll() ([]instruments.Core, error) {
-	panic("unimplemented")
+	var dataModel []Instrument
+	tx := iq.db.Find(&dataModel)
+	if tx.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	classCoreAll := ListModelToCore(dataModel)
+	return classCoreAll, nil
 }
 
 // SelectAllByMentorID implements instruments.InstrumentData

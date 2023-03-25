@@ -17,6 +17,10 @@ import (
 	studentHdl "musiclab-be/features/students/handler"
 	studentSrv "musiclab-be/features/students/services"
 
+	instrumentData "musiclab-be/features/instruments/data"
+	instrumentHdl "musiclab-be/features/instruments/handler"
+	instrumentSrv "musiclab-be/features/instruments/services"
+
 	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
@@ -41,6 +45,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	sSrv := studentSrv.New(sData)
 	sHdl := studentHdl.New(sSrv)
 
+	iData := instrumentData.New(db)
+	iSrv := instrumentSrv.New(iData)
+	iHdl := instrumentHdl.New(iSrv)
+
 	// Auth
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
@@ -58,6 +66,9 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.PUT("/students", sHdl.UpdateData(), helper.JWTMiddleware())
 	e.DELETE("/students", sHdl.Delete(), helper.JWTMiddleware())
 	e.PUT("/students/password", sHdl.UpdatePassword(), helper.JWTMiddleware())
+
+	// Instrument
+	e.GET("/instruments", iHdl.GetAll())
 
 	// Mentor Genre
 	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())

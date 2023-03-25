@@ -12,22 +12,23 @@ type instrumentUseCase struct {
 }
 
 // Delete implements instruments.InstrumentService
-func (*instrumentUseCase) Delete(instrumentID uint) error {
+func (iuc *instrumentUseCase) Delete(instrumentID uint) error {
 	panic("unimplemented")
 }
 
 // Insert implements instruments.InstrumentService
-func (*instrumentUseCase) Insert(input instruments.MentorInstrumentCore) error {
+func (iuc *instrumentUseCase) Insert(input instruments.MentorInstrumentCore) error {
 	panic("unimplemented")
 }
 
 // SelectAll implements instruments.InstrumentService
-func (*instrumentUseCase) SelectAll() ([]instruments.Core, error) {
-	panic("unimplemented")
+func (iuc *instrumentUseCase) SelectAll() ([]instruments.Core, error) {
+	data, err := iuc.qry.SelectAll()
+	return data, err
 }
 
 // SelectAllByMentorID implements instruments.InstrumentService
-func (*instrumentUseCase) SelectAllByMentorID(mentorID uint) ([]instruments.MentorInstrumentCore, error) {
+func (iuc *instrumentUseCase) SelectAllByMentorID(mentorID uint) ([]instruments.MentorInstrumentCore, error) {
 	panic("unimplemented")
 }
 
