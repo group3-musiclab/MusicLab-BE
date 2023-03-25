@@ -14,6 +14,11 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// InsertCredential implements mentors.MentorService
+func (*mentorUseCase) InsertCredential(input mentors.CredentialCore) error {
+	panic("unimplemented")
+}
+
 // UpdatePassword implements mentors.MentorService
 func (muc *mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) error {
 	if input.Password == "" || input.NewPassword == "" || input.ConfirmationPassword == "" {

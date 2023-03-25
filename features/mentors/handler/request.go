@@ -42,3 +42,17 @@ func updatePasswordRequestToCore(data UpdatePasswordRequest) mentors.Core {
 		ConfirmationPassword: data.ConfirmationPassword,
 	}
 }
+
+type CredentialRequest struct {
+	CertificateFile multipart.FileHeader `json:"certificate_file" form:"certificate_file"`
+	Name            string               `json:"name" form:"name"`
+	Type            string               `json:"type" form:"type"`
+}
+
+func credentialRequestToCore(data CredentialRequest) mentors.CredentialCore {
+	return mentors.CredentialCore{
+		CertificateFile: data.CertificateFile,
+		Name:            data.Name,
+		Type:            data.Type,
+	}
+}

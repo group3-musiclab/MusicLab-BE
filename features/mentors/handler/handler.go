@@ -14,6 +14,35 @@ type mentorControl struct {
 	srv mentors.MentorService
 }
 
+// AddCredential implements mentors.MentorsHandler
+func (mc *mentorControl) AddCredential() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		input := CredentialRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		formHeader, err := c.FormFile("certificate_file")
+		if err != nil {
+			return c.JSON(http.StatusInternalServerError, helper.Response(consts.HANDLER_ErrorFormFile))
+		}
+		input.CertificateFile = *formHeader
+
+		dataCore := credentialRequestToCore(input)
+		dataCore.MentorID = mentorID
+
+		errInsert := mc.srv.InsertCredential(dataCore)
+		if errInsert != nil {
+			return c.JSON(helper.ErrorResponse(errInsert))
+		}
+
+		return c.JSON(http.StatusCreated, helper.Response(consts.MENTOR_SuccessAddCredential))
+
+	}
+}
+
 // UpdatePassword implements mentors.MentorsHandler
 func (mc *mentorControl) UpdatePassword() echo.HandlerFunc {
 	return func(c echo.Context) error {

@@ -28,20 +28,32 @@ type Core struct {
 	UpdatedAt            time.Time
 }
 
+type CredentialCore struct {
+	ID              uint
+	CertificateFile multipart.FileHeader `validate:"required"`
+	MentorID        uint
+	Name            string `validate:"required"`
+	Type            string `validate:"required"`
+	Certificate     string
+}
+
 type MentorsHandler interface {
 	GetProfile() echo.HandlerFunc
 	GetProfileByIdParam() echo.HandlerFunc
 	UpdateData() echo.HandlerFunc
 	UpdatePassword() echo.HandlerFunc
+	AddCredential() echo.HandlerFunc
 }
 
 type MentorService interface {
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	UpdatePassword(mentorID uint, input Core) error
+	InsertCredential(input CredentialCore) error
 }
 
 type MentorData interface {
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
+	InsertCredential(input CredentialCore) error
 }

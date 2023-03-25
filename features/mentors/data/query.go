@@ -13,6 +13,11 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
+// InsertCredential implements mentors.MentorData
+func (*mentorQuery) InsertCredential(input mentors.CredentialCore) error {
+	panic("unimplemented")
+}
+
 // UpdateData implements mentors.MentorData
 func (mq *mentorQuery) UpdateData(mentorID uint, input mentors.Core) error {
 	dataModel := CoreToModel(input)

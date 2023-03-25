@@ -81,3 +81,22 @@ func CoreToModel(data mentors.Core) Mentor {
 		CountReviews: data.CountReviews,
 	}
 }
+
+func CredentialModelToCore(data Credential) mentors.CredentialCore {
+	return mentors.CredentialCore{
+		ID:          data.ID,
+		MentorID:    data.MentorID,
+		Name:        data.Name,
+		Type:        data.Type,
+		Certificate: data.Certificate,
+	}
+}
+
+func CredentialCoreToModel(data mentors.CredentialCore) Credential {
+	return Credential{
+		MentorID:    data.MentorID,
+		Name:        data.Name,
+		Type:        data.Type,
+		Certificate: data.Certificate,
+	}
+}
