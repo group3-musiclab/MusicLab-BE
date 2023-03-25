@@ -58,6 +58,8 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusInternalServerError
 	case strings.Contains(msg, consts.QUERY_ErrorUpdateData):
 		code = http.StatusInternalServerError
+	case strings.Contains(msg, consts.MENTOR_ErrorEmptyPassword):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }

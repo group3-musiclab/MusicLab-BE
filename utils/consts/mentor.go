@@ -9,5 +9,6 @@ const (
 
 // Error Response
 const (
-	AWS_ErrorUpload string = "error upload to s3"
+	AWS_ErrorUpload           string = "error upload to s3"
+	MENTOR_ErrorEmptyPassword string = "old password, new password and confirmation password field cannot be empty"
 )

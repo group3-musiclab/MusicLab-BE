@@ -15,8 +15,37 @@ type mentorUseCase struct {
 }
 
 // UpdatePassword implements mentors.MentorService
-func (*mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) error {
-	panic("unimplemented")
+func (muc *mentorUseCase) UpdatePassword(mentorID uint, input mentors.Core) error {
+	if input.Password == "" || input.NewPassword == "" || input.ConfirmationPassword == "" {
+		return errors.New(consts.MENTOR_ErrorEmptyPassword)
+	}
+
+	dataCore, errSelect := muc.qry.SelectProfile(mentorID)
+	if errSelect != nil {
+		return errSelect
+	}
+
+	if !helper.CompareHashPassword(input.Password, dataCore.Password) {
+		return errors.New(consts.AUTH_ErrorComparePassword)
+	}
+
+	if input.NewPassword != input.ConfirmationPassword {
+		return errors.New(consts.AUTH_ErrorNewPassword)
+	}
+
+	hash, errHash := helper.HashPassword(input.NewPassword)
+	if errHash != nil {
+		return errors.New(consts.AUTH_ErrorHash)
+	}
+
+	input.Password = hash
+
+	errUpdate := muc.qry.UpdateData(mentorID, input)
+	if errUpdate != nil {
+		return errUpdate
+	}
+
+	return nil
 }
 
 // UpdateData implements mentors.MentorService

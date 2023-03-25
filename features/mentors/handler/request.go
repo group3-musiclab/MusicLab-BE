@@ -32,7 +32,7 @@ func updateRequestToCore(data UpdateRequest) mentors.Core {
 type UpdatePasswordRequest struct {
 	Password             string `json:"old_password" form:"old_password"`
 	NewPassword          string `json:"new_password" form:"new_password"`
-	ConfirmationPassword string `json:"confimrmation_password" form:"confirmation_password"`
+	ConfirmationPassword string `json:"confirmation_password" form:"confirmation_password"`
 }
 
 func updatePasswordRequestToCore(data UpdatePasswordRequest) mentors.Core {
