@@ -4,7 +4,6 @@ import (
 	authData "musiclab-be/features/auth/data"
 	authHdl "musiclab-be/features/auth/handler"
 	authSrv "musiclab-be/features/auth/services"
-	"musiclab-be/utils/helper"
 
 	genreData "musiclab-be/features/genres/data"
 	genreHdl "musiclab-be/features/genres/handler"
@@ -13,6 +12,12 @@ import (
 	mentorData "musiclab-be/features/mentors/data"
 	mentorHdl "musiclab-be/features/mentors/handler"
 	mentorSrv "musiclab-be/features/mentors/services"
+
+	studentData "musiclab-be/features/students/data"
+	studentHdl "musiclab-be/features/students/handler"
+	studentSrv "musiclab-be/features/students/services"
+
+	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
 	"gorm.io/gorm"
@@ -32,6 +37,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	mSrv := mentorSrv.New(mData)
 	mHdl := mentorHdl.New(mSrv)
 
+	sData := studentData.New(db)
+	sSrv := studentSrv.New(sData)
+	sHdl := studentHdl.New(sSrv)
+
 	// Auth
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
@@ -43,6 +52,12 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.PUT("/mentors/password", mHdl.UpdatePassword(), helper.JWTMiddleware())
 	e.POST("/mentors/credentials", mHdl.AddCredential(), helper.JWTMiddleware())
 	e.DELETE("/mentors", mHdl.Delete(), helper.JWTMiddleware())
+
+	// Student
+	e.GET("/students/profile", sHdl.GetProfile(), helper.JWTMiddleware())
+	e.PUT("/students", sHdl.UpdateData(), helper.JWTMiddleware())
+	e.DELETE("/students", sHdl.Delete(), helper.JWTMiddleware())
+	e.PUT("/students/password", sHdl.UpdatePassword(), helper.JWTMiddleware())
 
 	// Mentor Genre
 	e.POST("/mentors/genres", gHdl.AddMentorGenre(), helper.JWTMiddleware())
