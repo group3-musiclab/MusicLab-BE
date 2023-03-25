@@ -15,8 +15,25 @@ type mentorUseCase struct {
 }
 
 // InsertCredential implements mentors.MentorService
-func (*mentorUseCase) InsertCredential(input mentors.CredentialCore) error {
-	panic("unimplemented")
+func (muc *mentorUseCase) InsertCredential(input mentors.CredentialCore) error {
+	errValidate := muc.validate.Struct(input)
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
+	url, errUpload := helper.GetUrlImagesFromAWS(input.CertificateFile)
+	if errUpload != nil {
+		return errors.New(consts.AWS_ErrorUpload)
+	}
+
+	input.Certificate = url
+
+	errInsert := muc.qry.InsertCredential(input)
+	if errInsert != nil {
+		return errInsert
+	}
+
+	return nil
 }
 
 // UpdatePassword implements mentors.MentorService

@@ -14,8 +14,16 @@ type mentorQuery struct {
 }
 
 // InsertCredential implements mentors.MentorData
-func (*mentorQuery) InsertCredential(input mentors.CredentialCore) error {
-	panic("unimplemented")
+func (mq *mentorQuery) InsertCredential(input mentors.CredentialCore) error {
+	dataModel := CredentialCoreToModel(input)
+	txInsert := mq.db.Create(&dataModel)
+	if txInsert.Error != nil {
+		return errors.New(consts.QUERY_ErrorInsertData)
+	}
+	if txInsert.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 // UpdateData implements mentors.MentorData
