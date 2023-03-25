@@ -21,6 +21,6 @@ type ReviewService interface {
 }
 
 type ReviewData interface {
-	PostMentorReview(newGenre Core) error
+	PostMentorReview(newReview Core) error
 	GetMentorReview(mentorID uint) ([]Core, error)
 }
