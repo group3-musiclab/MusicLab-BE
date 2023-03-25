@@ -36,6 +36,18 @@ func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) e
 }
 
 // GetMentorReview implements reviews.ReviewData
-func (*reviewQuery) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
-	panic("unimplemented")
+func (rq *reviewQuery) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
+	res := []Review{}
+	err := rq.db.Where("mentor_id = ?", mentorID).First(&res).Error
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []reviews.Core{}, errors.New("server error")
+	}
+
+	result := []reviews.Core{}
+	for _, val := range res {
+		result = append(result, ToCore(val))
+	}
+
+	return result, nil
 }
