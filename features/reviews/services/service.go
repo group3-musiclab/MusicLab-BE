@@ -17,8 +17,8 @@ func New(rd reviews.ReviewData) reviews.ReviewService {
 	}
 }
 
-func (ruc *reviewUseCase) PostMentorReview(newReview reviews.Core) error {
-	err := ruc.qry.PostMentorReview(newReview)
+func (ruc *reviewUseCase) PostMentorReview(mentorID uint, newReview reviews.Core) error {
+	err := ruc.qry.PostMentorReview(mentorID, newReview)
 	if err != nil {
 		msg := ""
 		if strings.Contains(err.Error(), "not found") {
