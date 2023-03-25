@@ -1,6 +1,8 @@
 package handler
 
-import "musiclab-be/features/mentors"
+import (
+	"musiclab-be/features/mentors"
+)
 
 type ProfileResponse struct {
 	ID           uint   `json:"id"`
@@ -28,4 +30,35 @@ func coreToProfileResponse(data mentors.Core) ProfileResponse {
 		About:        data.About,
 		CountReviews: data.CountReviews,
 	}
+}
+
+type MentorResponse struct {
+	ID        uint    `json:"id"`
+	Avatar    string  `json:"avatar"`
+	Name      string  `json:"name"`
+	About     string  `json:"about"`
+	Instagram string  `json:"instagram"`
+	AvgRating float32 `json:"rating"`
+}
+
+func coreToResponse(data mentors.Core) MentorResponse {
+	return MentorResponse{
+		ID:        data.ID,
+		Avatar:    data.Avatar,
+		Name:      data.Name,
+		About:     data.About,
+		Instagram: data.Instagram,
+		AvgRating: data.AvgRating,
+	}
+}
+
+func listCoreToResponse(dataCore []mentors.Core) []MentorResponse {
+	var dataResponse []MentorResponse
+	for _, v := range dataCore {
+		if len(v.About) > 79 {
+			v.About = v.About[:79] + "..."
+		}
+		dataResponse = append(dataResponse, coreToResponse(v))
+	}
+	return dataResponse
 }

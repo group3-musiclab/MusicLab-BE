@@ -38,6 +38,7 @@ type CredentialCore struct {
 }
 
 type MentorsHandler interface {
+	GetAll() echo.HandlerFunc
 	GetProfile() echo.HandlerFunc
 	GetProfileByIdParam() echo.HandlerFunc
 	UpdateData() echo.HandlerFunc
@@ -47,6 +48,7 @@ type MentorsHandler interface {
 }
 
 type MentorService interface {
+	SelectAll(page, limit int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	UpdatePassword(mentorID uint, input Core) error
@@ -55,6 +57,7 @@ type MentorService interface {
 }
 
 type MentorData interface {
+	SelectAll(limit, offset int) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	InsertCredential(input CredentialCore) error

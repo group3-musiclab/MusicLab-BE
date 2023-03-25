@@ -82,6 +82,14 @@ func CoreToModel(data mentors.Core) Mentor {
 	}
 }
 
+func ListModelToCore(dataModel []Mentor) []mentors.Core {
+	var dataCore []mentors.Core
+	for _, v := range dataModel {
+		dataCore = append(dataCore, ModelToCore(v))
+	}
+	return dataCore
+}
+
 func CredentialModelToCore(data Credential) mentors.CredentialCore {
 	return mentors.CredentialCore{
 		ID:          data.ID,

@@ -14,6 +14,16 @@ type mentorUseCase struct {
 	validate *validator.Validate
 }
 
+// SelectAll implements mentors.MentorService
+func (muc *mentorUseCase) SelectAll(page int, limit int) ([]mentors.Core, error) {
+	offset := (page - 1) * limit
+	dataCore, err := muc.qry.SelectAll(limit, offset)
+	if err != nil {
+		return []mentors.Core{}, err
+	}
+	return dataCore, nil
+}
+
 // Delete implements mentors.MentorService
 func (muc *mentorUseCase) Delete(mentorID uint) error {
 	err := muc.qry.Delete(mentorID)

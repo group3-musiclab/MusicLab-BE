@@ -7,6 +7,7 @@ const (
 	MENTOR_SuccessUpdatePassword string = "success update mentor password"
 	MENTOR_SuccessAddCredential  string = "success add mentor credential"
 	MENTOR_SuccessDelete         string = "succes deactivate mentor"
+	MENTOR_SuccessGetAll         string = "success show all mentor"
 )
 
 // Error Response

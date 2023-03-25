@@ -13,6 +13,16 @@ type mentorQuery struct {
 	db *gorm.DB
 }
 
+// SelectAll implements mentors.MentorData
+func (mq *mentorQuery) SelectAll(limit int, offset int) ([]mentors.Core, error) {
+	var dataModel []Mentor
+	txSelect := mq.db.Limit(limit).Offset(offset).Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return ListModelToCore(dataModel), nil
+}
+
 // Delete implements mentors.MentorData
 func (mq *mentorQuery) Delete(mentorID uint) error {
 	tx := mq.db.Delete(&Mentor{}, mentorID)
