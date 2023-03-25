@@ -8,4 +8,5 @@ const (
 	QUERY_NoRowsAffected  string = "row affected = 0"
 	QUERY_ErrorUpdateData string = "error update data"
 	QUERY_ErrorDeleteData string = "error delete data"
+	QUERY_ErrorReadData   string = "error read data"
 )
