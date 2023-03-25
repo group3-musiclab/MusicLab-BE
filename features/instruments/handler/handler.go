@@ -68,7 +68,15 @@ func (ic *instrumentControl) GetAll() echo.HandlerFunc {
 
 // GetAllByMentorID implements instruments.InstrumentHandler
 func (ic *instrumentControl) GetAllByMentorID() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		id := helper.ExtractTokenUserId(c)
+		data, err := ic.srv.SelectAllByMentorID(id)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		dataResponse := listCoreToMentorInstrumentResponse(data)
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.INSTRUMENT_SuccessSelectAll, dataResponse))
+	}
 }
 
 func New(srv instruments.InstrumentService) instruments.InstrumentHandler {

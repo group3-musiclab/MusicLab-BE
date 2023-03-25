@@ -69,6 +69,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 
 	// Instrument
 	e.GET("/instruments", iHdl.GetAll())
+	e.GET("/mentors/instruments", iHdl.GetAllByMentorID(), helper.JWTMiddleware())
 	e.POST("/mentors/instruments", iHdl.Add(), helper.JWTMiddleware())
 	e.DELETE("/mentors/instruments/:id", iHdl.Delete(), helper.JWTMiddleware())
 

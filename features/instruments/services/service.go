@@ -43,7 +43,8 @@ func (iuc *instrumentUseCase) SelectAll() ([]instruments.Core, error) {
 
 // SelectAllByMentorID implements instruments.InstrumentService
 func (iuc *instrumentUseCase) SelectAllByMentorID(mentorID uint) ([]instruments.MentorInstrumentCore, error) {
-	panic("unimplemented")
+	data, err := iuc.qry.SelectAllByMentorID(mentorID)
+	return data, err
 }
 
 func New(id instruments.InstrumentData) instruments.InstrumentService {

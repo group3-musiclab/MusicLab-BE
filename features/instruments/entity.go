@@ -17,6 +17,7 @@ type MentorInstrumentCore struct {
 	ID           uint
 	MentorID     uint `validate:"required"`
 	InstrumentID uint `validate:"required"`
+	Instrument   Core
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

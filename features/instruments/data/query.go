@@ -50,7 +50,12 @@ func (iq *instrumentQuery) SelectAll() ([]instruments.Core, error) {
 
 // SelectAllByMentorID implements instruments.InstrumentData
 func (iq *instrumentQuery) SelectAllByMentorID(mentorID uint) ([]instruments.MentorInstrumentCore, error) {
-	panic("unimplemented")
+	dataModel := []MentorInstrument{}
+	txSelect := iq.db.Preload("Instrument").Where("mentor_id = ?", mentorID).Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return MentorInstrumentListModelToCore(dataModel), nil
 }
 
 func New(db *gorm.DB) instruments.InstrumentData {

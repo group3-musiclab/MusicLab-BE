@@ -16,6 +16,7 @@ type MentorInstrument struct {
 	gorm.Model
 	MentorID     uint
 	InstrumentID uint
+	Instrument   Instrument
 }
 
 func CoreToModel(data instruments.Core) Instrument {
@@ -53,8 +54,11 @@ func MentorInstrumentModelToCore(data MentorInstrument) instruments.MentorInstru
 		ID:           data.ID,
 		MentorID:     data.MentorID,
 		InstrumentID: data.InstrumentID,
-		CreatedAt:    data.CreatedAt,
-		UpdatedAt:    data.UpdatedAt,
+		Instrument: instruments.Core{
+			Name: data.Instrument.Name,
+		},
+		CreatedAt: data.CreatedAt,
+		UpdatedAt: data.UpdatedAt,
 	}
 }
 

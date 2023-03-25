@@ -21,3 +21,21 @@ func listCoreToResponse(dataCore []instruments.Core) []InstrumentResponse {
 	}
 	return dataResponse
 }
+
+type MentorInstrumentResponse struct {
+	Name string `json:"name"`
+}
+
+func coreToMentorInstrumentResponse(data instruments.MentorInstrumentCore) MentorInstrumentResponse {
+	return MentorInstrumentResponse{
+		Name: data.Instrument.Name,
+	}
+}
+
+func listCoreToMentorInstrumentResponse(dataCore []instruments.MentorInstrumentCore) []MentorInstrumentResponse {
+	var dataResponse []MentorInstrumentResponse
+	for _, v := range dataCore {
+		dataResponse = append(dataResponse, coreToMentorInstrumentResponse(v))
+	}
+	return dataResponse
+}
