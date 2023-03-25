@@ -12,22 +12,26 @@ type studentUseCase struct {
 }
 
 // Delete implements students.StudentService
-func (*studentUseCase) Delete(mentorID uint) error {
+func (suc *studentUseCase) Delete(studentID uint) error {
 	panic("unimplemented")
 }
 
 // SelectProfile implements students.StudentService
-func (*studentUseCase) SelectProfile(mentorID uint) (students.Core, error) {
-	panic("unimplemented")
+func (suc *studentUseCase) SelectProfile(studentID uint) (students.Core, error) {
+	dataCore, err := suc.qry.SelectProfile(studentID)
+	if err != nil {
+		return students.Core{}, err
+	}
+	return dataCore, nil
 }
 
 // UpdateData implements students.StudentService
-func (*studentUseCase) UpdateData(mentorID uint, input students.Core) error {
+func (suc *studentUseCase) UpdateData(studentID uint, input students.Core) error {
 	panic("unimplemented")
 }
 
 // UpdatePassword implements students.StudentService
-func (*studentUseCase) UpdatePassword(mentorID uint, input students.Core) error {
+func (suc *studentUseCase) UpdatePassword(studentID uint, input students.Core) error {
 	panic("unimplemented")
 }
 

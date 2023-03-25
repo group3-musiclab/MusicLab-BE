@@ -1,7 +1,9 @@
 package data
 
 import (
+	"errors"
 	"musiclab-be/features/students"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -11,17 +13,23 @@ type studentQuery struct {
 }
 
 // Delete implements students.StudentData
-func (*studentQuery) Delete(mentorID uint) error {
+func (sq *studentQuery) Delete(studentID uint) error {
 	panic("unimplemented")
 }
 
 // SelectProfile implements students.StudentData
-func (*studentQuery) SelectProfile(mentorID uint) (students.Core, error) {
-	panic("unimplemented")
+func (sq *studentQuery) SelectProfile(studentID uint) (students.Core, error) {
+	dataModel := Student{}
+	txSelect := sq.db.First(&dataModel, studentID)
+	if txSelect.Error != nil {
+		return students.Core{}, errors.New(consts.QUERY_NotFound)
+	}
+
+	return ModelToCore(dataModel), nil
 }
 
 // UpdateData implements students.StudentData
-func (*studentQuery) UpdateData(mentorID uint, input students.Core) error {
+func (sq *studentQuery) UpdateData(studentID uint, input students.Core) error {
 	panic("unimplemented")
 }
 

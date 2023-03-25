@@ -11,14 +11,14 @@ type Core struct {
 	ID                   uint
 	AvatarFile           multipart.FileHeader
 	Avatar               string
-	Name                 string `validate:"required"`
-	Email                string `validate:"required,email"`
+	Name                 string `validate:"required,max=50"`
+	Email                string `validate:"required,email,max=50"`
 	Password             string `validate:"required,min=3"`
 	NewPassword          string
 	ConfirmationPassword string
 	Role                 string
 	Sex                  string
-	Phone                string
+	Phone                string `validate:"max=12"`
 	Address              string
 	CreatedAt            time.Time
 	UpdatedAt            time.Time
@@ -32,14 +32,14 @@ type StudentHandler interface {
 }
 
 type StudentService interface {
-	SelectProfile(mentorID uint) (Core, error)
-	UpdateData(mentorID uint, input Core) error
-	UpdatePassword(mentorID uint, input Core) error
-	Delete(mentorID uint) error
+	SelectProfile(studentID uint) (Core, error)
+	UpdateData(studentID uint, input Core) error
+	UpdatePassword(studentID uint, input Core) error
+	Delete(studentID uint) error
 }
 
 type StudentData interface {
-	SelectProfile(mentorID uint) (Core, error)
-	UpdateData(mentorID uint, input Core) error
-	Delete(mentorID uint) error
+	SelectProfile(studentID uint) (Core, error)
+	UpdateData(studentID uint, input Core) error
+	Delete(studentID uint) error
 }
