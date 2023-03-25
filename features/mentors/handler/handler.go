@@ -15,8 +15,15 @@ type mentorControl struct {
 }
 
 // Delete implements mentors.MentorsHandler
-func (*mentorControl) Delete() echo.HandlerFunc {
-	panic("unimplemented")
+func (mc *mentorControl) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		err := mc.srv.Delete(mentorID)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusOK, helper.Response(consts.MENTOR_SuccessDelete))
+	}
 }
 
 // AddCredential implements mentors.MentorsHandler

@@ -17,7 +17,7 @@ type mentorQuery struct {
 func (mq *mentorQuery) Delete(mentorID uint) error {
 	tx := mq.db.Delete(&Mentor{}, mentorID)
 	if tx.Error != nil {
-		return errors.New(consts.QUERY_ErrorDeleteData)
+		return errors.New(consts.QUERY_NotFound)
 	}
 	if tx.RowsAffected == 0 {
 		return errors.New(consts.QUERY_NoRowsAffected)
