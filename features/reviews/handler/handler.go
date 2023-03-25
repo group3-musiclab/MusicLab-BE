@@ -50,7 +50,20 @@ func (rc *reviewControll) PostMentorReview() echo.HandlerFunc {
 	}
 }
 
-// GetMentorReview implements reviews.ReviewHandler
-func (*reviewControll) GetMentorReview() echo.HandlerFunc {
-	panic("unimplemented")
+func (rc *reviewControll) GetMentorReview() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("mentor_id")
+		mentorID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+		res, err := rc.srv.GetMentorReview(uint(mentorID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    res,
+			"message": "success make a review",
+		})
+	}
 }
