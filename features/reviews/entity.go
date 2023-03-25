@@ -8,6 +8,14 @@ type Core struct {
 	StudentID uint
 	Rating    uint
 	Comment   string
+	Mentor    Mentor
+}
+
+type Mentor struct {
+	ID    uint
+	Name  string
+	Email string
+	Phone string
 }
 
 type ReviewHandler interface {

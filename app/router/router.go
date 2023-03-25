@@ -90,6 +90,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.DELETE("/mentors/genres/:genre_id", gHdl.Delete(), helper.JWTMiddleware())
 
 	// Mentor Review
-	e.POST("/mentors/:id/reviews", rHdl.PostMentorReview(), helper.JWTMiddleware())
+	e.POST("/mentors/:mentor_id/reviews", rHdl.PostMentorReview(), helper.JWTMiddleware())
 
 }

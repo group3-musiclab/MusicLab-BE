@@ -20,8 +20,8 @@ func New(db *gorm.DB) reviews.ReviewData {
 
 // PostMentorReview implements reviews.ReviewData
 func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) error {
-	res := Review{}
-	err := rq.db.Where("mentor_id = ?", mentorID).First(&res).Error
+	res := Mentor{}
+	err := rq.db.Where("id = ?", mentorID).First(&res).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return errors.New("server error")
