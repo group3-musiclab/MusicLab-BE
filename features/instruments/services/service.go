@@ -1,6 +1,7 @@
 package services
 
 import (
+	"errors"
 	"musiclab-be/features/instruments"
 
 	"github.com/go-playground/validator/v10"
@@ -18,7 +19,16 @@ func (iuc *instrumentUseCase) Delete(instrumentID uint) error {
 
 // Insert implements instruments.InstrumentService
 func (iuc *instrumentUseCase) Insert(input instruments.MentorInstrumentCore) error {
-	panic("unimplemented")
+	errValidate := iuc.validate.Struct(input)
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
+	errInsert := iuc.qry.Insert(input)
+	if errInsert != nil {
+		return errInsert
+	}
+	return nil
 }
 
 // SelectAll implements instruments.InstrumentService

@@ -15,8 +15,8 @@ type Core struct {
 
 type MentorInstrumentCore struct {
 	ID           uint
-	MentorID     uint
-	InstrumentID uint
+	MentorID     uint `validate:"required"`
+	InstrumentID uint `validate:"required"`
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }

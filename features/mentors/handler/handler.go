@@ -51,7 +51,6 @@ func (mc *mentorControl) AddCredential() echo.HandlerFunc {
 		}
 
 		return c.JSON(http.StatusCreated, helper.Response(consts.MENTOR_SuccessAddCredential))
-
 	}
 }
 

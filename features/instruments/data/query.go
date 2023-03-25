@@ -19,7 +19,15 @@ func (iq *instrumentQuery) Delete(instrumentID uint) error {
 
 // Insert implements instruments.InstrumentData
 func (iq *instrumentQuery) Insert(input instruments.MentorInstrumentCore) error {
-	panic("unimplemented")
+	dataModel := MentorInstrumentCoreToModel(input)
+	txInsert := iq.db.Create(&dataModel)
+	if txInsert.Error != nil {
+		return errors.New(consts.QUERY_ErrorInsertData)
+	}
+	if txInsert.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 // SelectAll implements instruments.InstrumentData

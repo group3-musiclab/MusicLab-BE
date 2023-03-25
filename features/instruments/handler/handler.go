@@ -15,7 +15,23 @@ type instrumentControl struct {
 
 // Add implements instruments.InstrumentHandler
 func (ic *instrumentControl) Add() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		id := helper.ExtractTokenUserId(c)
+		input := MentorInstrumentRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		dataCore := insertRequestToCore(input)
+		dataCore.MentorID = id
+
+		err := ic.srv.Insert(dataCore)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusCreated, helper.Response(consts.INSTRUMENT_SuccessInsert))
+	}
 }
 
 // Delete implements instruments.InstrumentHandler

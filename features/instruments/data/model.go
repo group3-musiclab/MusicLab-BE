@@ -40,3 +40,28 @@ func ListModelToCore(dataModel []Instrument) []instruments.Core {
 	}
 	return dataCore
 }
+
+func MentorInstrumentCoreToModel(data instruments.MentorInstrumentCore) MentorInstrument {
+	return MentorInstrument{
+		MentorID:     data.MentorID,
+		InstrumentID: data.InstrumentID,
+	}
+}
+
+func MentorInstrumentModelToCore(data MentorInstrument) instruments.MentorInstrumentCore {
+	return instruments.MentorInstrumentCore{
+		ID:           data.ID,
+		MentorID:     data.MentorID,
+		InstrumentID: data.InstrumentID,
+		CreatedAt:    data.CreatedAt,
+		UpdatedAt:    data.UpdatedAt,
+	}
+}
+
+func MentorInstrumentListModelToCore(dataModel []MentorInstrument) []instruments.MentorInstrumentCore {
+	var dataCore []instruments.MentorInstrumentCore
+	for _, v := range dataModel {
+		dataCore = append(dataCore, MentorInstrumentModelToCore(v))
+	}
+	return dataCore
+}
