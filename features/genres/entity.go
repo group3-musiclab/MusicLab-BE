@@ -9,7 +9,12 @@ type Core struct {
 	GenreID  uint   `json:"genre_id"`
 }
 
-//s
+type MentorGenreCore struct {
+	ID       uint
+	MentorID uint `validate:"required"`
+	GenreID  uint `validate:"required"`
+	Genre    Core
+}
 
 type GenreHandler interface {
 	AddMentorGenre() echo.HandlerFunc
@@ -21,13 +26,13 @@ type GenreHandler interface {
 type GenreService interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
-	GetMentorGenre(mentorID uint) ([]Core, error)
-	Delete(genreID uint) error
+	GetMentorGenre(mentorID uint) ([]MentorGenreCore, error)
+	Delete(mentorID, genreID uint) error
 }
 
 type GenreData interface {
 	AddMentorGenre(newGenre Core) (Core, error)
 	GetGenre() ([]Core, error)
-	GetMentorGenre(mentorID uint) ([]Core, error)
-	Delete(genreID uint) error
+	GetMentorGenre(mentorID uint) ([]MentorGenreCore, error)
+	Delete(mentorID, genreID uint) error
 }

@@ -47,17 +47,17 @@ func (guc *genreUseCase) GetGenre() ([]genres.Core, error) {
 	return res, nil
 }
 
-func (guc *genreUseCase) GetMentorGenre(mentorID uint) ([]genres.Core, error) {
+func (guc *genreUseCase) GetMentorGenre(mentorID uint) ([]genres.MentorGenreCore, error) {
 	res, err := guc.qry.GetMentorGenre(mentorID)
 	if err != nil {
 		log.Println("query error", err.Error())
-		return []genres.Core{}, errors.New("query error, problem with server")
+		return []genres.MentorGenreCore{}, errors.New("query error, problem with server")
 	}
 	return res, nil
 }
 
-func (guc *genreUseCase) Delete(genreID uint) error {
-	err := guc.qry.Delete(genreID)
+func (guc *genreUseCase) Delete(mentorID, genreID uint) error {
+	err := guc.qry.Delete(mentorID, genreID)
 	if err != nil {
 		log.Println("query error", err.Error())
 		return errors.New("query error, problem with server")
