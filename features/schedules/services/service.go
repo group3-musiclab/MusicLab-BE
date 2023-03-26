@@ -11,11 +11,6 @@ type scheduleUseCase struct {
 	qry schedules.ScheduleData
 }
 
-// Delete implements schedules.ScheduleService
-func (*scheduleUseCase) Delete(mentorID uint, scheduleID uint) error {
-	panic("unimplemented")
-}
-
 func New(sd schedules.ScheduleData) schedules.ScheduleService {
 	return &scheduleUseCase{
 		qry: sd,
@@ -51,4 +46,15 @@ func (suc *scheduleUseCase) GetMentorSchedule(mentorID uint) ([]schedules.Core, 
 	}
 
 	return res, nil
+}
+
+func (suc *scheduleUseCase) Delete(mentorID uint, scheduleID uint) error {
+	err := suc.qry.Delete(mentorID, scheduleID)
+
+	if err != nil {
+		log.Println("delete query error", err.Error())
+		return errors.New("data not found")
+	}
+
+	return nil
 }
