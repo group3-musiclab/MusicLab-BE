@@ -17,11 +17,6 @@ func (*scheduleQuery) Delete(mentorID uint, scheduleID uint) error {
 	panic("unimplemented")
 }
 
-// GetMentorSchedule implements schedules.ScheduleData
-func (*scheduleQuery) GetMentorSchedule(mentorID uint) ([]schedules.Core, error) {
-	panic("unimplemented")
-}
-
 func New(db *gorm.DB) schedules.ScheduleData {
 	return &scheduleQuery{
 		db: db,
@@ -37,4 +32,19 @@ func (sq *scheduleQuery) PostSchedule(newClass schedules.Core) error {
 		return errors.New("server error")
 	}
 	return nil
+}
+
+func (sq *scheduleQuery) GetMentorSchedule(mentorID uint) ([]schedules.Core, error) {
+	res := []Schedule{}
+	err := sq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []schedules.Core{}, errors.New("server error")
+	}
+	result := []schedules.Core{}
+	for _, val := range res {
+		result = append(result, ToCore(val))
+	}
+
+	return result, nil
 }

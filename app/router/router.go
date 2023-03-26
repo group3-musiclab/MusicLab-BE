@@ -22,16 +22,16 @@ import (
 	instrumentSrv "musiclab-be/features/instruments/services"
 
 	reviewData "musiclab-be/features/reviews/data"
-	reviewDataHdl "musiclab-be/features/reviews/handler"
-	reviewDataSrv "musiclab-be/features/reviews/services"
+	reviewHdl "musiclab-be/features/reviews/handler"
+	reviewSrv "musiclab-be/features/reviews/services"
 
 	classData "musiclab-be/features/classes/data"
-	classDataHdl "musiclab-be/features/classes/handler"
-	classDataSrv "musiclab-be/features/classes/services"
+	classHdl "musiclab-be/features/classes/handler"
+	classSrv "musiclab-be/features/classes/services"
 
 	scheduleData "musiclab-be/features/schedules/data"
-	scheduleDataHdl "musiclab-be/features/schedules/handler"
-	scheduleDataSrv "musiclab-be/features/schedules/services"
+	scheduleHdl "musiclab-be/features/schedules/handler"
+	scheduleSrv "musiclab-be/features/schedules/services"
 
 	"musiclab-be/utils/helper"
 
@@ -62,16 +62,16 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	iHdl := instrumentHdl.New(iSrv)
 
 	rData := reviewData.New(db)
-	rSrv := reviewDataSrv.New(rData)
-	rHdl := reviewDataHdl.New(rSrv)
+	rSrv := reviewSrv.New(rData)
+	rHdl := reviewHdl.New(rSrv)
 
 	cData := classData.New(db)
-	cSrv := classDataSrv.New(cData)
-	cHdl := classDataHdl.New(cSrv)
+	cSrv := classSrv.New(cData)
+	cHdl := classHdl.New(cSrv)
 
 	schData := scheduleData.New(db)
-	schSrv := scheduleDataSrv.New(schData)
-	schHdl := scheduleDataHdl.New(schSrv)
+	schSrv := scheduleSrv.New(schData)
+	schHdl := scheduleHdl.New(schSrv)
 
 	// Auth
 	e.POST("/login", aHdl.Login())
