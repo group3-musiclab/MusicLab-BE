@@ -30,7 +30,7 @@ func (rc *reviewControll) PostMentorReview() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
 		}
 		studentID := helper.ExtractTokenUserId(c)
-		idMentor := helper.ExtractTokenUserId(c)
+		// idMentor := helper.ExtractTokenUserId(c)
 		input := AddMentorReview{}
 		err := c.Bind(&input)
 		if err != nil {
@@ -38,7 +38,7 @@ func (rc *reviewControll) PostMentorReview() echo.HandlerFunc {
 		}
 		mentorReview := addMentorReviewToCore(input)
 		mentorReview.StudentID = studentID
-		mentorReview.MentorID = idMentor
+		mentorReview.MentorID = uint(mentorID)
 		err = rc.srv.PostMentorReview(uint(mentorID), mentorReview)
 		if err != nil {
 			log.Println("error running add mentor genre service: ", err.Error())

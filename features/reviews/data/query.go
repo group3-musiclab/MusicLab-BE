@@ -21,18 +21,51 @@ func New(db *gorm.DB) reviews.ReviewData {
 
 // PostMentorReview implements reviews.ReviewData
 func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) error {
-	res := Mentor{}
-	err := rq.db.Where("id = ?", mentorID).First(&res).Error
-	if err != nil {
-		log.Println("query error", err.Error())
-		return errors.New("server error")
-	}
+	// res := Mentor{}
+	// err := rq.db.Where("id = ?", mentorID).First(&res).Error
+	// if err != nil {
+	// 	log.Println("query error", err.Error())
+	// 	return errors.New("server error")
+	// }
 	cnv := CoreToData(newReview)
-	err = rq.db.Create(&cnv).Error
-	if err != nil {
-		log.Println("query error", err.Error())
-		return errors.New("server error")
+	// err = rq.db.Create(&cnv).Error
+	// if err != nil {
+	// 	log.Println("query error", err.Error())
+	// 	return errors.New("server error")
+	// }
+
+	txTransaction := rq.db.Begin()
+	if txTransaction.Error != nil {
+		txTransaction.Rollback()
+		return txTransaction.Error
 	}
+
+	tx := txTransaction.Create(&cnv)
+	if tx.Error != nil || tx.RowsAffected == 0 {
+		txTransaction.Rollback()
+		return txTransaction.Error
+	}
+
+	var avgRating float32
+
+	tx = txTransaction.Model(&cnv).Where("mentor_id = ?", cnv.MentorID).Select("AVG(rating)").First(&avgRating)
+	if tx.Error != nil || tx.RowsAffected == 0 {
+		txTransaction.Rollback()
+		return txTransaction.Error
+	}
+
+	tx = txTransaction.Model(&Mentor{}).Where("id = ?", cnv.MentorID).Update("avg_rating", avgRating)
+	if tx.Error != nil || tx.RowsAffected == 0 {
+		txTransaction.Rollback()
+		return txTransaction.Error
+	}
+
+	tx = txTransaction.Commit()
+	if tx.Error != nil {
+		tx.Rollback()
+		return txTransaction.Error
+	}
+
 	return nil
 }
 
