@@ -25,6 +25,10 @@ import (
 	reviewDataHdl "musiclab-be/features/reviews/handler"
 	reviewDataSrv "musiclab-be/features/reviews/services"
 
+	classData "musiclab-be/features/classes/data"
+	classDataHdl "musiclab-be/features/classes/handler"
+	classDataSrv "musiclab-be/features/classes/services"
+
 	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
@@ -56,6 +60,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	rData := reviewData.New(db)
 	rSrv := reviewDataSrv.New(rData)
 	rHdl := reviewDataHdl.New(rSrv)
+
+	cData := classData.New(db)
+	cSrv := classDataSrv.New(cData)
+	cHdl := classDataHdl.New(cSrv)
 
 	// Auth
 	e.POST("/login", aHdl.Login())
@@ -92,5 +100,12 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Mentor Review
 	e.POST("/mentors/:mentor_id/reviews", rHdl.PostMentorReview(), helper.JWTMiddleware())
 	e.GET("/mentors/:mentor_id/reviews", rHdl.GetMentorReview(), helper.JWTMiddleware())
+
+	// Mentor Class
+	e.POST("/mentors/classes", cHdl.PostClass(), helper.JWTMiddleware())
+	e.GET("/mentors/:mentor_id/class", cHdl.GetMentorClass(), helper.JWTMiddleware())
+	e.GET("/class/:class_id", cHdl.GetMentorClassDetail(), helper.JWTMiddleware())
+	e.PUT("/class/:class_id", cHdl.Update(), helper.JWTMiddleware())
+	e.DELETE("/class/:class_id", cHdl.Delete(), helper.JWTMiddleware())
 
 }

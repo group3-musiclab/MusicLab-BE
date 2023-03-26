@@ -36,10 +36,10 @@ func (rc *reviewControll) PostMentorReview() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
-		mentorGenre := addMentorReviewToCore(input)
-		mentorGenre.StudentID = studentID
-		mentorGenre.MentorID = idMentor
-		err = rc.srv.PostMentorReview(uint(mentorID), mentorGenre)
+		mentorReview := addMentorReviewToCore(input)
+		mentorReview.StudentID = studentID
+		mentorReview.MentorID = idMentor
+		err = rc.srv.PostMentorReview(uint(mentorID), mentorReview)
 		if err != nil {
 			log.Println("error running add mentor genre service: ", err.Error())
 			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "server problem"})
