@@ -57,8 +57,9 @@ func (cuc *chatUseCase) InsertChat(input chats.Core) error {
 
 func New(cd chats.ChatData, md mentors.MentorData, sd students.StudentData) chats.ChatService {
 	return &chatUseCase{
-		qry:       cd,
-		qrymentor: md,
-		validate:  validator.New(),
+		qry:        cd,
+		qrymentor:  md,
+		qrystudent: sd,
+		validate:   validator.New(),
 	}
 }
