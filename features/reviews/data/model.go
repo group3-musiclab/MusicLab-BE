@@ -21,9 +21,10 @@ type Review struct {
 
 type Mentor struct {
 	gorm.Model
-	Name  string
-	Email string
-	Phone string
+	Name      string
+	Email     string
+	Phone     string
+	AvgRating float32
 }
 
 type Student struct {
@@ -57,6 +58,7 @@ func ToCore(data Review) reviews.Core {
 			Email:  data.Student.Email,
 			Phone:  data.Student.Phone,
 		},
+		CreatedAt: data.CreatedAt,
 	}
 }
 
