@@ -18,11 +18,6 @@ func (*classUseCase) Delete(mentorID uint, classID uint) error {
 	panic("unimplemented")
 }
 
-// GetMentorClassDetail implements classes.ClassService
-func (*classUseCase) GetMentorClassDetail(classID uint) (classes.Core, error) {
-	panic("unimplemented")
-}
-
 // Update implements classes.ClassService
 func (*classUseCase) Update(mentorID uint, classID uint, updatedClass classes.Core) (classes.Core, error) {
 	panic("unimplemented")
@@ -65,6 +60,20 @@ func (cuc *classUseCase) GetMentorClass(mentorID uint) ([]classes.Core, error) {
 			msg = "there is a problem with the server"
 		}
 		return []classes.Core{}, errors.New(msg)
+	}
+
+	return res, nil
+}
+
+func (cuc *classUseCase) GetMentorClassDetail(classID uint) (classes.Core, error) {
+	res, err := cuc.qry.GetMentorClassDetail(classID)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return classes.Core{}, errors.New("data not found")
+		} else {
+			return classes.Core{}, errors.New("internal server error")
+		}
 	}
 
 	return res, nil
