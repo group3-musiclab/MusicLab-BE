@@ -7,4 +7,6 @@ const (
 	HANDLER_ErrorBlobFile     string = "blob file not found"
 	HANDLER_InvalidPageParam  string = "invalid page parameter"
 	HANDLER_InvalidLimitParam string = "invalid limit parameter"
+	HANDLER_InvalidIdStudent  string = "id student must number"
+	HANDLER_InvalidIdMentor   string = "id mentor must number"
 )
