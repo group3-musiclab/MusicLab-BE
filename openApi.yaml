@@ -15,6 +15,8 @@ servers:
     url: https://virtserver.swaggerhub.com/KHARISMAJANUAR/MusicLab-API/1.0.0
   - description: Server Development GCP
     url: http://34.125.243.136
+  - description: Server Production HTTPS
+    url: https://baggioshop.site
 
 paths:
   /register:
@@ -159,7 +161,7 @@ paths:
             schema:
               type: object
               properties:
-                avatar:
+                avatar_file:
                   type: string
                   format: binary
             example:
@@ -265,13 +267,13 @@ paths:
                 new_password:
                   type: string
                   format: password
-                password_confirmation:
+                confirmation_password:
                   type: string
                   format: password
             example:
               old_password: "1234"
               new_password: "5678"
-              password_confirmation: "5678"
+              confirmation_password: "5678"
       responses:
         200:
           description: success update student password
@@ -377,7 +379,7 @@ paths:
             schema:
               type: object
               properties:
-                avatar:
+                avatar_file:
                   type: string
                   format: binary
             example:
@@ -399,8 +401,6 @@ paths:
                   type: string
                 instagram:
                   type: string
-                price:
-                  type: number
                 about:
                   type: string
             example:
@@ -410,7 +410,6 @@ paths:
               phone: "0813456"
               address: "Bangka"
               instagram: "@alifhfdz"
-              price: 350000
               about: "senior musical teacher"
       responses:
         200:
@@ -618,13 +617,13 @@ paths:
                 new_password:
                   type: string
                   format: password
-                password_confirmation:
+                confirmation_password:
                   type: string
                   format: password
             example:
               old_password: "1234"
               new_password: "5678"
-              password_confirmation: "5678"
+              confirmation_password: "5678"
       responses:
         200:
           description: success update mentor password
@@ -667,7 +666,7 @@ paths:
             schema:
               type: object
               properties:
-                certificate:
+                certificate_file:
                   type: string
                   format: binary
             example:
@@ -705,8 +704,6 @@ paths:
         - "Instrument"
       description: get all instruments
       summary: get all instruments
-      security:
-        - JWTAuth: []
       responses:
         200:
           description: "to get all instruments list"
@@ -732,35 +729,6 @@ paths:
         500:
           $ref: "#/components/responses/500"
   /mentors/instruments:
-    get:
-      tags:
-        - "Instrument"
-      description: get all instruments by mentor id
-      summary: get all instruments by mentor id
-      security:
-        - JWTAuth: []
-      responses:
-        200:
-          description: "to get all instrument by mentor id"
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                data:
-                  [
-                    {
-                      name: "Drum",
-                    },
-                    {
-                      name: "Guitar",
-                      },
-                  ]
-                message: "success show all instruments"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
     post:
       tags:
         - "Instrument"
@@ -791,6 +759,40 @@ paths:
                     type: integer
               example:
                 message: "success add mentor instrument"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/instruments:
+    get:
+      tags:
+        - "Instrument"
+      description: get all instruments by mentor id
+      summary: get all instruments by mentor id
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "to get all instrument by mentor id"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      name: "Drum",
+                    },
+                    {
+                      name: "Guitar",
+                      },
+                  ]
+                message: "success show all instruments"
         400:
           $ref: "#/components/responses/400"
         500:
@@ -842,8 +844,6 @@ paths:
         - "Genre"
       description: get all genres
       summary: get all genres
-      security:
-        - JWTAuth: []
       responses:
         200:
           description: "to get all genres list"
@@ -869,35 +869,6 @@ paths:
         500:
           $ref: "#/components/responses/500"
   /mentors/genres:
-    get:
-      tags:
-        - "Genre"
-      description: get all genres
-      summary: get all genres
-      security:
-        - JWTAuth: []
-      responses:
-        200:
-          description: "to get all genres by mentor id"
-          content:
-            application/json:
-              schema:
-                type: object
-              example:
-                data:
-                  [
-                    {
-                      name: "Dangdut",
-                    },
-                    {
-                      name: "Rock",
-                      },
-                  ]
-                message: "success show all genres"
-        400:
-          $ref: "#/components/responses/400"
-        500:
-          $ref: "#/components/responses/500"
     post:
       tags:
         - "Genre"
@@ -928,6 +899,40 @@ paths:
                     type: integer
               example:
                 message: "success add mentor genre"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
+  /mentors/{mentor_id}/genres:
+    get:
+      tags:
+        - "Genre"
+      description: get all genres
+      summary: get all genres
+      parameters:
+        - name: mentor_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: "to get all genres by mentor id"
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                data:
+                  [
+                    {
+                      name: "Dangdut",
+                    },
+                    {
+                      name: "Rock",
+                      },
+                  ]
+                message: "success show all genres"
         400:
           $ref: "#/components/responses/400"
         500:
@@ -1256,7 +1261,7 @@ paths:
               level: ["Basic", "Intermediate", "Advance"]
               description: "Best Guitar Course"
               syllabus: "In here we will master the guitar class under 3 month"
-              from_whom: "Newbie"
+              for_whom: "Newbie"
               requirement: "Have a Guitar"
               price: 325000
               duration: 3
@@ -1434,7 +1439,7 @@ paths:
               level: ["Basic", "Intermediate", "Advance"]
               description: "Best Guitar Course"
               syllabus: "In here we will master the guitar class under 3 month"
-              from_whom: "Newbie"
+              for_whom: "Newbie"
               requirement: "Have a Guitar"
               price: 325000
               duration: 3
@@ -1631,10 +1636,13 @@ paths:
               properties:
                 class_id:
                   type: integer
+                schedule_id:
+                  type: integer
                 start_date:
                   type: string
             example:
               class_id: 1
+              schedule_id: 3
               start_date: "2023-23-03"
       responses:
         200:
@@ -1647,7 +1655,7 @@ paths:
                   message:
                     type: integer
               example:
-                message: "success post a schedule"
+                message: "schedule available"
         400:
           $ref: "#/components/responses/400"
         500:
