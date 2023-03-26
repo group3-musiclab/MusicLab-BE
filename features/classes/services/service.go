@@ -69,23 +69,23 @@ func (cuc *classUseCase) GetMentorClassDetail(classID uint) (classes.Core, error
 	return res, nil
 }
 
-func (cuc *classUseCase) Update(mentorID uint, classID uint, fileData multipart.FileHeader, updatedClass classes.Core) (classes.Core, error) {
+func (cuc *classUseCase) Update(mentorID uint, classID uint, fileData multipart.FileHeader, updatedClass classes.Core) error {
 	url, err := helper.GetUrlImagesFromAWS(fileData)
 	if err != nil {
-		return classes.Core{}, errors.New("validate: " + err.Error())
+		return errors.New("validate: " + err.Error())
 	}
 	updatedClass.Image = url
-	res, err := cuc.qry.Update(uint(mentorID), classID, updatedClass)
+	err = cuc.qry.Update(uint(mentorID), classID, updatedClass)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
-			return classes.Core{}, errors.New("data not found")
+			return errors.New("data not found")
 		} else {
-			return classes.Core{}, errors.New("internal server error")
+			return errors.New("internal server error")
 		}
 	}
 
-	return res, nil
+	return nil
 }
 
 func (cuc *classUseCase) Delete(mentorID uint, classID uint) error {

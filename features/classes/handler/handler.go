@@ -127,7 +127,7 @@ func (cc *classControll) Update() echo.HandlerFunc {
 			input.FileHeader = *formHeader
 		}
 
-		res, err := cc.srv.Update(mentorID, uint(classID), input.FileHeader, updatedClass)
+		err = cc.srv.Update(mentorID, uint(classID), input.FileHeader, updatedClass)
 
 		if err != nil {
 			if strings.Contains(err.Error(), "type") {
@@ -143,17 +143,10 @@ func (cc *classControll) Update() echo.HandlerFunc {
 			}
 		}
 
-		result, err := ConvertClassUpdateResponse(res)
-		if err != nil {
-			return c.JSON(http.StatusOK, map[string]interface{}{
-				"message": err.Error(),
-			})
-		} else {
-			return c.JSON(http.StatusOK, map[string]interface{}{
-				"data":    result,
-				"message": "success edit class",
-			})
-		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"message": "success edit class",
+		})
+
 	}
 }
 
