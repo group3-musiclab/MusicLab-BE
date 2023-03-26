@@ -1347,7 +1347,7 @@ paths:
                   level: "Basic"
                   description: "Best Guitar Course"
                   syllabus: "In here we will master the guitar class under 3 month"
-                  from_whom: "Newbie"
+                  for_whom: "Newbie"
                   requirement: "Have a Guitar"
                   price: 325000
                   duration: 3
@@ -1560,14 +1560,14 @@ paths:
                     {
                       id: 1,
                       day: "Monday",
-                      start_date: "13:00",
-                      end_date: "15:00",
+                      start_time: "13:00",
+                      end_time: "15:00",
                     },
                     {
                       id: 2,
                       day: "Monday",
-                      start_date: "15:00",
-                      end_date: "17:00",
+                      start_time: "15:00",
+                      end_time: "17:00",
                     },
                   ]
                 message: "success show all mentor schedule"
