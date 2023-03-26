@@ -2,7 +2,6 @@ package handler
 
 import (
 	"musiclab-be/features/chats"
-	"musiclab-be/features/mentors"
 )
 
 type AllChatResponse struct {
@@ -19,13 +18,10 @@ func coreToAllChatResponse(data chats.Core) AllChatResponse {
 	}
 }
 
-func listCoreToResponse(dataCore []mentors.Core) []MentorResponse {
-	var dataResponse []MentorResponse
+func listCoreToAllChatResponse(dataCore []chats.Core) []AllChatResponse {
+	var dataResponse []AllChatResponse
 	for _, v := range dataCore {
-		if len(v.About) > 79 {
-			v.About = v.About[:79] + "..."
-		}
-		dataResponse = append(dataResponse, coreToResponse(v))
+		dataResponse = append(dataResponse, coreToAllChatResponse(v))
 	}
 	return dataResponse
 }

@@ -55,6 +55,7 @@ func (cc *chatControl) GetAll() echo.HandlerFunc {
 			return c.JSON(helper.ErrorResponse(errSelect))
 		}
 
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.CHAT_SuccessAllChat, listCoreToAllChatResponse(dataCore)))
 	}
 }
 
