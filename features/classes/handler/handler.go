@@ -3,8 +3,10 @@ package handler
 import (
 	"log"
 	"musiclab-be/features/classes"
+	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -15,11 +17,6 @@ type classControll struct {
 
 // Delete implements classes.ClassHandler
 func (*classControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
-// GetMentorClass implements classes.ClassHandler
-func (*classControll) GetMentorClass() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
@@ -65,6 +62,28 @@ func (cc *classControll) PostClass() echo.HandlerFunc {
 		}
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"message": "success make a class",
+		})
+	}
+}
+
+func (cc *classControll) GetMentorClass() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("mentor_id")
+		mentorID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+		res, err := cc.srv.GetMentorClass(uint(mentorID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		result := []ShowAllMentorClass{}
+		for _, val := range res {
+			result = append(result, ShowAllMentorClassResponse(val))
+		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    result,
+			"message": "success show all mentor class",
 		})
 	}
 }
