@@ -15,11 +15,6 @@ type classControll struct {
 	srv classes.ClassService
 }
 
-// Delete implements classes.ClassHandler
-func (*classControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
 func New(srv classes.ClassService) classes.ClassHandler {
 	return &classControll{
 		srv: srv,
@@ -159,5 +154,26 @@ func (cc *classControll) Update() echo.HandlerFunc {
 				"message": "success edit class",
 			})
 		}
+	}
+}
+
+func (cc *classControll) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		id := c.Param("class_id")
+		classID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+
+		err := cc.srv.Delete(mentorID, uint(classID))
+
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success delete class",
+		})
 	}
 }
