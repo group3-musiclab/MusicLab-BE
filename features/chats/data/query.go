@@ -14,7 +14,12 @@ type chatQuery struct {
 
 // GetAll implements chats.ChatData
 func (cq *chatQuery) GetAll(mentorID uint, studentID uint) ([]chats.Core, error) {
-	panic("unimplemented")
+	var dataModel []Chat
+	txSelect := cq.db.Where("mentor_id", mentorID).Where("student_id", studentID).Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return ListModelToCore(dataModel), nil
 }
 
 // GetByStudent implements chats.ChatData
