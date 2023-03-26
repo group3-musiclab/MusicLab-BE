@@ -119,5 +119,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Mentor Schedule
 	e.POST("/mentors/schedules", schHdl.PostSchedule(), helper.JWTMiddleware())
 	e.GET("/mentors/:mentor_id/schedules", schHdl.GetMentorSchedule(), helper.JWTMiddleware())
+	e.DELETE("/schedules/:schedule_id", schHdl.Delete(), helper.JWTMiddleware())
 
 }
