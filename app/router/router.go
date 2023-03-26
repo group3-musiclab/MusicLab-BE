@@ -132,4 +132,5 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Chats
 	e.POST("/chats", chtHdl.Add(), helper.JWTMiddleware())
 	e.GET("/chats", chtHdl.GetAll(), helper.JWTMiddleware())
+	e.GET("/inbox", chtHdl.GetByStudent(), helper.JWTMiddleware())
 }
