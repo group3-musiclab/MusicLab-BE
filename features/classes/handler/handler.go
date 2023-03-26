@@ -1,12 +1,12 @@
 package handler
 
 import (
-	"log"
 	"musiclab-be/features/classes"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/labstack/echo/v4"
 )
@@ -17,11 +17,6 @@ type classControll struct {
 
 // Delete implements classes.ClassHandler
 func (*classControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
-// Update implements classes.ClassHandler
-func (*classControll) Update() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
@@ -52,8 +47,17 @@ func (cc *classControll) PostClass() echo.HandlerFunc {
 		}
 		err = cc.srv.PostClass(input.FileHeader, mentorClass)
 		if err != nil {
-			log.Println("error running add mentor genre service: ", err.Error())
-			return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "server problem"})
+			if strings.Contains(err.Error(), "type") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else if strings.Contains(err.Error(), "size") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "file size max 500kb"})
+			} else if strings.Contains(err.Error(), "validate") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else if strings.Contains(err.Error(), "not registered") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else {
+				return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "unable to process data"})
+			}
 		}
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"message": "success make a class",
@@ -100,5 +104,60 @@ func (cc *classControll) GetMentorClassDetail() echo.HandlerFunc {
 			"data":    ShowMentorClassDetailResponse(res),
 			"message": "success show mentor class detail",
 		})
+	}
+}
+
+func (cc *classControll) Update() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		id := c.Param("class_id")
+		classID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+		input := PostClass{}
+		err := c.Bind(&input)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
+		}
+		updatedClass := addPostClassToCore(input)
+		updatedClass.MentorID = mentorID
+
+		checkFile, _, _ := c.Request().FormFile("image")
+		if checkFile != nil {
+			formHeader, err := c.FormFile("image")
+			if err != nil {
+				return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "Select a file to upload"})
+			}
+			input.FileHeader = *formHeader
+		}
+
+		res, err := cc.srv.Update(mentorID, uint(classID), input.FileHeader, updatedClass)
+
+		if err != nil {
+			if strings.Contains(err.Error(), "type") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else if strings.Contains(err.Error(), "size") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "file size max 500kb"})
+			} else if strings.Contains(err.Error(), "validate") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else if strings.Contains(err.Error(), "not registered") {
+				return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": err.Error()})
+			} else {
+				return c.JSON(http.StatusInternalServerError, map[string]interface{}{"message": "unable to process data"})
+			}
+		}
+
+		result, err := ConvertClassUpdateResponse(res)
+		if err != nil {
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"message": err.Error(),
+			})
+		} else {
+			return c.JSON(http.StatusOK, map[string]interface{}{
+				"data":    result,
+				"message": "success edit class",
+			})
+		}
 	}
 }
