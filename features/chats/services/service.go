@@ -18,7 +18,11 @@ type chatUseCase struct {
 
 // GetAll implements chats.ChatService
 func (cuc *chatUseCase) GetAll(mentorID uint, studentID uint) ([]chats.Core, error) {
-	panic("unimplemented")
+	dataCore, err := cuc.qry.GetAll(mentorID, studentID)
+	if err != nil {
+		return []chats.Core{}, err
+	}
+	return dataCore, nil
 }
 
 // GetByStudent implements chats.ChatService
