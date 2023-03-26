@@ -13,11 +13,6 @@ type classUseCase struct {
 	qry classes.ClassData
 }
 
-// Delete implements classes.ClassService
-func (*classUseCase) Delete(mentorID uint, classID uint) error {
-	panic("unimplemented")
-}
-
 func New(cd classes.ClassData) classes.ClassService {
 	return &classUseCase{
 		qry: cd,
@@ -91,4 +86,15 @@ func (cuc *classUseCase) Update(mentorID uint, classID uint, fileData multipart.
 	}
 
 	return res, nil
+}
+
+func (cuc *classUseCase) Delete(mentorID uint, classID uint) error {
+	err := cuc.qry.Delete(mentorID, classID)
+
+	if err != nil {
+		log.Println("delete query error", err.Error())
+		return errors.New("data not found")
+	}
+
+	return nil
 }
