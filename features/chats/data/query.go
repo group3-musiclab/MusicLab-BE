@@ -24,7 +24,12 @@ func (cq *chatQuery) GetAll(mentorID uint, studentID uint) ([]chats.Core, error)
 
 // GetByStudent implements chats.ChatData
 func (cq *chatQuery) GetByStudent(mentorID uint) ([]chats.Core, error) {
-	panic("unimplemented")
+	var dataModel []Chat
+	txSelect := cq.db.Where("mentor_id", mentorID).Group("student_id").Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
+	}
+	return ListModelToCore(dataModel), nil
 }
 
 // InsertChat implements chats.ChatData
