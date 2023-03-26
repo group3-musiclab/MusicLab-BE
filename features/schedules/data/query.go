@@ -12,11 +12,6 @@ type scheduleQuery struct {
 	db *gorm.DB
 }
 
-// Delete implements schedules.ScheduleData
-func (*scheduleQuery) Delete(mentorID uint, scheduleID uint) error {
-	panic("unimplemented")
-}
-
 func New(db *gorm.DB) schedules.ScheduleData {
 	return &scheduleQuery{
 		db: db,
@@ -47,4 +42,23 @@ func (sq *scheduleQuery) GetMentorSchedule(mentorID uint) ([]schedules.Core, err
 	}
 
 	return result, nil
+}
+
+func (sq *scheduleQuery) Delete(mentorID uint, scheduleID uint) error {
+	getID := Schedule{}
+	err := sq.db.Where("id = ? and mentor_id = ?", scheduleID, mentorID).First(&getID).Error
+	if err != nil {
+		log.Println("get class error : ", err.Error())
+		return errors.New("failed to get class data")
+	}
+
+	qryDelete := sq.db.Delete(&Schedule{}, scheduleID)
+	affRow := qryDelete.RowsAffected
+
+	if affRow <= 0 {
+		log.Println("no rows affected")
+		return errors.New("failed to delete book, data not found")
+	}
+
+	return nil
 }
