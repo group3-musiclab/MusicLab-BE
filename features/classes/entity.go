@@ -20,6 +20,7 @@ type Core struct {
 	Duration    uint
 }
 
+// ss
 type ClassHandler interface {
 	PostClass() echo.HandlerFunc
 	GetMentorClass() echo.HandlerFunc
