@@ -1,7 +1,9 @@
 package data
 
 import (
+	"errors"
 	"musiclab-be/features/chats"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -21,8 +23,16 @@ func (cq *chatQuery) GetByStudent(mentorID uint) ([]chats.Core, error) {
 }
 
 // InsertChat implements chats.ChatData
-func (cq *chatQuery) InsertChat(chats.Core) error {
-	panic("unimplemented")
+func (cq *chatQuery) InsertChat(input chats.Core) error {
+	dataModel := CoreToModel(input)
+	txInsert := cq.db.Create(&dataModel)
+	if txInsert.Error != nil {
+		return errors.New(consts.QUERY_ErrorInsertData)
+	}
+	if txInsert.RowsAffected == 0 {
+		return errors.New(consts.QUERY_NoRowsAffected)
+	}
+	return nil
 }
 
 func New(db *gorm.DB) chats.ChatData {

@@ -33,6 +33,10 @@ import (
 	scheduleHdl "musiclab-be/features/schedules/handler"
 	scheduleSrv "musiclab-be/features/schedules/services"
 
+	chatData "musiclab-be/features/chats/data"
+	chatHdl "musiclab-be/features/chats/handler"
+	chatSrv "musiclab-be/features/chats/services"
+
 	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
@@ -72,6 +76,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	schData := scheduleData.New(db)
 	schSrv := scheduleSrv.New(schData)
 	schHdl := scheduleHdl.New(schSrv)
+
+	chtData := chatData.New(db)
+	chtSrv := chatSrv.New(chtData, mData, sData)
+	chtHdl := chatHdl.New(chtSrv)
 
 	// Auth
 	e.POST("/login", aHdl.Login())
@@ -120,5 +128,8 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/mentors/schedules", schHdl.PostSchedule(), helper.JWTMiddleware())
 	e.GET("/mentors/:mentor_id/schedules", schHdl.GetMentorSchedule(), helper.JWTMiddleware())
 	e.DELETE("/schedules/:schedule_id", schHdl.Delete(), helper.JWTMiddleware())
+
+	// Chats
+	e.POST("/chats", chtHdl.Add(), helper.JWTMiddleware())
 
 }

@@ -24,13 +24,13 @@ type ChatHandler interface {
 }
 
 type ChatService interface {
-	InsertChat(Core) error
+	InsertChat(input Core) error
 	GetAll(mentorID, studentID uint) ([]Core, error)
 	GetByStudent(mentorID uint) ([]Core, error)
 }
 
 type ChatData interface {
-	InsertChat(Core) error
+	InsertChat(input Core) error
 	GetAll(mentorID, studentID uint) ([]Core, error)
 	GetByStudent(mentorID uint) ([]Core, error)
 }
