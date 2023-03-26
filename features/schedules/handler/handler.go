@@ -15,11 +15,6 @@ type scheduleControll struct {
 	srv schedules.ScheduleService
 }
 
-// Delete implements schedules.ScheduleHandler
-func (*scheduleControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
 func New(srv schedules.ScheduleService) schedules.ScheduleHandler {
 	return &scheduleControll{
 		srv: srv,
@@ -66,6 +61,27 @@ func (sc *scheduleControll) GetMentorSchedule() echo.HandlerFunc {
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"data":    result,
 			"message": "success show all mentor schedule",
+		})
+	}
+}
+
+func (sc *scheduleControll) Delete() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		id := c.Param("schedule_id")
+		scheduleID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+
+		err := sc.srv.Delete(mentorID, uint(scheduleID))
+
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "succes delete schedule",
 		})
 	}
 }
