@@ -309,29 +309,56 @@ paths:
       summary: get all mentor
       parameters:
       - in: query
-        name: q
+        name: page
+        schema:
+          type: integer
+        examples:       
+          page:         
+            value: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        examples:       
+          limit:         
+            value: 6
+      - in: query
+        name: name
         schema:
           type: string
           maximum: 50
         examples:       
-          none:         
-            value: ""    
-            summary: "to get all mentor list"
           name: 
             value: "Alif"   
             summary: "to search mentor by it's name"
-          genre: 
-            value: "Jazz"   
-            summary: "to search mentor by music genre"
-          rating: 
-            value: 3   
-            summary: "to search mentor by their rating"
-          price: 
-            value: 230000   
-            summary: "to search mentor by their class price"
-          qualification:
-            value: "international"
-            summary: "to search mentor by their qualification"
+      - name: instrument
+        in: query
+        schema:
+          type: string
+        examples:       
+          Drum:         
+            value: Drum
+      - name: genre
+        in: query
+        schema:
+          type: string
+        examples:       
+          Jazz:         
+            value: Jazz
+      - name: rating
+        in: query
+        schema:
+          type: integer
+        examples:       
+          rating:         
+            value: 3
+      - name: qualification
+        in: query
+        schema:
+          type: integer
+        examples:       
+          International:         
+            value: International
       responses:
         200:
           description: "to get all mentor list"
@@ -1295,6 +1322,20 @@ paths:
           required: true
           schema:
             type: integer
+        - name: page
+          in: query
+          schema:
+            type: integer
+          examples:       
+            page:         
+              value: 1
+        - in: query
+          name: limit
+          schema:
+            type: integer
+          examples:       
+            limit:         
+              value: 4
       responses:
         200:
           description: success get mentor class
