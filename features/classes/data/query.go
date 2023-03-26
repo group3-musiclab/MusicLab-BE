@@ -12,18 +12,12 @@ type classQuery struct {
 	db *gorm.DB
 }
 
-// Delete implements classes.ClassData
-func (*classQuery) Delete(mentorID uint, classID uint) error {
-	panic("unimplemented")
-}
-
 func New(db *gorm.DB) classes.ClassData {
 	return &classQuery{
 		db: db,
 	}
 }
 
-// PostClass implements classes.ClassData
 func (cq *classQuery) PostClass(newClass classes.Core) error {
 	cnv := CoreToData(newClass)
 	err := cq.db.Create(&cnv).Error
@@ -84,4 +78,23 @@ func (cq *classQuery) Update(mentorID uint, classID uint, updatedClass classes.C
 		return classes.Core{}, errors.New("user not found")
 	}
 	return updatedClass, nil
+}
+
+func (cq classQuery) Delete(mentorID uint, classID uint) error {
+	getID := Class{}
+	err := cq.db.Where("id = ? and mentor_id = ?", classID, mentorID).First(&getID).Error
+	if err != nil {
+		log.Println("get class error : ", err.Error())
+		return errors.New("failed to get class data")
+	}
+
+	qryDelete := cq.db.Delete(&Class{}, classID)
+	affRow := qryDelete.RowsAffected
+
+	if affRow <= 0 {
+		log.Println("no rows affected")
+		return errors.New("failed to delete book, data not found")
+	}
+
+	return nil
 }
