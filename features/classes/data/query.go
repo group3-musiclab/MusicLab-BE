@@ -17,11 +17,6 @@ func (*classQuery) Delete(mentorID uint, classID uint) error {
 	panic("unimplemented")
 }
 
-// GetMentorClass implements classes.ClassData
-func (*classQuery) GetMentorClass(mentorID uint) ([]classes.Core, error) {
-	panic("unimplemented")
-}
-
 // GetMentorClassDetail implements classes.ClassData
 func (*classQuery) GetMentorClassDetail(classID uint) (classes.Core, error) {
 	panic("unimplemented")
@@ -47,4 +42,23 @@ func (cq *classQuery) PostClass(newClass classes.Core) error {
 		return errors.New("server error")
 	}
 	return nil
+}
+
+func (cq *classQuery) GetMentorClass(mentorID uint) ([]classes.Core, error) {
+	res := []Class{}
+
+	err := cq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
+
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []classes.Core{}, errors.New("server error")
+	}
+
+	result := []classes.Core{}
+
+	for _, val := range res {
+		result = append(result, ToCore(val))
+	}
+
+	return result, nil
 }
