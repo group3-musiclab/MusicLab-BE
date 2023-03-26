@@ -32,7 +32,7 @@ type ClassService interface {
 	PostClass(fileData multipart.FileHeader, newClass Core) error
 	GetMentorClass(mentorID uint) ([]Core, error)
 	GetMentorClassDetail(classID uint) (Core, error)
-	Update(mentorID, classID uint, updatedClass Core) (Core, error)
+	Update(mentorID, classID uint, fileData multipart.FileHeader, updatedClass Core) (Core, error)
 	Delete(mentorID, classID uint) error
 }
 

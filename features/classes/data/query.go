@@ -17,11 +17,6 @@ func (*classQuery) Delete(mentorID uint, classID uint) error {
 	panic("unimplemented")
 }
 
-// Update implements classes.ClassData
-func (*classQuery) Update(mentorID uint, classID uint, updatedClass classes.Core) (classes.Core, error) {
-	panic("unimplemented")
-}
-
 func New(db *gorm.DB) classes.ClassData {
 	return &classQuery{
 		db: db,
@@ -71,4 +66,22 @@ func (cq *classQuery) GetMentorClassDetail(classID uint) (classes.Core, error) {
 	result := ToCore(res)
 
 	return result, nil
+}
+
+func (cq *classQuery) Update(mentorID uint, classID uint, updatedClass classes.Core) (classes.Core, error) {
+	cnv := CoreToData(updatedClass)
+	cnv.ID = uint(classID)
+
+	qry := cq.db.Where("id = ?", classID).Updates(&cnv)
+	affrows := qry.RowsAffected
+	if affrows == 0 {
+		log.Println("no rows affected")
+		return classes.Core{}, errors.New("no data updated")
+	}
+	err := qry.Error
+	if err != nil {
+		log.Println("update class query error", err.Error())
+		return classes.Core{}, errors.New("user not found")
+	}
+	return updatedClass, nil
 }
