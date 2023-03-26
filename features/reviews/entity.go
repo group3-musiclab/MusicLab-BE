@@ -1,6 +1,10 @@
 package reviews
 
-import "github.com/labstack/echo/v4"
+import (
+	"time"
+
+	"github.com/labstack/echo/v4"
+)
 
 type Core struct {
 	ID         uint
@@ -13,6 +17,7 @@ type Core struct {
 	ReviewDate string
 	Avatar     string
 	Name       string
+	CreatedAt  time.Time
 }
 
 type Mentor struct {

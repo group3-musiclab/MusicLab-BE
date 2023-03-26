@@ -39,7 +39,7 @@ func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) e
 // GetMentorReview implements reviews.ReviewData
 func (rq *reviewQuery) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
 	res := []Review{}
-	err := rq.db.Where("mentor_id = ?", mentorID).Order("created_at desc").Find(&res).Error
+	err := rq.db.Preload("Student").Where("mentor_id = ?", mentorID).Order("created_at desc").Find(&res).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return []reviews.Core{}, errors.New("server error")

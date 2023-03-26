@@ -57,6 +57,7 @@ func ToCore(data Review) reviews.Core {
 			Email:  data.Student.Email,
 			Phone:  data.Student.Phone,
 		},
+		CreatedAt: data.CreatedAt,
 	}
 }
 
