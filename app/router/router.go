@@ -106,6 +106,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.GET("/mentors/:mentor_id/class", cHdl.GetMentorClass(), helper.JWTMiddleware())
 	e.GET("/class/:class_id", cHdl.GetMentorClassDetail(), helper.JWTMiddleware())
 	e.PUT("/class/:class_id", cHdl.Update(), helper.JWTMiddleware())
-	e.DELETE("/class/:class_id", cHdl.Delete(), helper.JWTMiddleware())
+	// e.DELETE("/class/:class_id", cHdl.Delete(), helper.JWTMiddleware())
 
 }

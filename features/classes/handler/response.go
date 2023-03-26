@@ -84,7 +84,7 @@ func ConvertClassUpdateResponse(input classes.Core) (interface{}, error) {
 		result["duration"] = ResponseFilter.Duration
 	}
 
-	if len(result) <= 1 {
+	if len(result) < 1 {
 		return classes.Core{}, errors.New("no data was change")
 	}
 	return result, nil
