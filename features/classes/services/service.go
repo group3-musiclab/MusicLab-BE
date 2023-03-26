@@ -18,11 +18,6 @@ func (*classUseCase) Delete(mentorID uint, classID uint) error {
 	panic("unimplemented")
 }
 
-// Update implements classes.ClassService
-func (*classUseCase) Update(mentorID uint, classID uint, updatedClass classes.Core) (classes.Core, error) {
-	panic("unimplemented")
-}
-
 func New(cd classes.ClassData) classes.ClassService {
 	return &classUseCase{
 		qry: cd,
@@ -67,6 +62,25 @@ func (cuc *classUseCase) GetMentorClass(mentorID uint) ([]classes.Core, error) {
 
 func (cuc *classUseCase) GetMentorClassDetail(classID uint) (classes.Core, error) {
 	res, err := cuc.qry.GetMentorClassDetail(classID)
+
+	if err != nil {
+		if strings.Contains(err.Error(), "not found") {
+			return classes.Core{}, errors.New("data not found")
+		} else {
+			return classes.Core{}, errors.New("internal server error")
+		}
+	}
+
+	return res, nil
+}
+
+func (cuc *classUseCase) Update(mentorID uint, classID uint, fileData multipart.FileHeader, updatedClass classes.Core) (classes.Core, error) {
+	url, err := helper.GetUrlImagesFromAWS(fileData)
+	if err != nil {
+		return classes.Core{}, errors.New("validate: " + err.Error())
+	}
+	updatedClass.Image = url
+	res, err := cuc.qry.Update(uint(mentorID), classID, updatedClass)
 
 	if err != nil {
 		if strings.Contains(err.Error(), "not found") {
