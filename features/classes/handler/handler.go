@@ -20,11 +20,6 @@ func (*classControll) Delete() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
-// GetMentorClassDetail implements classes.ClassHandler
-func (*classControll) GetMentorClassDetail() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
 // Update implements classes.ClassHandler
 func (*classControll) Update() echo.HandlerFunc {
 	panic("unimplemented")
@@ -84,6 +79,26 @@ func (cc *classControll) GetMentorClass() echo.HandlerFunc {
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"data":    result,
 			"message": "success show all mentor class",
+		})
+	}
+}
+
+func (cc *classControll) GetMentorClassDetail() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("class_id")
+		classID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+
+		res, err := cc.srv.GetMentorClassDetail(uint(classID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    ShowMentorClassDetailResponse(res),
+			"message": "success show mentor class detail",
 		})
 	}
 }
