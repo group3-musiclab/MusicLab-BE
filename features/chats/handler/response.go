@@ -30,7 +30,6 @@ type ChatByStudentResponse struct {
 	Avatar      string `json:"avatar"`
 	StudentID   uint   `json:"student_id"`
 	StudentName string `json:"student_name"`
-	Chat        string `json:"last_chat"`
 }
 
 func coreToChatByStudentResponse(data chats.Core) ChatByStudentResponse {
@@ -38,7 +37,6 @@ func coreToChatByStudentResponse(data chats.Core) ChatByStudentResponse {
 		Avatar:      data.Student.Avatar,
 		StudentID:   data.StudentID,
 		StudentName: data.Student.Name,
-		Chat:        data.Chat,
 	}
 }
 
