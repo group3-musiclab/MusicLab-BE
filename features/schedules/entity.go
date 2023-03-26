@@ -27,7 +27,7 @@ type ScheduleService interface {
 }
 
 type ScheduleData interface {
-	PostClass(newClass Core) error
+	PostSchedule(newClass Core) error
 	GetMentorSchedule(mentorID uint) ([]Core, error)
 	Delete(mentorID, scheduleID uint) error
 }
