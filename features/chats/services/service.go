@@ -27,7 +27,11 @@ func (cuc *chatUseCase) GetAll(mentorID uint, studentID uint) ([]chats.Core, err
 
 // GetByStudent implements chats.ChatService
 func (cuc *chatUseCase) GetByStudent(mentorID uint) ([]chats.Core, error) {
-	panic("unimplemented")
+	dataCore, err := cuc.qry.GetByStudent(mentorID)
+	if err != nil {
+		return []chats.Core{}, err
+	}
+	return dataCore, nil
 }
 
 // InsertChat implements chats.ChatService
