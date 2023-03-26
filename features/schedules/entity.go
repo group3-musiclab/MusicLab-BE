@@ -1,8 +1,6 @@
 package schedules
 
 import (
-	"time"
-
 	"github.com/labstack/echo/v4"
 )
 
@@ -10,8 +8,8 @@ type Core struct {
 	ID        uint
 	MentorID  uint
 	Day       string
-	StartTime time.Time
-	EndTime   time.Time
+	StartTime string
+	EndTime   string
 }
 
 type ScheduleHandler interface {
