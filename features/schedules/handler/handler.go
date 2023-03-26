@@ -3,8 +3,10 @@ package handler
 import (
 	"log"
 	"musiclab-be/features/schedules"
+	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -15,11 +17,6 @@ type scheduleControll struct {
 
 // Delete implements schedules.ScheduleHandler
 func (*scheduleControll) Delete() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
-// GetMentorSchedule implements schedules.ScheduleHandler
-func (*scheduleControll) GetMentorSchedule() echo.HandlerFunc {
 	panic("unimplemented")
 }
 
@@ -48,5 +45,27 @@ func (sc *scheduleControll) PostSchedule() echo.HandlerFunc {
 			"message": "success post a schedule",
 		})
 
+	}
+}
+
+func (sc *scheduleControll) GetMentorSchedule() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		id := c.Param("mentor_id")
+		mentorID, errConv := strconv.Atoi(id)
+		if errConv != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
+		}
+		res, err := sc.srv.GetMentorSchedule(uint(mentorID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		result := []ShowMentorSchedule{}
+		for _, val := range res {
+			result = append(result, ShowMentorScheduleResponse(val))
+		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    result,
+			"message": "success show all mentor schedule",
+		})
 	}
 }
