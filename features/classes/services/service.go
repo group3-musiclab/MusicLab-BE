@@ -18,11 +18,6 @@ func (*classUseCase) Delete(mentorID uint, classID uint) error {
 	panic("unimplemented")
 }
 
-// GetMentorClass implements classes.ClassService
-func (*classUseCase) GetMentorClass(mentorID uint) ([]classes.Core, error) {
-	panic("unimplemented")
-}
-
 // GetMentorClassDetail implements classes.ClassService
 func (*classUseCase) GetMentorClassDetail(classID uint) (classes.Core, error) {
 	panic("unimplemented")
@@ -57,4 +52,20 @@ func (cuc *classUseCase) PostClass(fileData multipart.FileHeader, newClass class
 		return errors.New(msg)
 	}
 	return nil
+}
+
+func (cuc *classUseCase) GetMentorClass(mentorID uint) ([]classes.Core, error) {
+	res, err := cuc.qry.GetMentorClass(mentorID)
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "class not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []classes.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
