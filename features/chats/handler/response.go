@@ -25,3 +25,27 @@ func listCoreToAllChatResponse(dataCore []chats.Core) []AllChatResponse {
 	}
 	return dataResponse
 }
+
+type ChatByStudentResponse struct {
+	Avatar      string `json:"avatar"`
+	StudentID   uint   `json:"student_id"`
+	StudentName string `json:"student_name"`
+	Chat        string `json:"last_chat"`
+}
+
+func coreToChatByStudentResponse(data chats.Core) ChatByStudentResponse {
+	return ChatByStudentResponse{
+		Avatar:      data.Student.Avatar,
+		StudentID:   data.StudentID,
+		StudentName: data.Student.Name,
+		Chat:        data.Chat,
+	}
+}
+
+func listCoreToChatByStudentResponse(dataCore []chats.Core) []ChatByStudentResponse {
+	var dataResponse []ChatByStudentResponse
+	for _, v := range dataCore {
+		dataResponse = append(dataResponse, coreToChatByStudentResponse(v))
+	}
+	return dataResponse
+}

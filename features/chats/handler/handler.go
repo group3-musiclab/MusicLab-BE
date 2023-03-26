@@ -61,7 +61,16 @@ func (cc *chatControl) GetAll() echo.HandlerFunc {
 
 // GetByStudent implements chats.ChatHandler
 func (cc *chatControl) GetByStudent() echo.HandlerFunc {
-	panic("unimplemented")
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+
+		dataCore, errSelect := cc.srv.GetByStudent(mentorID)
+		if errSelect != nil {
+			return c.JSON(helper.ErrorResponse(errSelect))
+		}
+
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.CHAT_SuccessChatByStudent, listCoreToChatByStudentResponse(dataCore)))
+	}
 }
 
 func New(srv chats.ChatService) chats.ChatHandler {

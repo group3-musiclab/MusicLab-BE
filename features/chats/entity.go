@@ -15,6 +15,13 @@ type Core struct {
 	Role       string
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
+	Student    StudentCore
+}
+
+type StudentCore struct {
+	ID     uint
+	Avatar string
+	Name   string
 }
 
 type ChatHandler interface {

@@ -12,6 +12,13 @@ type Chat struct {
 	MentorID   uint
 	SenderName string
 	Chat       string
+	Student    Student
+}
+
+type Student struct {
+	gorm.Model
+	Avatar string
+	Name   string
 }
 
 func ModelToCore(data Chat) chats.Core {
@@ -23,6 +30,10 @@ func ModelToCore(data Chat) chats.Core {
 		Chat:       data.Chat,
 		CreatedAt:  data.CreatedAt,
 		UpdatedAt:  data.UpdatedAt,
+		Student: chats.StudentCore{
+			Avatar: data.Student.Avatar,
+			Name:   data.Student.Name,
+		},
 	}
 }
 
