@@ -16,11 +16,6 @@ func (*scheduleUseCase) Delete(mentorID uint, scheduleID uint) error {
 	panic("unimplemented")
 }
 
-// GetMentorSchedule implements schedules.ScheduleService
-func (*scheduleUseCase) GetMentorSchedule(mentorID uint) ([]schedules.Core, error) {
-	panic("unimplemented")
-}
-
 func New(sd schedules.ScheduleData) schedules.ScheduleService {
 	return &scheduleUseCase{
 		qry: sd,
@@ -40,4 +35,20 @@ func (suc *scheduleUseCase) PostSchedule(newSchedule schedules.Core) error {
 		return errors.New(msg)
 	}
 	return nil
+}
+
+func (suc *scheduleUseCase) GetMentorSchedule(mentorID uint) ([]schedules.Core, error) {
+	res, err := suc.qry.GetMentorSchedule(mentorID)
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "schedule not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []schedules.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
