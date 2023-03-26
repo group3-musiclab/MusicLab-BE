@@ -11,8 +11,8 @@ type Schedule struct {
 	gorm.Model
 	MentorID     uint
 	Day          string `gorm:"type:enum('Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday')"`
-	StartTime    string `gorm:"type:time"`
-	EndTime      string `gorm:"type:time"`
+	StartTime    string
+	EndTime      string
 	Transactions []_modelTransaction.Transaction
 }
 
