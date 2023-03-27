@@ -62,6 +62,7 @@ func (tuc *transactionUseCase) MakeTransaction(newTransaction transactions.Core)
 	newTransaction.Price = selectClass.Price
 	newTransaction.OrderID = midtransResponse.OrderID
 	newTransaction.Status = "Pending"
+	newTransaction.PaymentUrl = midtransResponse.PaymentUrl
 
 	err := tuc.qry.MakeTransaction(newTransaction)
 	if err != nil {
