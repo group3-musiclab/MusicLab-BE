@@ -21,6 +21,31 @@ func New(srv schedules.ScheduleService) schedules.ScheduleHandler {
 	}
 }
 
+// CheckSchedule implements schedules.ScheduleHandler
+func (sc *scheduleControll) CheckSchedule() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := CheckSchedule{}
+		err := c.Bind(&input)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
+		}
+
+		inputCore, errMapping := checkScheduleToCore(input)
+		if errMapping != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": errMapping.Error()})
+		}
+
+		errCheckSchedule := sc.srv.CheckSchedule(inputCore)
+		if errCheckSchedule != nil {
+			return c.JSON(helper.ErrorResponse(errCheckSchedule))
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "schedule available",
+		})
+	}
+}
+
 func (sc *scheduleControll) PostSchedule() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		mentorID := helper.ExtractTokenUserId(c)

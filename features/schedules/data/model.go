@@ -3,6 +3,7 @@ package data
 import (
 	"musiclab-be/features/schedules"
 	_modelTransaction "musiclab-be/features/transactions/data"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -14,6 +15,19 @@ type Schedule struct {
 	StartTime    string
 	EndTime      string
 	Transactions []_modelTransaction.Transaction
+}
+
+type Transaction struct {
+	gorm.Model
+	OrderID    string
+	Status     string
+	StudentID  uint
+	MentorID   uint
+	ClassID    uint
+	ScheduleID uint
+	StartDate  time.Time `gorm:"type:date"`
+	EndDate    time.Time `gorm:"type:date"`
+	Price      float64   `gorm:"type:float"`
 }
 
 func ToCore(data Schedule) schedules.Core {

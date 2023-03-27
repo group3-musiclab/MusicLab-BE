@@ -74,7 +74,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	cHdl := classHdl.New(cSrv)
 
 	schData := scheduleData.New(db)
-	schSrv := scheduleSrv.New(schData)
+	schSrv := scheduleSrv.New(schData, cData)
 	schHdl := scheduleHdl.New(schSrv)
 
 	chtData := chatData.New(db)
@@ -128,6 +128,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/mentors/schedules", schHdl.PostSchedule(), helper.JWTMiddleware())
 	e.GET("/mentors/:mentor_id/schedules", schHdl.GetMentorSchedule(), helper.JWTMiddleware())
 	e.DELETE("/schedules/:schedule_id", schHdl.Delete(), helper.JWTMiddleware())
+	e.POST("/schedules/check", schHdl.CheckSchedule())
 
 	// Chats
 	e.POST("/chats", chtHdl.Add(), helper.JWTMiddleware())

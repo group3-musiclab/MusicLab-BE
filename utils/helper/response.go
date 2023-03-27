@@ -64,6 +64,8 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusInternalServerError
 	case strings.Contains(msg, consts.QUERY_ErrorReadData):
 		code = http.StatusInternalServerError
+	case strings.Contains(msg, "schedule not available"):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }

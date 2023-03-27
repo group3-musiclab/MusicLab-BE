@@ -18,6 +18,19 @@ func New(db *gorm.DB) schedules.ScheduleData {
 	}
 }
 
+// CheckSchedule implements schedules.ScheduleData
+func (sq *scheduleQuery) CheckSchedule(input schedules.Core) (int64, error) {
+	startDate := input.Transaction.StartDate.Format("2006-01-02")
+	endDate := input.Transaction.EndDate.Format("2006-01-02")
+
+	var row int64
+	txSelect := sq.db.Model(&Transaction{}).Where("mentor_id = ?", input.MentorID).Where("schedule_id = ?", input.Transaction.ScheduleID).Where("(start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?) OR (start_date <= ? AND end_date >= ?)", endDate, startDate, startDate, endDate, startDate, endDate).Count(&row)
+	if txSelect.Error != nil {
+		return 0, errors.New("error read data")
+	}
+	return row, nil
+}
+
 // PostSchedule implements schedules.ScheduleData
 func (sq *scheduleQuery) PostSchedule(newClass schedules.Core) error {
 	cnv := CoreToData(newClass)
