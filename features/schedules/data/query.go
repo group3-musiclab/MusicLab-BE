@@ -24,7 +24,7 @@ func (sq *scheduleQuery) CheckSchedule(input schedules.Core) (int64, error) {
 	endDate := input.Transaction.EndDate.Format("2006-01-02")
 
 	var row int64
-	txSelect := sq.db.Model(&Transaction{}).Where("mentor_id = ?", input.MentorID).Where("schedule_id = ?", input.Transaction.ScheduleID).Where("(check_in_date <= ? AND check_out_date >= ?) OR (check_in_date >= ? AND check_out_date <= ?) OR (check_in_date <= ? AND check_out_date >= ?)", endDate, startDate, startDate, endDate, startDate, endDate).Count(&row)
+	txSelect := sq.db.Model(&Transaction{}).Where("mentor_id = ?", input.MentorID).Where("schedule_id = ?", input.Transaction.ScheduleID).Where("(start_date <= ? AND end_date >= ?) OR (start_date >= ? AND end_date <= ?) OR (start_date <= ? AND end_date >= ?)", endDate, startDate, startDate, endDate, startDate, endDate).Count(&row)
 	if txSelect.Error != nil {
 		return 0, errors.New("error read data")
 	}

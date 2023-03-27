@@ -2,7 +2,6 @@ package services
 
 import (
 	"errors"
-	"fmt"
 	"log"
 	"musiclab-be/features/classes"
 	"musiclab-be/features/schedules"
@@ -41,11 +40,10 @@ func (suc *scheduleUseCase) CheckSchedule(input schedules.Core) error {
 	input.MentorID = coreClass.MentorID
 
 	// calculate end date
-	endDate := input.Transaction.StartDate.AddDate(0, int(coreClass.Duration), 0)
-	input.Transaction.EndDate = endDate
+	countDay := int(coreClass.Duration * 30)
 
-	fmt.Println(input.Transaction.StartDate)
-	fmt.Println(input.Transaction.EndDate)
+	endDate := input.Transaction.StartDate.AddDate(0, 0, countDay)
+	input.Transaction.EndDate = endDate
 
 	// check availability
 	rows, errCheck := suc.qry.CheckSchedule(input)

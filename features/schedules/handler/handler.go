@@ -32,7 +32,7 @@ func (sc *scheduleControll) CheckSchedule() echo.HandlerFunc {
 
 		inputCore, errMapping := checkScheduleToCore(input)
 		if errMapping != nil {
-			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": errMapping})
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": errMapping.Error()})
 		}
 
 		errCheckSchedule := sc.srv.CheckSchedule(inputCore)

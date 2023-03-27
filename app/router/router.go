@@ -128,7 +128,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/mentors/schedules", schHdl.PostSchedule(), helper.JWTMiddleware())
 	e.GET("/mentors/:mentor_id/schedules", schHdl.GetMentorSchedule(), helper.JWTMiddleware())
 	e.DELETE("/schedules/:schedule_id", schHdl.Delete(), helper.JWTMiddleware())
-	e.POST("/schedules/check", schHdl.CheckSchedule(), helper.JWTMiddleware())
+	e.POST("/schedules/check", schHdl.CheckSchedule())
 
 	// Chats
 	e.POST("/chats", chtHdl.Add(), helper.JWTMiddleware())
