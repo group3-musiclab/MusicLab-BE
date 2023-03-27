@@ -17,4 +17,5 @@ type Transaction struct {
 	StartDate  time.Time `gorm:"type:date"`
 	EndDate    time.Time `gorm:"type:date"`
 	Price      float64   `gorm:"type:float"`
+	PaymentUrl string
 }
