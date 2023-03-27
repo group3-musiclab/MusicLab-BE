@@ -28,10 +28,10 @@ func (cq *classQuery) PostClass(newClass classes.Core) error {
 	return nil
 }
 
-func (cq *classQuery) GetMentorClass(mentorID uint) ([]classes.Core, error) {
+func (cq *classQuery) GetMentorClass(mentorID uint, limit, offset int) ([]classes.Core, error) {
 	res := []Class{}
 
-	err := cq.db.Where("mentor_id = ?", mentorID).Find(&res).Error
+	err := cq.db.Where("mentor_id = ?", mentorID).Limit(limit).Offset(offset).Find(&res).Error
 
 	if err != nil {
 		log.Println("query error", err.Error())
