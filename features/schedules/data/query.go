@@ -12,15 +12,15 @@ type scheduleQuery struct {
 	db *gorm.DB
 }
 
-// CheckSchedule implements schedules.ScheduleData
-func (*scheduleQuery) CheckSchedule(input schedules.Core) (int64, error) {
-	panic("unimplemented")
-}
-
 func New(db *gorm.DB) schedules.ScheduleData {
 	return &scheduleQuery{
 		db: db,
 	}
+}
+
+// CheckSchedule implements schedules.ScheduleData
+func (sq *scheduleQuery) CheckSchedule(input schedules.Core) (int64, error) {
+	panic("unimplemented")
 }
 
 // PostSchedule implements schedules.ScheduleData

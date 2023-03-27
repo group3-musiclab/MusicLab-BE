@@ -30,9 +30,14 @@ func (sc *scheduleControll) CheckSchedule() echo.HandlerFunc {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
 
-		errSchedule := sc.srv.CheckSchedule(checkScheduleToCore(input))
-		if errSchedule != nil {
-			return errSchedule
+		inputCore, errMapping := checkScheduleToCore(input)
+		if errMapping != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": errMapping})
+		}
+
+		errCheckSchedule := sc.srv.CheckSchedule(inputCore)
+		if errCheckSchedule != nil {
+			return c.JSON(helper.ErrorResponse(errCheckSchedule))
 		}
 
 		return c.JSON(http.StatusOK, map[string]interface{}{

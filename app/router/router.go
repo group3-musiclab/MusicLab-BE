@@ -74,7 +74,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	cHdl := classHdl.New(cSrv)
 
 	schData := scheduleData.New(db)
-	schSrv := scheduleSrv.New(schData)
+	schSrv := scheduleSrv.New(schData, cData)
 	schHdl := scheduleHdl.New(schSrv)
 
 	chtData := chatData.New(db)

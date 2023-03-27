@@ -12,8 +12,7 @@ type Core struct {
 	Day         string
 	StartTime   string
 	EndTime     string
-	StartDate   time.Time
-	ClassID     uint
+	ClassID     uint `validate:"required"`
 	Transaction Transaction
 }
 
@@ -24,8 +23,8 @@ type Transaction struct {
 	StudentID  uint
 	MentorID   uint
 	ClassID    uint
-	ScheduleID uint
-	StartDate  time.Time
+	ScheduleID uint      `validate:"required"`
+	StartDate  time.Time `validate:"required"`
 	EndDate    time.Time
 	Price      float64
 }

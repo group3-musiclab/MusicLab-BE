@@ -3,23 +3,57 @@ package services
 import (
 	"errors"
 	"log"
+	"musiclab-be/features/classes"
 	"musiclab-be/features/schedules"
 	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type scheduleUseCase struct {
-	qry schedules.ScheduleData
+	qry      schedules.ScheduleData
+	qryClass classes.ClassData
+	validate *validator.Validate
 }
 
-func New(sd schedules.ScheduleData) schedules.ScheduleService {
+func New(sd schedules.ScheduleData, cd classes.ClassData) schedules.ScheduleService {
 	return &scheduleUseCase{
-		qry: sd,
+		qry:      sd,
+		qryClass: cd,
+		validate: validator.New(),
 	}
 }
 
 // CheckSchedule implements schedules.ScheduleService
-func (*scheduleUseCase) CheckSchedule(input schedules.Core) error {
-	panic("unimplemented")
+func (suc *scheduleUseCase) CheckSchedule(input schedules.Core) error {
+	errValidate := suc.validate.Struct(input)
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
+	// get mentor id by class id
+	coreClass, errGetClass := suc.qryClass.GetMentorClassDetail(input.ClassID)
+	if errGetClass != nil {
+		return errGetClass
+	}
+
+	input.MentorID = coreClass.MentorID
+
+	// calculate end date
+	endDate := input.Transaction.StartDate.AddDate(0, int(coreClass.Duration), 0)
+	input.Transaction.EndDate = endDate
+
+	// check availability
+	rows, errCheck := suc.qry.CheckSchedule(input)
+	if errCheck != nil {
+		return errCheck
+	}
+
+	if rows != 0 {
+		return errors.New("schedule not available")
+	}
+
+	return nil
 }
 
 func (suc *scheduleUseCase) PostSchedule(newSchedule schedules.Core) error {
