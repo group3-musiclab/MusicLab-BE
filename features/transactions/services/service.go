@@ -29,6 +29,11 @@ func New(td transactions.TransactionData, md mentors.MentorData, sd students.Stu
 
 // UpdateTransaction implements transactions.TransactionService
 func (tuc *transactionUseCase) UpdateTransaction(input transactions.Core) error {
+	response, errCallback := helper.CallBackMidtrans(input.OrderID)
+	if errCallback != nil {
+		return errCallback
+	}
+	input.Status = response.Status
 	err := tuc.qry.UpdateTransaction(input)
 	if err != nil {
 		return err

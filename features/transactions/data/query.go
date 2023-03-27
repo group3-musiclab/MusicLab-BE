@@ -22,7 +22,7 @@ func New(db *gorm.DB) transactions.TransactionData {
 func (tq *transactionQuery) UpdateTransaction(input transactions.Core) error {
 	cnv := CoreToData(input)
 
-	err := tq.db.Model(&cnv).Where("order_id = ?", cnv.OrderID).Update("status", cnv.Status)
+	err := tq.db.Where("order_id = ?", cnv.OrderID).Updates(&cnv)
 	if err != nil {
 		log.Println("query error", err.Error)
 		return errors.New("server error")

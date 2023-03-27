@@ -61,7 +61,7 @@ func (tc *transactionControll) MakeTransaction() echo.HandlerFunc {
 
 		return c.JSON(http.StatusCreated, map[string]interface{}{
 			"data":    result,
-			"message": "success make a class",
+			"message": "success make transaction",
 		})
 
 	}
