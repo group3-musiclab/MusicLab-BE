@@ -10,7 +10,7 @@ import (
 	"github.com/midtrans/midtrans-go/snap"
 )
 
-func RequestSnapMidtrans(student transactions.Core, class transactions.Core, input transactions.Core) (transactions.Core, error) {
+func RequestSnapMidtrans(input transactions.Core) (transactions.Core, error) {
 	// request midtrans snap
 	var snapClient = snap.Client{}
 	snapClient.New(config.SERVER_KEY_MIDTRANS, midtrans.Sandbox)
@@ -22,24 +22,24 @@ func RequestSnapMidtrans(student transactions.Core, class transactions.Core, inp
 
 	// customer
 	custAddress := &midtrans.CustomerAddress{
-		FName:       student.Student.Name,
-		Phone:       student.Student.Phone,
-		Address:     student.Student.Address,
+		FName:       input.Student.Name,
+		Phone:       input.Student.Phone,
+		Address:     input.Student.Address,
 		CountryCode: "IDN",
 	}
 
 	req := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
 			OrderID:  "ALTA-MusicLab-" + student_id + "-" + uuid,
-			GrossAmt: int64(class.Class.Price),
+			GrossAmt: int64(input.Class.Price),
 		},
 		CreditCard: &snap.CreditCardDetails{
 			Secure: true,
 		},
 		CustomerDetail: &midtrans.CustomerDetails{
-			FName:    student.Student.Name,
-			Email:    student.Student.Email,
-			Phone:    student.Student.Phone,
+			FName:    input.Student.Name,
+			Email:    input.Student.Email,
+			Phone:    input.Student.Phone,
 			BillAddr: custAddress,
 			ShipAddr: custAddress,
 		},
@@ -47,9 +47,9 @@ func RequestSnapMidtrans(student transactions.Core, class transactions.Core, inp
 		Items: &[]midtrans.ItemDetails{
 			{
 				ID:    "Class-" + class_id,
-				Qty:   int32(class.Class.Qty),
-				Price: int64(class.Class.Price),
-				Name:  class.Class.Name,
+				Qty:   int32(input.Class.Qty),
+				Price: int64(input.Class.Price),
+				Name:  input.Class.Name,
 			},
 		},
 	}
