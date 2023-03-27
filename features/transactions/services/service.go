@@ -86,6 +86,18 @@ func (tuc *transactionUseCase) GetMentorTransaction(mentorID uint) ([]transactio
 }
 
 // GetStudentTransaction implements transactions.TransactionService
-func (*transactionUseCase) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
-	panic("unimplemented")
+func (tuc *transactionUseCase) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
+	res, err := tuc.qry.GetMentorTransaction(studentID)
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "review not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []transactions.Core{}, errors.New(msg)
+	}
+
+	return res, nil
 }
