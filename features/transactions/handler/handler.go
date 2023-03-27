@@ -12,16 +12,6 @@ type transactionControll struct {
 	srv transactions.TransactionService
 }
 
-// GetMentorTransaction implements transactions.TransactionHandler
-func (*transactionControll) GetMentorTransaction() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
-// GetStudentTransaction implements transactions.TransactionHandler
-func (*transactionControll) GetStudentTransaction() echo.HandlerFunc {
-	panic("unimplemented")
-}
-
 func New(srv transactions.TransactionService) transactions.TransactionHandler {
 	return &transactionControll{
 		srv: srv,
@@ -56,4 +46,27 @@ func (tc *transactionControll) MakeTransaction() echo.HandlerFunc {
 
 	}
 
+}
+
+func (tc *transactionControll) GetMentorTransaction() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		res, err := tc.srv.GetMentorTransaction(uint(mentorID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		result := []ShowAllMentorTransaction{}
+		for _, val := range res {
+			result = append(result, ShowAllMentorTransactionResponse(val))
+		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    result,
+			"message": "success show mentor transaction history",
+		})
+	}
+}
+
+// GetStudentTransaction implements transactions.TransactionHandler
+func (*transactionControll) GetStudentTransaction() echo.HandlerFunc {
+	panic("unimplemented")
 }

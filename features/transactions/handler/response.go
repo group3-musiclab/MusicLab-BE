@@ -1,6 +1,9 @@
 package handler
 
-import "musiclab-be/features/transactions"
+import (
+	"musiclab-be/features/transactions"
+	"time"
+)
 
 type TransactionResponse struct {
 	PaymentUrl string `json:"payment_url"`
@@ -9,5 +12,27 @@ type TransactionResponse struct {
 func TransactionResponseResponse(data transactions.Core) TransactionResponse {
 	return TransactionResponse{
 		PaymentUrl: data.PaymentUrl,
+	}
+}
+
+type ShowAllMentorTransaction struct {
+	ID          uint      `json:"id"`
+	StudentName string    `json:"student_name"`
+	ClassName   string    `json:"class_name"`
+	StartDate   time.Time `json:"start_date"`
+	EndDate     time.Time `json:"end_date"`
+	Price       float64   `json:"price"`
+	Status      string    `json:"status"`
+}
+
+func ShowAllMentorTransactionResponse(data transactions.Core) ShowAllMentorTransaction {
+	return ShowAllMentorTransaction{
+		ID:          data.ID,
+		StudentName: data.Student.Name,
+		ClassName:   data.Class.Name,
+		StartDate:   data.StartDate,
+		EndDate:     data.EndDate,
+		Price:       data.Price,
+		Status:      data.Status,
 	}
 }
