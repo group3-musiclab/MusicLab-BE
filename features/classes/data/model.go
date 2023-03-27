@@ -17,7 +17,7 @@ type Class struct {
 	Syllabus     string
 	Requirement  string
 	ForWhom      string
-	Price        string `gorm:"type:float not null"`
+	Price        float64 `gorm:"type:float not null"`
 	Duration     uint
 	Transactions []_modelTransaction.Transaction
 }

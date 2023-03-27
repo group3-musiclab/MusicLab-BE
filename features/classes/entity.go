@@ -16,7 +16,7 @@ type Core struct {
 	Syllabus    string
 	Requirement string
 	ForWhom     string
-	Price       string
+	Price       float64
 	Duration    uint
 }
 

@@ -6,14 +6,14 @@ import (
 )
 
 type PostClass struct {
-	Name        string `json:"name" form:"name"`
-	Level       string `json:"level" form:"level"`
-	Description string `json:"description" form:"description"`
-	Syllabus    string `json:"syllabus" form:"syllabus"`
-	ForWhom     string `json:"for_whom" form:"for_whom"`
-	Requirement string `json:"requirement" form:"requirement"`
-	Price       string `json:"price" form:"price"`
-	Duration    uint   `json:"duration" form:"duration"`
+	Name        string  `json:"name" form:"name"`
+	Level       string  `json:"level" form:"level"`
+	Description string  `json:"description" form:"description"`
+	Syllabus    string  `json:"syllabus" form:"syllabus"`
+	ForWhom     string  `json:"for_whom" form:"for_whom"`
+	Requirement string  `json:"requirement" form:"requirement"`
+	Price       float64 `json:"price" form:"price"`
+	Duration    uint    `json:"duration" form:"duration"`
 	FileHeader  multipart.FileHeader
 }
 
