@@ -45,6 +45,18 @@ func (tq *transactionQuery) GetMentorTransaction(mentorID uint) ([]transactions.
 	return result, nil
 }
 
-func (*transactionQuery) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
-	panic("unimplemented")
+func (tq *transactionQuery) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
+	res := []Transaction{}
+	err := tq.db.Preload("Mentor").Preload("Class").Where("student_id = ?", studentID).Find(&res).Error
+	if err != nil {
+		log.Println("query error", err.Error())
+		return []transactions.Core{}, errors.New("server error")
+	}
+
+	result := []transactions.Core{}
+	for _, val := range res {
+		result = append(result, ToCore(val))
+	}
+
+	return result, nil
 }
