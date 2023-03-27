@@ -19,6 +19,23 @@ type Transaction struct {
 	EndDate    time.Time `gorm:"type:date"`
 	Price      float64   `gorm:"type:float"`
 	PaymentUrl string
+	Student    Student
+	Class      Class
+}
+
+type Student struct {
+	gorm.Model
+	Name    string
+	Email   string
+	Phone   string
+	Address string
+}
+
+type Class struct {
+	gorm.Model
+	Name     string
+	Duration int
+	Price    float64
 }
 
 func ToCore(data Transaction) transactions.Core {
@@ -34,6 +51,19 @@ func ToCore(data Transaction) transactions.Core {
 		EndDate:    data.EndDate,
 		Price:      data.Price,
 		PaymentUrl: data.PaymentUrl,
+		Student: transactions.Student{
+			ID:      data.Student.ID,
+			Name:    data.Student.Name,
+			Email:   data.Student.Email,
+			Phone:   data.Student.Phone,
+			Address: data.Student.Address,
+		},
+		Class: transactions.Class{
+			ID:       data.Class.ID,
+			Name:     data.Class.Name,
+			Duration: data.Class.Duration,
+			Price:    data.Class.Price,
+		},
 	}
 }
 

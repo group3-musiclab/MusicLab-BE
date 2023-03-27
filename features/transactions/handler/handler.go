@@ -37,6 +37,7 @@ func (tc *transactionControll) MakeTransaction() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
 		}
+
 		transaction := addMakeTransactionToCore(input)
 		transaction.StudentID = studentID
 

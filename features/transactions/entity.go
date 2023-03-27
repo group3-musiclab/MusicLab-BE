@@ -20,6 +20,7 @@ type Core struct {
 	PaymentUrl string
 	Student    Student
 	Class      Class
+	Duration   int
 }
 
 type Student struct {
@@ -31,10 +32,11 @@ type Student struct {
 }
 
 type Class struct {
-	ID    uint
-	Name  string
-	Qty   int
-	Price float64
+	ID       uint
+	Name     string
+	Qty      int
+	Price    float64
+	Duration int
 }
 type TransactionHandler interface {
 	MakeTransaction() echo.HandlerFunc

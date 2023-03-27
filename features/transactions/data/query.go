@@ -22,6 +22,10 @@ func (*transactionQuery) GetStudentTransaction() {
 	panic("unimplemented")
 }
 
+// GetClass implements transactions.TransactionData
+
+// GetMentorTransaction implements transactions.TransactionData
+
 func New(db *gorm.DB) transactions.TransactionData {
 	return &transactionQuery{
 		db: db,

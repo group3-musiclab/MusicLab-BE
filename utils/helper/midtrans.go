@@ -2,6 +2,8 @@ package helper
 
 import (
 	"musiclab-be/app/config"
+	"musiclab-be/features/classes"
+	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
 	"strconv"
 
@@ -10,7 +12,7 @@ import (
 	"github.com/midtrans/midtrans-go/snap"
 )
 
-func RequestSnapMidtrans(input transactions.Core) (transactions.Core, error) {
+func RequestSnapMidtrans(student students.Core, class classes.Core, input transactions.Core) (transactions.Core, error) {
 	// request midtrans snap
 	var snapClient = snap.Client{}
 	snapClient.New(config.SERVER_KEY_MIDTRANS, midtrans.Sandbox)
@@ -19,27 +21,28 @@ func RequestSnapMidtrans(input transactions.Core) (transactions.Core, error) {
 	student_id := strconv.Itoa(int(input.StudentID))
 	class_id := strconv.Itoa(int(input.ClassID))
 	uuid := shortuuid.New()
+	orderID := "ALTA-MusicLab-" + student_id + "-" + uuid
 
 	// customer
 	custAddress := &midtrans.CustomerAddress{
-		FName:       input.Student.Name,
-		Phone:       input.Student.Phone,
-		Address:     input.Student.Address,
+		FName:       student.Name,
+		Phone:       student.Phone,
+		Address:     student.Address,
 		CountryCode: "IDN",
 	}
 
 	req := &snap.Request{
 		TransactionDetails: midtrans.TransactionDetails{
-			OrderID:  "ALTA-MusicLab-" + student_id + "-" + uuid,
-			GrossAmt: int64(input.Class.Price),
+			OrderID:  orderID,
+			GrossAmt: int64(class.Price),
 		},
 		CreditCard: &snap.CreditCardDetails{
 			Secure: true,
 		},
 		CustomerDetail: &midtrans.CustomerDetails{
-			FName:    input.Student.Name,
-			Email:    input.Student.Email,
-			Phone:    input.Student.Phone,
+			FName:    student.Name,
+			Email:    student.Email,
+			Phone:    student.Phone,
 			BillAddr: custAddress,
 			ShipAddr: custAddress,
 		},
@@ -47,9 +50,9 @@ func RequestSnapMidtrans(input transactions.Core) (transactions.Core, error) {
 		Items: &[]midtrans.ItemDetails{
 			{
 				ID:    "Class-" + class_id,
-				Qty:   int32(input.Class.Qty),
-				Price: int64(input.Class.Price),
-				Name:  input.Class.Name,
+				Qty:   int32(1),
+				Price: int64(class.Price),
+				Name:  class.Name,
 			},
 		},
 	}
@@ -61,6 +64,7 @@ func RequestSnapMidtrans(input transactions.Core) (transactions.Core, error) {
 
 	midtransResponse := transactions.Core{
 		PaymentUrl: response.RedirectURL,
+		OrderID:    orderID,
 	}
 
 	return midtransResponse, nil
