@@ -27,15 +27,17 @@ func listCoreToAllChatResponse(dataCore []chats.Core) []AllChatResponse {
 }
 
 type ChatByStudentResponse struct {
-	Avatar      string `json:"avatar"`
+	MentorID    uint   `json:"mentor_id"`
 	StudentID   uint   `json:"student_id"`
+	Avatar      string `json:"avatar"`
 	StudentName string `json:"student_name"`
 }
 
 func coreToChatByStudentResponse(data chats.Core) ChatByStudentResponse {
 	return ChatByStudentResponse{
-		Avatar:      data.Student.Avatar,
+		MentorID:    data.MentorID,
 		StudentID:   data.StudentID,
+		Avatar:      data.Student.Avatar,
 		StudentName: data.Student.Name,
 	}
 }
