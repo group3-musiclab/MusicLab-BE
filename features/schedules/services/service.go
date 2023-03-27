@@ -17,6 +17,11 @@ func New(sd schedules.ScheduleData) schedules.ScheduleService {
 	}
 }
 
+// CheckSchedule implements schedules.ScheduleService
+func (*scheduleUseCase) CheckSchedule(input schedules.Core) error {
+	panic("unimplemented")
+}
+
 func (suc *scheduleUseCase) PostSchedule(newSchedule schedules.Core) error {
 	err := suc.qry.PostSchedule(newSchedule)
 	if err != nil {

@@ -15,3 +15,17 @@ func addPostScheduleToCore(data PostSchedule) schedules.Core {
 		EndTime:   data.EndTime,
 	}
 }
+
+type CheckSchedule struct {
+	ClassID    uint `json:"class_id" form:"class_id"`
+	ScheduleID uint `json:"schedule_id" form:"schedule_id"`
+}
+
+func checkScheduleToCore(data CheckSchedule) schedules.Core {
+	return schedules.Core{
+		ClassID: data.ClassID,
+		Transaction: schedules.Transaction{
+			ScheduleID: data.ScheduleID,
+		},
+	}
+}
