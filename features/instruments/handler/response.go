@@ -23,12 +23,14 @@ func listCoreToResponse(dataCore []instruments.Core) []InstrumentResponse {
 }
 
 type MentorInstrumentResponse struct {
-	Name string `json:"name"`
+	InstrumentID uint   `json:"id"`
+	Name         string `json:"name"`
 }
 
 func coreToMentorInstrumentResponse(data instruments.MentorInstrumentCore) MentorInstrumentResponse {
 	return MentorInstrumentResponse{
-		Name: data.Instrument.Name,
+		InstrumentID: data.InstrumentID,
+		Name:         data.Instrument.Name,
 	}
 }
 

@@ -22,3 +22,15 @@ func addMakeTransactionToCore(data MakeTransaction) transactions.Core {
 		Price:      data.Price,
 	}
 }
+
+type CheckTransactionRequest struct {
+	OrderID string `json:"order_id" form:"order_id"`
+	Status  string `json:"transaction_status" form:"transaction_status"`
+}
+
+func checkTransactionRequestToCore(data CheckTransactionRequest) transactions.Core {
+	return transactions.Core{
+		OrderID: data.OrderID,
+		Status:  data.Status,
+	}
+}

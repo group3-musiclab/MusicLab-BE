@@ -18,6 +18,18 @@ func New(db *gorm.DB) transactions.TransactionData {
 	}
 }
 
+// UpdateTransaction implements transactions.TransactionData
+func (tq *transactionQuery) UpdateTransaction(input transactions.Core) error {
+	cnv := CoreToData(input)
+
+	err := tq.db.Model(&cnv).Where("order_id = ?", cnv.OrderID).Update("status", cnv.Status)
+	if err != nil {
+		log.Println("query error", err.Error)
+		return errors.New("server error")
+	}
+	return nil
+}
+
 func (tq *transactionQuery) MakeTransaction(newTransaction transactions.Core) error {
 	cnv := CoreToData(newTransaction)
 

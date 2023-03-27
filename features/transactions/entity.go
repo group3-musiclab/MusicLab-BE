@@ -47,20 +47,24 @@ type Mentor struct {
 	Phone   string
 	Address string
 }
+
 type TransactionHandler interface {
 	MakeTransaction() echo.HandlerFunc
 	GetMentorTransaction() echo.HandlerFunc
 	GetStudentTransaction() echo.HandlerFunc
+	MidtransNotification() echo.HandlerFunc
 }
 
 type TransactionService interface {
 	MakeTransaction(newTransaction Core) (Core, error)
 	GetMentorTransaction(mentorID uint) ([]Core, error)
 	GetStudentTransaction(studentID uint) ([]Core, error)
+	UpdateTransaction(input Core) error
 }
 
 type TransactionData interface {
 	MakeTransaction(newTransaction Core) error
 	GetMentorTransaction(mentorID uint) ([]Core, error)
 	GetStudentTransaction(studentID uint) ([]Core, error)
+	UpdateTransaction(input Core) error
 }

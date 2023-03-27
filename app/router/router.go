@@ -147,5 +147,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/transactions", transHdl.MakeTransaction(), helper.JWTMiddleware())
 	e.GET("/mentors/transactions", transHdl.GetMentorTransaction(), helper.JWTMiddleware())
 	e.GET("/students/transactions", transHdl.GetStudentTransaction(), helper.JWTMiddleware())
+	e.POST("transactions/notifications", transHdl.MidtransNotification())
 
 }

@@ -9,8 +9,14 @@ import (
 
 	"github.com/lithammer/shortuuid/v4"
 	"github.com/midtrans/midtrans-go"
+	"github.com/midtrans/midtrans-go/coreapi"
 	"github.com/midtrans/midtrans-go/snap"
 )
+
+type CheckTransaction struct {
+	OrderID string `json:"order_id" form:"order_id"`
+	Status  string `json:"transaction_status" form:"transaction_status"`
+}
 
 func RequestSnapMidtrans(student students.Core, class classes.Core, input transactions.Core) (transactions.Core, error) {
 	// request midtrans snap
@@ -68,4 +74,21 @@ func RequestSnapMidtrans(student students.Core, class classes.Core, input transa
 	}
 
 	return midtransResponse, nil
+}
+
+func CallBackMidtrans(orderID string) (CheckTransaction, error) {
+	var coreAPIClient = coreapi.Client{}
+	coreAPIClient.New(config.SERVER_KEY_MIDTRANS, midtrans.Sandbox)
+
+	response, err := coreAPIClient.CheckTransaction(orderID)
+	if err != nil {
+		return CheckTransaction{}, err
+	}
+
+	transactionStatus := CheckTransaction{
+		OrderID: response.OrderID,
+		Status:  response.TransactionStatus,
+	}
+
+	return transactionStatus, nil
 }
