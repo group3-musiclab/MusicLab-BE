@@ -37,6 +37,10 @@ import (
 	chatHdl "musiclab-be/features/chats/handler"
 	chatSrv "musiclab-be/features/chats/services"
 
+	transactionData "musiclab-be/features/transactions/data"
+	transactionHdl "musiclab-be/features/transactions/handler"
+	transactionSrv "musiclab-be/features/transactions/services"
+
 	"musiclab-be/utils/helper"
 
 	"github.com/labstack/echo/v4"
@@ -80,6 +84,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	chtData := chatData.New(db)
 	chtSrv := chatSrv.New(chtData, mData, sData)
 	chtHdl := chatHdl.New(chtSrv)
+
+	transData := transactionData.New(db)
+	transSrv := transactionSrv.New(transData, mData, sData, cData)
+	transHdl := transactionHdl.New(transSrv)
 
 	// Auth
 	e.POST("/login", aHdl.Login())
@@ -134,4 +142,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/chats", chtHdl.Add(), helper.JWTMiddleware())
 	e.GET("/chats", chtHdl.GetAll(), helper.JWTMiddleware())
 	e.GET("/inbox", chtHdl.GetByStudent(), helper.JWTMiddleware())
+
+	// Transaction
+	e.POST("/transactions", transHdl.MakeTransaction(), helper.JWTMiddleware())
+	e.GET("/mentors/transactions", transHdl.GetMentorTransaction(), helper.JWTMiddleware())
+	e.GET("/students/transactions", transHdl.GetStudentTransaction(), helper.JWTMiddleware())
+
 }
