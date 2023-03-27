@@ -6,10 +6,10 @@ import (
 )
 
 type ShowAllMentorClass struct {
-	ID    uint   `json:"id"`
-	Image string `json:"image"`
-	Name  string `json:"name"`
-	Price string `json:"price"`
+	ID    uint    `json:"id"`
+	Image string  `json:"image"`
+	Name  string  `json:"name"`
+	Price float64 `json:"price"`
 }
 
 func ShowAllMentorClassResponse(data classes.Core) ShowAllMentorClass {
@@ -22,16 +22,16 @@ func ShowAllMentorClassResponse(data classes.Core) ShowAllMentorClass {
 }
 
 type ShowMentorClassDetail struct {
-	ID          uint   `json:"id"`
-	Image       string `json:"image"`
-	Name        string `json:"name"`
-	Level       string `json:"level"`
-	Description string `json:"description"`
-	Syllabus    string `json:"syllabus"`
-	ForWhom     string `json:"for_whom"`
-	Requirement string `json:"requirement"`
-	Price       string `json:"price"`
-	Duration    uint   `json:"duration"`
+	ID          uint    `json:"id"`
+	Image       string  `json:"image"`
+	Name        string  `json:"name"`
+	Level       string  `json:"level"`
+	Description string  `json:"description"`
+	Syllabus    string  `json:"syllabus"`
+	ForWhom     string  `json:"for_whom"`
+	Requirement string  `json:"requirement"`
+	Price       float64 `json:"price"`
+	Duration    uint    `json:"duration"`
 }
 
 func ShowMentorClassDetailResponse(data classes.Core) ShowMentorClassDetail {
@@ -77,7 +77,7 @@ func ConvertClassUpdateResponse(input classes.Core) (interface{}, error) {
 	if ResponseFilter.Requirement != "" {
 		result["requirement"] = ResponseFilter.Requirement
 	}
-	if ResponseFilter.Price != "" {
+	if ResponseFilter.Price != 0 {
 		result["price"] = ResponseFilter.Price
 	}
 	if ResponseFilter.Duration != 0 {
