@@ -16,7 +16,7 @@ type Student struct {
 	Email        string `gorm:"not null;unique;type:varchar(50)"`
 	Password     string
 	Role         string `gorm:"type:varchar(25) not null default 'Student'"`
-	Sex          string
+	Sex          string `gorm:"type:enum('','Male','Female')"`
 	Phone        string `gorm:"type:varchar(12)"`
 	Address      string `gorm:"type:varchar(100)"`
 	Chats        []_modelChat.Chat
