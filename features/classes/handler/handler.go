@@ -62,12 +62,33 @@ func (cc *classControll) PostClass() echo.HandlerFunc {
 
 func (cc *classControll) GetMentorClass() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 6
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
 		id := c.Param("mentor_id")
 		mentorID, errConv := strconv.Atoi(id)
 		if errConv != nil {
 			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
 		}
-		res, err := cc.srv.GetMentorClass(uint(mentorID))
+		res, err := cc.srv.GetMentorClass(uint(mentorID), page, limit)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}

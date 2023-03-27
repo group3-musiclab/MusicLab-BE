@@ -39,8 +39,9 @@ func (cuc *classUseCase) PostClass(fileData multipart.FileHeader, newClass class
 	return nil
 }
 
-func (cuc *classUseCase) GetMentorClass(mentorID uint) ([]classes.Core, error) {
-	res, err := cuc.qry.GetMentorClass(mentorID)
+func (cuc *classUseCase) GetMentorClass(mentorID uint, page, limit int) ([]classes.Core, error) {
+	offset := (page - 1) * limit
+	res, err := cuc.qry.GetMentorClass(mentorID, limit, offset)
 
 	if err != nil {
 		msg := ""

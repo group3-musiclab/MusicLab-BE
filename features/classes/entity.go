@@ -31,7 +31,7 @@ type ClassHandler interface {
 
 type ClassService interface {
 	PostClass(fileData multipart.FileHeader, newClass Core) error
-	GetMentorClass(mentorID uint) ([]Core, error)
+	GetMentorClass(mentorID uint, page, limit int) ([]Core, error)
 	GetMentorClassDetail(classID uint) (Core, error)
 	Update(mentorID, classID uint, fileData multipart.FileHeader, updatedClass Core) error
 	Delete(mentorID, classID uint) error
@@ -39,7 +39,7 @@ type ClassService interface {
 
 type ClassData interface {
 	PostClass(newClass Core) error
-	GetMentorClass(mentorID uint) ([]Core, error)
+	GetMentorClass(mentorID uint, limit, offset int) ([]Core, error)
 	GetMentorClassDetail(classID uint) (Core, error)
 	Update(mentorID, classID uint, updatedClass Core) error
 	Delete(mentorID, classID uint) error
