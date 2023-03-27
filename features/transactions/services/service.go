@@ -18,16 +18,6 @@ type transactionUseCase struct {
 	qryStudent students.StudentData
 }
 
-// GetMentorTransaction implements transactions.TransactionService
-func (*transactionUseCase) GetMentorTransaction() {
-	panic("unimplemented")
-}
-
-// GetStudentTransaction implements transactions.TransactionService
-func (*transactionUseCase) GetStudentTransaction() {
-	panic("unimplemented")
-}
-
 func New(td transactions.TransactionData, md mentors.MentorData, sd students.StudentData, cd classes.ClassData) transactions.TransactionService {
 	return &transactionUseCase{
 		qry:        td,
@@ -77,4 +67,25 @@ func (tuc *transactionUseCase) MakeTransaction(newTransaction transactions.Core)
 	}
 
 	return midtransResponse, nil
+}
+
+func (tuc *transactionUseCase) GetMentorTransaction(mentorID uint) ([]transactions.Core, error) {
+	res, err := tuc.qry.GetMentorTransaction(mentorID)
+
+	if err != nil {
+		msg := ""
+		if strings.Contains(err.Error(), "not found") {
+			msg = "review not found"
+		} else {
+			msg = "there is a problem with the server"
+		}
+		return []transactions.Core{}, errors.New(msg)
+	}
+
+	return res, nil
+}
+
+// GetStudentTransaction implements transactions.TransactionService
+func (*transactionUseCase) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
+	panic("unimplemented")
 }
