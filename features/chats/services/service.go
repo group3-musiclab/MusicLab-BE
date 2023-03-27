@@ -36,7 +36,7 @@ func (cuc *chatUseCase) GetByStudent(mentorID uint) ([]chats.Core, error) {
 
 // InsertChat implements chats.ChatService
 func (cuc *chatUseCase) InsertChat(input chats.Core) error {
-	errValidate := cuc.validate.Struct(input)
+	errValidate := cuc.validate.StructExcept(input, "Student")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
 	}
