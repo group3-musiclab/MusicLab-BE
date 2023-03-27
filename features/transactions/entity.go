@@ -43,13 +43,13 @@ type TransactionHandler interface {
 }
 
 type TransactionService interface {
-	MakeTransaction(studentID uint, newTransaction Core) (Core, error)
+	MakeTransaction(newTransaction Core) (Core, error)
 	GetMentorTransaction()
 	GetStudentTransaction()
 }
 
 type TransactionData interface {
-	MakeTransaction(studentID uint, newTransaction Core) (Core, error)
+	MakeTransaction(newTransaction Core) error
 	GetMentorTransaction()
 	GetStudentTransaction()
 }
