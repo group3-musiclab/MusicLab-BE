@@ -36,3 +36,25 @@ func ShowAllMentorTransactionResponse(data transactions.Core) ShowAllMentorTrans
 		Status:      data.Status,
 	}
 }
+
+type ShowAllStudentTransaction struct {
+	ID         uint      `json:"id"`
+	MentorName string    `json:"mentor_name"`
+	ClassName  string    `json:"class_name"`
+	StartDate  time.Time `json:"start_date"`
+	EndDate    time.Time `json:"end_date"`
+	Price      float64   `json:"price"`
+	Status     string    `json:"status"`
+}
+
+func ShowAllStudentTransactionResponse(data transactions.Core) ShowAllStudentTransaction {
+	return ShowAllStudentTransaction{
+		ID:         data.ID,
+		MentorName: data.Mentor.Name,
+		ClassName:  data.Class.Name,
+		StartDate:  data.StartDate,
+		EndDate:    data.EndDate,
+		Price:      data.Price,
+		Status:     data.Status,
+	}
+}

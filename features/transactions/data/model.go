@@ -21,9 +21,18 @@ type Transaction struct {
 	PaymentUrl string
 	Student    Student
 	Class      Class
+	Mentor     Mentor
 }
 
 type Student struct {
+	gorm.Model
+	Name    string
+	Email   string
+	Phone   string
+	Address string
+}
+
+type Mentor struct {
 	gorm.Model
 	Name    string
 	Email   string
@@ -63,6 +72,13 @@ func ToCore(data Transaction) transactions.Core {
 			Name:     data.Class.Name,
 			Duration: data.Class.Duration,
 			Price:    data.Class.Price,
+		},
+		Mentor: transactions.Mentor{
+			ID:      data.Student.ID,
+			Name:    data.Student.Name,
+			Email:   data.Student.Email,
+			Phone:   data.Student.Phone,
+			Address: data.Student.Address,
 		},
 	}
 }

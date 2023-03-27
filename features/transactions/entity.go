@@ -20,6 +20,7 @@ type Core struct {
 	PaymentUrl string
 	Student    Student
 	Class      Class
+	Mentor     Mentor
 	Duration   int
 }
 
@@ -37,6 +38,14 @@ type Class struct {
 	Qty      int
 	Price    float64
 	Duration int
+}
+
+type Mentor struct {
+	ID      uint
+	Name    string
+	Email   string
+	Phone   string
+	Address string
 }
 type TransactionHandler interface {
 	MakeTransaction() echo.HandlerFunc

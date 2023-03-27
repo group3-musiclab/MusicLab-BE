@@ -67,6 +67,20 @@ func (tc *transactionControll) GetMentorTransaction() echo.HandlerFunc {
 }
 
 // GetStudentTransaction implements transactions.TransactionHandler
-func (*transactionControll) GetStudentTransaction() echo.HandlerFunc {
-	panic("unimplemented")
+func (tc *transactionControll) GetStudentTransaction() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		studentID := helper.ExtractTokenUserId(c)
+		res, err := tc.srv.GetStudentTransaction(uint(studentID))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		result := []ShowAllStudentTransaction{}
+		for _, val := range res {
+			result = append(result, ShowAllStudentTransactionResponse(val))
+		}
+		return c.JSON(http.StatusCreated, map[string]interface{}{
+			"data":    result,
+			"message": "success show student transaction history",
+		})
+	}
 }
