@@ -19,7 +19,7 @@ type Core struct {
 	ConfirmationPassword string
 	Role                 string
 	Sex                  string
-	Phone                string `validate:"max=12"`
+	Phone                string `validate:"number,max=12"`
 	Address              string
 	Instagram            string
 	About                string
