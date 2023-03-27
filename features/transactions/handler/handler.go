@@ -18,6 +18,26 @@ func New(srv transactions.TransactionService) transactions.TransactionHandler {
 	}
 }
 
+// MidtransNotification implements transactions.TransactionHandler
+func (tc *transactionControll) MidtransNotification() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := CheckTransactionRequest{}
+		err := c.Bind(&input)
+		if err != nil {
+			return c.JSON(http.StatusBadRequest, map[string]interface{}{"message": "input format incorrect"})
+		}
+
+		errUpdate := tc.srv.UpdateTransaction(checkTransactionRequestToCore(input))
+		if errUpdate != nil {
+			return c.JSON(helper.ErrorResponse(errUpdate))
+		}
+
+		return c.JSON(http.StatusOK, map[string]interface{}{
+			"message": "success get notification from midtrans",
+		})
+	}
+}
+
 // MakeTransaction implements transactions.TransactionHandler
 func (tc *transactionControll) MakeTransaction() echo.HandlerFunc {
 	return func(c echo.Context) error {

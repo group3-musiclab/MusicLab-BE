@@ -27,6 +27,15 @@ func New(td transactions.TransactionData, md mentors.MentorData, sd students.Stu
 	}
 }
 
+// UpdateTransaction implements transactions.TransactionService
+func (tuc *transactionUseCase) UpdateTransaction(input transactions.Core) error {
+	err := tuc.qry.UpdateTransaction(input)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 func (tuc *transactionUseCase) MakeTransaction(newTransaction transactions.Core) (transactions.Core, error) {
 	selectClass, errSelectClass := tuc.qryClass.GetMentorClassDetail(newTransaction.ClassID)
 	if errSelectClass != nil {

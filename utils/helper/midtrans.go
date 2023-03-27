@@ -80,7 +80,7 @@ func CallBackMidtrans(orderID string) (CheckTransaction, error) {
 	var coreAPIClient = coreapi.Client{}
 	coreAPIClient.New(config.SERVER_KEY_MIDTRANS, midtrans.Sandbox)
 
-	response, err := coreapi.CheckTransaction(orderID)
+	response, err := coreAPIClient.CheckTransaction(orderID)
 	if err != nil {
 		return CheckTransaction{}, err
 	}
