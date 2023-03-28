@@ -2,23 +2,51 @@ package services
 
 import (
 	"errors"
+	"log"
 	"musiclab-be/features/auth"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 )
 
 type authUseCase struct {
-	qry      auth.AuthData
-	validate *validator.Validate
+	qry       auth.AuthData
+	validate  *validator.Validate
+	googleApi helper.GoogleAPI
 }
 
-func New(ud auth.AuthData) auth.AuthService {
-	return &authUseCase{
-		qry:      ud,
-		validate: validator.New(),
+// CreateEvent implements auth.AuthService
+func (auc *authUseCase) CreateEvent(code string) error {
+	token, err := auc.googleApi.GetToken(code)
+	if err != nil {
+		log.Println("get token in create event error: ", err)
+		return errors.New("failed to create event in calendar")
 	}
+
+	startTime := time.Date(2023, 3, 29, 8, 0, 0, 0, time.UTC)
+	endTime := time.Date(2023, 3, 29, 8, 5, 0, 0, time.UTC)
+
+	startRFC := startTime.Format(time.RFC3339)
+	endRFC := endTime.Format(time.RFC3339)
+
+	detailCal := helper.CalendarDetail{
+		Summary:  "Kelas Gitar",
+		Location: "Lewo",
+		Start:    startRFC,
+		End:      endRFC,
+		// nanti diisi email guest dan host
+		Emails: []string{"blbla@gmail.com"}, // email guest
+	}
+
+	err = auc.googleApi.CreateCalendar(token, detailCal)
+	if err != nil {
+		log.Println("failed create event", err.Error())
+		return errors.New("failed to create event in calendar")
+	}
+
+	return nil
 }
 
 // Register implements auth.AuthService
@@ -101,4 +129,12 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	}
 
 	return token, res, nil
+}
+
+func New(ud auth.AuthData, ga helper.GoogleAPI) auth.AuthService {
+	return &authUseCase{
+		qry:       ud,
+		validate:  validator.New(),
+		googleApi: ga,
+	}
 }

@@ -9,13 +9,38 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
+var (
+	oauthStateString = "random"
+)
+
 type authControl struct {
-	srv auth.AuthService
+	srv       auth.AuthService
+	googleApi helper.GoogleAPI
 }
 
-func New(srv auth.AuthService) auth.AuthHandler {
-	return &authControl{
-		srv: srv,
+// GoogleCallback implements auth.AuthHandler
+func (ac *authControl) GoogleCallback() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		state := c.QueryParam("state")
+		if state != oauthStateString {
+			return c.HTML(http.StatusUnauthorized, "invalid oauth state")
+		}
+
+		code := c.QueryParam("code")
+
+		err := ac.srv.CreateEvent(code)
+		if err != nil {
+			return c.HTML(http.StatusInternalServerError, err.Error())
+		}
+
+		return c.HTML(http.StatusOK, "success create event")
+	}
+}
+
+// GoogleLogin implements auth.AuthHandler
+func (ac *authControl) GoogleLogin() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		return c.Redirect(http.StatusTemporaryRedirect, ac.googleApi.GetUrlAuth(oauthStateString))
 	}
 }
 
@@ -55,5 +80,12 @@ func (ac *authControl) Login() echo.HandlerFunc {
 			"token": token,
 		}
 		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.AUTH_SuccessLogin, dataResponse))
+	}
+}
+
+func New(srv auth.AuthService, ga helper.GoogleAPI) auth.AuthHandler {
+	return &authControl{
+		srv:       srv,
+		googleApi: ga,
 	}
 }

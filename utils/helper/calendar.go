@@ -30,6 +30,7 @@ type googleAPI struct {
 
 func NewGoogleApi(cfg *config.DBConfig) GoogleAPI {
 	conf := &oauth2.Config{
+		RedirectURL:  cfg.GOOGLE_REDIRECT_CALLBACK,
 		ClientID:     cfg.GOOGLE_CLIENT_ID,
 		ClientSecret: cfg.GOOGLE_CLIENT_SECRET,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email", "https://www.googleapis.com/auth/calendar"},

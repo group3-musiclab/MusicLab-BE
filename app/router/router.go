@@ -1,6 +1,7 @@
 package router
 
 import (
+	"musiclab-be/app/config"
 	authData "musiclab-be/features/auth/data"
 	authHdl "musiclab-be/features/auth/handler"
 	authSrv "musiclab-be/features/auth/services"
@@ -48,10 +49,12 @@ import (
 )
 
 func InitRouter(db *gorm.DB, e *echo.Echo) {
+	cfg := config.InitConfig()
+	googleAPI := helper.NewGoogleApi(cfg)
 
 	aData := authData.New(db)
-	aSrv := authSrv.New(aData)
-	aHdl := authHdl.New(aSrv)
+	aSrv := authSrv.New(aData, googleAPI)
+	aHdl := authHdl.New(aSrv, googleAPI)
 
 	gData := genreData.New(db)
 	gSrv := genreSrv.New(gData)
@@ -92,6 +95,8 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Auth
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
+	e.GET("/GoogleLogin", aHdl.GoogleLogin())
+	e.GET("/GoogleCallBack", aHdl.GoogleCallback())
 
 	// Mentors
 	e.GET("/mentors", mHdl.GetAll())
