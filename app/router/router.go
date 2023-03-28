@@ -89,7 +89,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	transHdl := transactionHdl.New(transSrv)
 
 	aData := authData.New(db)
-	aSrv := authSrv.New(aData, googleAPI, transData)
+	aSrv := authSrv.New(aData, googleAPI, transData, cData, sData)
 	aHdl := authHdl.New(aSrv, googleAPI)
 
 	// Auth

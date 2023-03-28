@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/schedules"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +17,17 @@ func New(db *gorm.DB) schedules.ScheduleData {
 	return &scheduleQuery{
 		db: db,
 	}
+}
+
+// DetailSchedule implements schedules.ScheduleData
+func (sq *scheduleQuery) DetailSchedule(scheduleID uint) (schedules.Core, error) {
+	dataModel := Schedule{}
+	txSelect := sq.db.First(&dataModel, scheduleID)
+	if txSelect.Error != nil {
+		return schedules.Core{}, errors.New(consts.QUERY_NotFound)
+	}
+
+	return ToCore(dataModel), nil
 }
 
 // CheckSchedule implements schedules.ScheduleData

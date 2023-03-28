@@ -2,8 +2,10 @@ package services
 
 import (
 	"errors"
-	"log"
 	"musiclab-be/features/auth"
+	"musiclab-be/features/classes"
+	"musiclab-be/features/schedules"
+	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
@@ -13,18 +15,34 @@ import (
 )
 
 type authUseCase struct {
-	qry       auth.AuthData
-	qryTrans  transactions.TransactionData
-	validate  *validator.Validate
-	googleApi helper.GoogleAPI
+	qry         auth.AuthData
+	qryTrans    transactions.TransactionData
+	qryClass    classes.ClassData
+	qryStudent  students.StudentData
+	qrySchedule schedules.ScheduleData
+	validate    *validator.Validate
+	googleApi   helper.GoogleAPI
 }
 
 // CreateEvent implements auth.AuthService
 func (auc *authUseCase) CreateEvent(code, orderID string) error {
+	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
+	if errTrans != nil {
+		return errTrans
+	}
 
-	token, err := auc.googleApi.GetToken(code)
-	if err != nil {
-		log.Println("get token in create event error: ", err)
+	coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
+	if errClass != nil {
+		return errClass
+	}
+
+	coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
+	if errStudent != nil {
+		return errStudent
+	}
+
+	token, errToken := auc.googleApi.GetToken(code)
+	if errToken != nil {
 		return errors.New("failed to create event in calendar")
 	}
 
@@ -35,17 +53,15 @@ func (auc *authUseCase) CreateEvent(code, orderID string) error {
 	endRFC := endTime.Format(time.RFC3339)
 
 	detailCal := helper.CalendarDetail{
-		Summary:  "Kelas Gitar",
-		Location: "Lewo",
+		Summary:  coreClass.Name,
+		Location: coreStudent.Address,
 		Start:    startRFC,
 		End:      endRFC,
-		// nanti diisi email guest dan host
-		Emails: []string{"blbla@gmail.com"}, // email guest
+		Emails:   []string{coreStudent.Email},
 	}
 
-	err = auc.googleApi.CreateCalendar(token, detailCal)
-	if err != nil {
-		log.Println("failed create event", err.Error())
+	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
+	if errCreateEvent != nil {
 		return errors.New("failed to create event in calendar")
 	}
 
@@ -134,11 +150,13 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	return token, res, nil
 }
 
-func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData) auth.AuthService {
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData) auth.AuthService {
 	return &authUseCase{
-		qry:       ud,
-		qryTrans:  td,
-		validate:  validator.New(),
-		googleApi: ga,
+		qry:        ud,
+		qryTrans:   td,
+		qryClass:   cd,
+		qryStudent: sd,
+		validate:   validator.New(),
+		googleApi:  ga,
 	}
 }

@@ -48,4 +48,5 @@ type ScheduleData interface {
 	GetMentorSchedule(mentorID uint) ([]Core, error)
 	Delete(mentorID, scheduleID uint) error
 	CheckSchedule(input Core) (int64, error)
+	DetailSchedule(scheduleID uint) (Core, error)
 }
