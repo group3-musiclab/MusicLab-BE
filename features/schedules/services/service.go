@@ -6,6 +6,7 @@ import (
 	"musiclab-be/features/classes"
 	"musiclab-be/features/schedules"
 	"strings"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -29,6 +30,17 @@ func (suc *scheduleUseCase) CheckSchedule(input schedules.Core) error {
 	errValidate := suc.validate.Struct(input)
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
+	}
+
+	// start date validation
+	year := time.Now().Year()
+	month := time.Now().Month()
+	date := time.Now().Day()
+	today := time.Date(year, month, date, 0, 0, 0, 0, time.UTC)
+
+	dateValidation := input.Transaction.StartDate.Before(today)
+	if dateValidation {
+		return errors.New("minimum start date input is today")
 	}
 
 	// get mentor id by class id
