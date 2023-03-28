@@ -22,7 +22,7 @@ type AuthHandler interface {
 type AuthService interface {
 	Register(newUser Core) error
 	Login(user Core) (string, Core, error)
-	CreateEvent(code string) error
+	CreateEvent(code, orderID string) error
 }
 
 type AuthData interface {

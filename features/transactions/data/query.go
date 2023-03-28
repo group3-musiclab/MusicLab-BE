@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/transactions"
+	"musiclab-be/utils/consts"
 
 	"gorm.io/gorm"
 )
@@ -16,6 +17,16 @@ func New(db *gorm.DB) transactions.TransactionData {
 	return &transactionQuery{
 		db: db,
 	}
+}
+
+// SelectOne implements transactions.TransactionData
+func (tq *transactionQuery) SelectOne(orderID string) (transactions.Core, error) {
+	dataModel := Transaction{}
+	txSelect := tq.db.Where("order_id = ?", orderID).First(&dataModel)
+	if txSelect.Error != nil {
+		return transactions.Core{}, errors.New(consts.QUERY_NotFound)
+	}
+	return (ToCore(dataModel)), nil
 }
 
 // UpdateTransaction implements transactions.TransactionData

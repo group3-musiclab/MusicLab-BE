@@ -4,6 +4,7 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/auth"
+	"musiclab-be/features/transactions"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"time"
@@ -13,12 +14,14 @@ import (
 
 type authUseCase struct {
 	qry       auth.AuthData
+	qryTrans  transactions.TransactionData
 	validate  *validator.Validate
 	googleApi helper.GoogleAPI
 }
 
 // CreateEvent implements auth.AuthService
-func (auc *authUseCase) CreateEvent(code string) error {
+func (auc *authUseCase) CreateEvent(code, orderID string) error {
+
 	token, err := auc.googleApi.GetToken(code)
 	if err != nil {
 		log.Println("get token in create event error: ", err)
@@ -131,9 +134,10 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	return token, res, nil
 }
 
-func New(ud auth.AuthData, ga helper.GoogleAPI) auth.AuthService {
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData) auth.AuthService {
 	return &authUseCase{
 		qry:       ud,
+		qryTrans:  td,
 		validate:  validator.New(),
 		googleApi: ga,
 	}

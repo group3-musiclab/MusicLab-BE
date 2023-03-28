@@ -52,10 +52,6 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	cfg := config.InitConfig()
 	googleAPI := helper.NewGoogleApi(cfg)
 
-	aData := authData.New(db)
-	aSrv := authSrv.New(aData, googleAPI)
-	aHdl := authHdl.New(aSrv, googleAPI)
-
 	gData := genreData.New(db)
 	gSrv := genreSrv.New(gData)
 	gHdl := genreHdl.New(gSrv)
@@ -91,6 +87,10 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	transData := transactionData.New(db)
 	transSrv := transactionSrv.New(transData, mData, sData, cData)
 	transHdl := transactionHdl.New(transSrv)
+
+	aData := authData.New(db)
+	aSrv := authSrv.New(aData, googleAPI, transData)
+	aHdl := authHdl.New(aSrv, googleAPI)
 
 	// Auth
 	e.POST("/login", aHdl.Login())

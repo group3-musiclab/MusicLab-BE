@@ -21,6 +21,7 @@ type authControl struct {
 // GoogleCallback implements auth.AuthHandler
 func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		orderID := c.QueryParam("orderid")
 		state := c.QueryParam("state")
 		if state != oauthStateString {
 			return c.HTML(http.StatusUnauthorized, "invalid oauth state")
@@ -28,7 +29,7 @@ func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 
 		code := c.QueryParam("code")
 
-		err := ac.srv.CreateEvent(code)
+		err := ac.srv.CreateEvent(code, orderID)
 		if err != nil {
 			return c.HTML(http.StatusInternalServerError, err.Error())
 		}
