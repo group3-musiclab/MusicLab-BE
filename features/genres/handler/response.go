@@ -15,7 +15,7 @@ func ShowAllGenreResponse(data genres.Core) ShowAllGenre {
 }
 
 type ShowAllMentorGenre struct {
-	ID   uint   `json:"id"`
+	ID   uint   `json:"genre_id"`
 	Name string `json:"name"`
 }
 
