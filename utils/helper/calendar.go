@@ -17,11 +17,12 @@ type GoogleAPI interface {
 }
 
 type CalendarDetail struct {
-	Summary  string
-	Location string
-	Start    string
-	End      string
-	Emails   []string
+	Summary     string
+	Location    string
+	Start       string
+	End         string
+	DisplayName string
+	Email       string
 }
 
 type googleAPI struct {
@@ -59,12 +60,6 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 		return err
 	}
 
-	attendees := []*calendar.EventAttendee{}
-	for _, e := range detail.Emails {
-		a := &calendar.EventAttendee{Email: e}
-		attendees = append(attendees, a)
-	}
-
 	event := &calendar.Event{
 		Summary:  detail.Summary,
 		Location: detail.Location,
@@ -77,7 +72,9 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 			DateTime: detail.End,
 			TimeZone: "Asia/Jakarta",
 		},
-		Attendees: attendees,
+		Attendees: []*calendar.EventAttendee{
+			{Email: detail.Email, DisplayName: detail.DisplayName},
+		},
 	}
 
 	_, err = calendarService.Events.Insert("primary", event).SendUpdates("all").Do()

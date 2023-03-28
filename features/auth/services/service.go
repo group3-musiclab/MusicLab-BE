@@ -26,38 +26,76 @@ type authUseCase struct {
 
 // CreateEvent implements auth.AuthService
 func (auc *authUseCase) CreateEvent(code, orderID string) error {
-	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
-	if errTrans != nil {
-		return errTrans
-	}
-
-	coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
-	if errClass != nil {
-		return errClass
-	}
-
-	coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
-	if errStudent != nil {
-		return errStudent
-	}
-
+	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
 	if errToken != nil {
 		return errors.New("failed to create event in calendar")
 	}
 
-	startTime := time.Date(2023, 3, 29, 8, 0, 0, 0, time.UTC)
-	endTime := time.Date(2023, 3, 29, 8, 5, 0, 0, time.UTC)
+	// transaction detail
+	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
+	if errTrans != nil {
+		return errTrans
+	}
+
+	// class detail
+	coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
+	if errClass != nil {
+		return errClass
+	}
+
+	// student detail
+	coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
+	if errStudent != nil {
+		return errStudent
+	}
+
+	// schedule detail
+	// coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
+	// if errSchedule != nil {
+	// 	return errSchedule
+	// }
+
+	// mapDay := map[time.Time]string{}
+
+	// start := coreTrans.StartDate
+	// end := coreTrans.EndDate
+	// for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
+	// 	dayString := d.Format("Monday")
+	// 	if dayString == coreSchedule.Day {
+	// 		mapDay[d] = dayString
+	// 	}
+	// }
+
+	// for k := range mapDay {
+
+	// 	detailCal := helper.CalendarDetail{
+	// 		Summary:  coreClass.Name,
+	// 		Location: coreStudent.Address,
+	// 		Start:    k.Format(time.RFC3339),
+	// 		End:      k.Format(time.RFC3339),
+	// 		Emails:   []string{coreStudent.Email},
+	// 	}
+
+	// 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
+	// 	if errCreateEvent != nil {
+	// 		return errors.New("failed to create event in calendar")
+	// 	}
+	// }
+
+	startTime := coreTrans.StartDate
+	endTime := coreTrans.EndDate
 
 	startRFC := startTime.Format(time.RFC3339)
 	endRFC := endTime.Format(time.RFC3339)
 
 	detailCal := helper.CalendarDetail{
-		Summary:  coreClass.Name,
-		Location: coreStudent.Address,
-		Start:    startRFC,
-		End:      endRFC,
-		Emails:   []string{coreStudent.Email},
+		Summary:     coreClass.Name,
+		Location:    coreStudent.Address,
+		Start:       startRFC,
+		End:         endRFC,
+		DisplayName: coreStudent.Name,
+		Email:       coreStudent.Email,
 	}
 
 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
