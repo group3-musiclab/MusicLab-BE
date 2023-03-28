@@ -3,22 +3,107 @@ package services
 import (
 	"errors"
 	"musiclab-be/features/auth"
+	"musiclab-be/features/classes"
+	"musiclab-be/features/schedules"
+	"musiclab-be/features/students"
+	"musiclab-be/features/transactions"
 	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
+	"time"
 
 	"github.com/go-playground/validator/v10"
 )
 
 type authUseCase struct {
-	qry      auth.AuthData
-	validate *validator.Validate
+	qry         auth.AuthData
+	qryTrans    transactions.TransactionData
+	qryClass    classes.ClassData
+	qryStudent  students.StudentData
+	qrySchedule schedules.ScheduleData
+	validate    *validator.Validate
+	googleApi   helper.GoogleAPI
 }
 
-func New(ud auth.AuthData) auth.AuthService {
-	return &authUseCase{
-		qry:      ud,
-		validate: validator.New(),
+// CreateEvent implements auth.AuthService
+func (auc *authUseCase) CreateEvent(code, orderID string) error {
+	// get token oauth2
+	token, errToken := auc.googleApi.GetToken(code)
+	if errToken != nil {
+		return errors.New("failed to create event in calendar")
 	}
+
+	// transaction detail
+	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
+	if errTrans != nil {
+		return errTrans
+	}
+
+	// class detail
+	coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
+	if errClass != nil {
+		return errClass
+	}
+
+	// student detail
+	coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
+	if errStudent != nil {
+		return errStudent
+	}
+
+	// schedule detail
+	// coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
+	// if errSchedule != nil {
+	// 	return errSchedule
+	// }
+
+	// mapDay := map[time.Time]string{}
+
+	// start := coreTrans.StartDate
+	// end := coreTrans.EndDate
+	// for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
+	// 	dayString := d.Format("Monday")
+	// 	if dayString == coreSchedule.Day {
+	// 		mapDay[d] = dayString
+	// 	}
+	// }
+
+	// for k := range mapDay {
+
+	// 	detailCal := helper.CalendarDetail{
+	// 		Summary:  coreClass.Name,
+	// 		Location: coreStudent.Address,
+	// 		Start:    k.Format(time.RFC3339),
+	// 		End:      k.Format(time.RFC3339),
+	// 		Emails:   []string{coreStudent.Email},
+	// 	}
+
+	// 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
+	// 	if errCreateEvent != nil {
+	// 		return errors.New("failed to create event in calendar")
+	// 	}
+	// }
+
+	startTime := coreTrans.StartDate
+	endTime := coreTrans.EndDate
+
+	startRFC := startTime.Format(time.RFC3339)
+	endRFC := endTime.Format(time.RFC3339)
+
+	detailCal := helper.CalendarDetail{
+		Summary:     coreClass.Name,
+		Location:    coreStudent.Address,
+		Start:       startRFC,
+		End:         endRFC,
+		DisplayName: coreStudent.Name,
+		Email:       coreStudent.Email,
+	}
+
+	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
+	if errCreateEvent != nil {
+		return errors.New("failed to create event in calendar")
+	}
+
+	return nil
 }
 
 // Register implements auth.AuthService
@@ -101,4 +186,15 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	}
 
 	return token, res, nil
+}
+
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData) auth.AuthService {
+	return &authUseCase{
+		qry:        ud,
+		qryTrans:   td,
+		qryClass:   cd,
+		qryStudent: sd,
+		validate:   validator.New(),
+		googleApi:  ga,
+	}
 }

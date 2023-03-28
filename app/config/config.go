@@ -10,24 +10,30 @@ import (
 
 // Deklarasi Variable Global Untuk Memanggil file Secret Key di Env
 var (
-	JWTKey              = ""
-	AWS_REGION          = ""
-	ACCESS_KEY_ID       = ""
-	ACCESS_KEY_SECRET   = ""
-	SERVER_KEY_MIDTRANS = ""
+	JWTKey                   = ""
+	AWS_REGION               = ""
+	ACCESS_KEY_ID            = ""
+	ACCESS_KEY_SECRET        = ""
+	SERVER_KEY_MIDTRANS      = ""
+	GOOGLE_REDIRECT_CALLBACK = ""
+	GOOGLE_CLIENT_ID         = ""
+	GOOGLE_CLIENT_SECRET     = ""
 )
 
 type DBConfig struct {
-	DBUser              string
-	DBPass              string
-	DBHost              string
-	DBPort              int
-	DBName              string
-	jwtKey              string
-	AWS_REGION          string
-	ACCESS_KEY_ID       string
-	ACCESS_KEY_SECRET   string
-	SERVER_KEY_MIDTRANS string
+	DBUser                   string
+	DBPass                   string
+	DBHost                   string
+	DBPort                   int
+	DBName                   string
+	jwtKey                   string
+	AWS_REGION               string
+	ACCESS_KEY_ID            string
+	ACCESS_KEY_SECRET        string
+	SERVER_KEY_MIDTRANS      string
+	GOOGLE_REDIRECT_CALLBACK string
+	GOOGLE_CLIENT_ID         string
+	GOOGLE_CLIENT_SECRET     string
 }
 
 // membuat fungsi global untuk pemanggilan config
@@ -78,9 +84,16 @@ func ReadEnv() *DBConfig {
 		app.ACCESS_KEY_SECRET = val
 		isRead = false
 	}
-
-	if val, found := os.LookupEnv("SERVER_KEY_MIDTRANS"); found {
-		app.SERVER_KEY_MIDTRANS = val
+	if val, found := os.LookupEnv("GOOGLE_REDIRECT_CALLBACK"); found {
+		app.GOOGLE_REDIRECT_CALLBACK = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("GOOGLE_CLIENT_ID"); found {
+		app.GOOGLE_CLIENT_ID = val
+		isRead = false
+	}
+	if val, found := os.LookupEnv("GOOGLE_CLIENT_SECRET"); found {
+		app.GOOGLE_CLIENT_SECRET = val
 		isRead = false
 	}
 
@@ -104,6 +117,9 @@ func ReadEnv() *DBConfig {
 	ACCESS_KEY_ID = app.ACCESS_KEY_ID
 	ACCESS_KEY_SECRET = app.ACCESS_KEY_SECRET
 	SERVER_KEY_MIDTRANS = app.SERVER_KEY_MIDTRANS
+	GOOGLE_REDIRECT_CALLBACK = app.GOOGLE_REDIRECT_CALLBACK
+	GOOGLE_CLIENT_ID = app.GOOGLE_CLIENT_ID
+	GOOGLE_CLIENT_SECRET = app.GOOGLE_CLIENT_SECRET
 
 	return &app
 }
