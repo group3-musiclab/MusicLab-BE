@@ -28,6 +28,21 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 		return errors.New("validate: " + errValidate.Error())
 	}
 
+	// check duplicate email
+	if newUser.Role == "Mentor" {
+		_, errMentorLogin := auc.qry.LoginMentor(newUser.Email)
+		if errMentorLogin == nil {
+			return errors.New(consts.AUTH_DuplicateEmail)
+		}
+	}
+
+	if newUser.Role == "Student" {
+		_, errStudentLogin := auc.qry.LoginStudent(newUser.Email)
+		if errStudentLogin == nil {
+			return errors.New(consts.AUTH_DuplicateEmail)
+		}
+	}
+
 	// avatar value
 	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
