@@ -2,8 +2,10 @@ package handler
 
 import (
 	"musiclab-be/features/transactions"
+	"musiclab-be/utils/consts"
 	"musiclab-be/utils/helper"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -71,7 +73,28 @@ func (tc *transactionControll) MakeTransaction() echo.HandlerFunc {
 func (tc *transactionControll) GetMentorTransaction() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		mentorID := helper.ExtractTokenUserId(c)
-		res, err := tc.srv.GetMentorTransaction(uint(mentorID))
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 15
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
+		res, err := tc.srv.GetMentorTransaction(uint(mentorID), page, limit)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}
@@ -90,7 +113,28 @@ func (tc *transactionControll) GetMentorTransaction() echo.HandlerFunc {
 func (tc *transactionControll) GetStudentTransaction() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		studentID := helper.ExtractTokenUserId(c)
-		res, err := tc.srv.GetStudentTransaction(uint(studentID))
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 15
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
+		res, err := tc.srv.GetStudentTransaction(uint(studentID), page, limit)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}
