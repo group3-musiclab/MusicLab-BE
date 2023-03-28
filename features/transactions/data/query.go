@@ -41,9 +41,9 @@ func (tq *transactionQuery) MakeTransaction(newTransaction transactions.Core) er
 	return nil
 }
 
-func (tq *transactionQuery) GetMentorTransaction(mentorID uint) ([]transactions.Core, error) {
+func (tq *transactionQuery) GetMentorTransaction(mentorID uint, limit, offset int) ([]transactions.Core, error) {
 	res := []Transaction{}
-	err := tq.db.Preload("Student").Preload("Class").Where("mentor_id = ?", mentorID).Find(&res).Error
+	err := tq.db.Preload("Student").Preload("Class").Where("mentor_id = ?", mentorID).Limit(limit).Offset(offset).Find(&res).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return []transactions.Core{}, errors.New("server error")
@@ -57,9 +57,9 @@ func (tq *transactionQuery) GetMentorTransaction(mentorID uint) ([]transactions.
 	return result, nil
 }
 
-func (tq *transactionQuery) GetStudentTransaction(studentID uint) ([]transactions.Core, error) {
+func (tq *transactionQuery) GetStudentTransaction(studentID uint, limit, offset int) ([]transactions.Core, error) {
 	res := []Transaction{}
-	err := tq.db.Preload("Mentor").Preload("Class").Where("student_id = ?", studentID).Find(&res).Error
+	err := tq.db.Preload("Mentor").Preload("Class").Where("student_id = ?", studentID).Limit(limit).Offset(offset).Find(&res).Error
 	if err != nil {
 		log.Println("query error", err.Error())
 		return []transactions.Core{}, errors.New("server error")
