@@ -57,14 +57,14 @@ type TransactionHandler interface {
 
 type TransactionService interface {
 	MakeTransaction(newTransaction Core) (Core, error)
-	GetMentorTransaction(mentorID uint) ([]Core, error)
-	GetStudentTransaction(studentID uint) ([]Core, error)
+	GetMentorTransaction(mentorID uint, page, limit int) ([]Core, error)
+	GetStudentTransaction(studentID uint, page, limit int) ([]Core, error)
 	UpdateTransaction(input Core) error
 }
 
 type TransactionData interface {
 	MakeTransaction(newTransaction Core) error
-	GetMentorTransaction(mentorID uint) ([]Core, error)
-	GetStudentTransaction(studentID uint) ([]Core, error)
+	GetMentorTransaction(mentorID uint, limit, offset int) ([]Core, error)
+	GetStudentTransaction(studentID uint, limit, offset int) ([]Core, error)
 	UpdateTransaction(input Core) error
 }
