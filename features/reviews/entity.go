@@ -42,10 +42,10 @@ type ReviewHandler interface {
 
 type ReviewService interface {
 	PostMentorReview(mentorID uint, newReview Core) error
-	GetMentorReview(mentorID uint) ([]Core, error)
+	GetMentorReview(page, limit int, mentorID uint) ([]Core, error)
 }
 
 type ReviewData interface {
 	PostMentorReview(mentorID uint, newReview Core) error
-	GetMentorReview(mentorID uint) ([]Core, error)
+	GetMentorReview(limit, offset int, mentorID uint) ([]Core, error)
 }
