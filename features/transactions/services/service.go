@@ -9,6 +9,7 @@ import (
 	"musiclab-be/features/transactions"
 	"musiclab-be/utils/helper"
 	"strings"
+	"time"
 )
 
 type transactionUseCase struct {
@@ -37,6 +38,17 @@ func (tuc *transactionUseCase) UpdateTransaction(input transactions.Core) error 
 }
 
 func (tuc *transactionUseCase) MakeTransaction(newTransaction transactions.Core) (transactions.Core, error) {
+	// start date validation
+	year := time.Now().Year()
+	month := time.Now().Month()
+	date := time.Now().Day()
+	today := time.Date(year, month, date, 0, 0, 0, 0, time.UTC)
+
+	dateValidation := newTransaction.StartDate.Before(today)
+	if dateValidation {
+		return transactions.Core{}, errors.New("minimum start date input is today")
+	}
+
 	selectClass, errSelectClass := tuc.qryClass.GetMentorClassDetail(newTransaction.ClassID)
 	if errSelectClass != nil {
 		return transactions.Core{}, errSelectClass

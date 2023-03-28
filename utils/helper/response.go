@@ -66,6 +66,8 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusInternalServerError
 	case strings.Contains(msg, "schedule not available"):
 		code = http.StatusBadRequest
+	case strings.Contains(msg, "minimum start date input is today"):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }
