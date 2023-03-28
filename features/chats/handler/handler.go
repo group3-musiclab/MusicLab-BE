@@ -31,7 +31,7 @@ func (cc *chatControl) Add() echo.HandlerFunc {
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}
-		return c.JSON(http.StatusOK, helper.Response(consts.CHAT_SuccessInsert))
+		return c.JSON(http.StatusCreated, helper.Response(consts.CHAT_SuccessInsert))
 	}
 }
 
