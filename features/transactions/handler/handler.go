@@ -102,7 +102,7 @@ func (tc *transactionControll) GetMentorTransaction() echo.HandlerFunc {
 		for _, val := range res {
 			result = append(result, ShowAllMentorTransactionResponse(val))
 		}
-		return c.JSON(http.StatusCreated, map[string]interface{}{
+		return c.JSON(http.StatusOK, map[string]interface{}{
 			"data":    result,
 			"message": "success show mentor transaction history",
 		})
@@ -142,7 +142,7 @@ func (tc *transactionControll) GetStudentTransaction() echo.HandlerFunc {
 		for _, val := range res {
 			result = append(result, ShowAllStudentTransactionResponse(val))
 		}
-		return c.JSON(http.StatusCreated, map[string]interface{}{
+		return c.JSON(http.StatusOK, map[string]interface{}{
 			"data":    result,
 			"message": "success show student transaction history",
 		})

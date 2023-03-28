@@ -32,8 +32,10 @@ func (ruc *reviewUseCase) PostMentorReview(mentorID uint, newReview reviews.Core
 	return nil
 }
 
-func (ruc *reviewUseCase) GetMentorReview(mentorID uint) ([]reviews.Core, error) {
-	res, err := ruc.qry.GetMentorReview(mentorID)
+func (ruc *reviewUseCase) GetMentorReview(page, limit int, mentorID uint) ([]reviews.Core, error) {
+	offset := (page - 1) * limit
+
+	res, err := ruc.qry.GetMentorReview(limit, offset, mentorID)
 
 	if err != nil {
 		msg := ""

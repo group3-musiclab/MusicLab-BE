@@ -52,12 +52,34 @@ func (rc *reviewControll) PostMentorReview() echo.HandlerFunc {
 
 func (rc *reviewControll) GetMentorReview() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 6
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
+
 		id := c.Param("mentor_id")
 		mentorID, errConv := strconv.Atoi(id)
 		if errConv != nil {
 			return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_ErrorIdParam))
 		}
-		res, err := rc.srv.GetMentorReview(uint(mentorID))
+		res, err := rc.srv.GetMentorReview(page, limit, uint(mentorID))
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}
@@ -65,7 +87,7 @@ func (rc *reviewControll) GetMentorReview() echo.HandlerFunc {
 		for _, val := range res {
 			result = append(result, ShowAllMentorReviewResponse(val))
 		}
-		return c.JSON(http.StatusCreated, map[string]interface{}{
+		return c.JSON(http.StatusOK, map[string]interface{}{
 			"data":    result,
 			"message": "success show all mentor review",
 		})
