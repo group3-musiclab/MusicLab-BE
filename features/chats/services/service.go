@@ -5,6 +5,7 @@ import (
 	"musiclab-be/features/chats"
 	"musiclab-be/features/mentors"
 	"musiclab-be/features/students"
+	"musiclab-be/utils/consts"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -39,6 +40,18 @@ func (cuc *chatUseCase) InsertChat(input chats.Core) error {
 	errValidate := cuc.validate.StructExcept(input, "Student")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
+	}
+
+	// mentor id validation
+	_, errMentorID := cuc.qrymentor.SelectProfile(input.MentorID)
+	if errMentorID != nil {
+		return errors.New(consts.CHAT_ErrorMentorID)
+	}
+
+	// student id validation
+	_, errStudentID := cuc.qrystudent.SelectProfile(input.StudentID)
+	if errStudentID != nil {
+		return errors.New(consts.CHAT_ErrorStudentID)
 	}
 
 	if input.Role == "Mentor" {

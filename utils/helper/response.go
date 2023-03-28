@@ -68,6 +68,10 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusBadRequest
 	case strings.Contains(msg, "minimum start date input is today"):
 		code = http.StatusBadRequest
+	case strings.Contains(msg, consts.CHAT_ErrorMentorID):
+		code = http.StatusBadRequest
+	case strings.Contains(msg, consts.CHAT_ErrorStudentID):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }
