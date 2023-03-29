@@ -21,13 +21,17 @@ type authControl struct {
 // CreateEvent implements auth.AuthHandler
 func (ac *authControl) CreateEvent() echo.HandlerFunc {
 	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
 		input := CreateEventRequest{}
 		errBind := c.Bind(&input)
 		if errBind != nil {
 			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
 		}
 
-		err := ac.srv.CreateEvent(createEventToCore(input))
+		inputCore := createEventToCore(input)
+		inputCore.ID = mentorID
+
+		err := ac.srv.CreateEvent(inputCore)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}

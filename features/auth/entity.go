@@ -25,7 +25,7 @@ type AuthService interface {
 	Register(newUser Core) error
 	Login(user Core) (string, Core, error)
 	LoginOauth(code string) error
-	CreateEvent(code, orderID string) error
+	CreateEvent(input Core) error
 }
 
 type AuthData interface {
