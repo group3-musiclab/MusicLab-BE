@@ -51,49 +51,52 @@ func (auc *authUseCase) CreateEvent(code, orderID string) error {
 	}
 
 	// schedule detail
-	// coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
-	// if errSchedule != nil {
-	// 	return errSchedule
-	// }
+	coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
+	if errSchedule != nil {
+		return errSchedule
+	}
 
-	// mapDay := map[time.Time]string{}
+	mapDay := map[time.Time]string{}
 
-	// start := coreTrans.StartDate
-	// end := coreTrans.EndDate
-	// for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
-	// 	dayString := d.Format("Monday")
-	// 	if dayString == coreSchedule.Day {
-	// 		mapDay[d] = dayString
-	// 	}
-	// }
+	start := coreTrans.StartDate
+	end := coreTrans.EndDate
+	for d := start; !d.After(end); d = d.AddDate(0, 0, 1) {
+		dayString := d.Format("Monday")
+		if dayString == coreSchedule.Day {
+			mapDay[d] = dayString
+			break
+		}
+	}
 
-	// for k := range mapDay {
+	var firstDay time.Time
+	for k := range mapDay {
+		firstDay = k
+	}
 
-	// 	detailCal := helper.CalendarDetail{
-	// 		Summary:  coreClass.Name,
-	// 		Location: coreStudent.Address,
-	// 		Start:    k.Format(time.RFC3339),
-	// 		End:      k.Format(time.RFC3339),
-	// 		Emails:   []string{coreStudent.Email},
-	// 	}
+	firstDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.StartTime
+	startTime, err := time.Parse("2006-01-02 15:04", firstDayStr)
+	if err != nil {
+		return errors.New("invalid start date format must YYYY-MM-DD")
+	}
 
-	// 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
-	// 	if errCreateEvent != nil {
-	// 		return errors.New("failed to create event in calendar")
-	// 	}
-	// }
+	endDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.EndTime
+	endTime, err := time.Parse("2006-01-02 15:04", endDayStr)
+	if err != nil {
+		return errors.New("invalid start date format must YYYY-MM-DD")
+	}
 
-	startTime := coreTrans.StartDate
-	endTime := coreTrans.EndDate
+	endDate := coreTrans.EndDate
 
 	startRFC := startTime.Format(time.RFC3339)
 	endRFC := endTime.Format(time.RFC3339)
+	endDateRFC := endDate.Format(time.RFC3339)
 
 	detailCal := helper.CalendarDetail{
 		Summary:     coreClass.Name,
 		Location:    coreStudent.Address,
-		Start:       startRFC,
-		End:         endRFC,
+		StartTime:   startRFC,
+		EndTime:     endRFC,
+		EndDate:     endDateRFC,
 		DisplayName: coreStudent.Name,
 		Email:       coreStudent.Email,
 	}
@@ -188,13 +191,14 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	return token, res, nil
 }
 
-func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData) auth.AuthService {
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData) auth.AuthService {
 	return &authUseCase{
-		qry:        ud,
-		qryTrans:   td,
-		qryClass:   cd,
-		qryStudent: sd,
-		validate:   validator.New(),
-		googleApi:  ga,
+		qry:         ud,
+		qryTrans:    td,
+		qryClass:    cd,
+		qryStudent:  sd,
+		qrySchedule: scd,
+		validate:    validator.New(),
+		googleApi:   ga,
 	}
 }

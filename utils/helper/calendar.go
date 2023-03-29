@@ -2,7 +2,9 @@ package helper
 
 import (
 	"context"
+	"fmt"
 	"musiclab-be/app/config"
+	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -19,8 +21,9 @@ type GoogleAPI interface {
 type CalendarDetail struct {
 	Summary     string
 	Location    string
-	Start       string
-	End         string
+	StartTime   string
+	EndTime     string
+	EndDate     string
 	DisplayName string
 	Email       string
 }
@@ -60,17 +63,27 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 		return err
 	}
 
+	t1 := strings.Replace(detail.EndDate, "-", "", -1)
+	t2 := strings.Replace(t1, ":", "", -1)
+
+	endDate := t2[:15] + "Z"
+
+	RecurrenceString := fmt.Sprintf("RRULE:FREQ=WEEKLY;UNTIL=%s", endDate)
+
 	event := &calendar.Event{
 		Summary:  detail.Summary,
 		Location: detail.Location,
 		Start: &calendar.EventDateTime{
-			DateTime: detail.Start, // Wajib format RFC3339
+			DateTime: detail.StartTime, // Wajib format RFC3339
 			TimeZone: "Asia/Jakarta",
 		},
 		End: &calendar.EventDateTime{
 			// DateTime: time.Date(2023, 02, 10, 13, 20, 10, 10, time.Local).Format(time.RFC3339), // artinya YYYY-MM-DD HH-MM-SS-NS Location
-			DateTime: detail.End,
+			DateTime: detail.EndTime,
 			TimeZone: "Asia/Jakarta",
+		},
+		Recurrence: []string{
+			RecurrenceString,
 		},
 		Attendees: []*calendar.EventAttendee{
 			{Email: detail.Email, DisplayName: detail.DisplayName},
