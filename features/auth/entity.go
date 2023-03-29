@@ -3,20 +3,22 @@ package auth
 import "github.com/labstack/echo/v4"
 
 type Core struct {
-	ID        uint
-	Avatar    string
-	Name      string `validate:"required"`
-	Email     string `validate:"required,email"`
-	Password  string `validate:"required,min=3"`
-	Role      string `validate:"required"`
-	AvgRating float32
+	ID            uint
+	Avatar        string
+	Name          string `validate:"required"`
+	Email         string `validate:"required,email"`
+	Password      string `validate:"required,min=3"`
+	Role          string `validate:"required"`
+	TokenOauth    string
+	AvgRating     float32
+	TransactionID uint `validate:"required"`
 }
-
 type AuthHandler interface {
 	Register() echo.HandlerFunc
 	Login() echo.HandlerFunc
 	GoogleLogin() echo.HandlerFunc
 	GoogleCallback() echo.HandlerFunc
+	CreateEvent() echo.HandlerFunc
 }
 
 type AuthService interface {

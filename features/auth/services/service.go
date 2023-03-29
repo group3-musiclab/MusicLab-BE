@@ -4,6 +4,7 @@ import (
 	"errors"
 	"musiclab-be/features/auth"
 	"musiclab-be/features/classes"
+	"musiclab-be/features/mentors"
 	"musiclab-be/features/schedules"
 	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
@@ -20,17 +21,44 @@ type authUseCase struct {
 	qryClass    classes.ClassData
 	qryStudent  students.StudentData
 	qrySchedule schedules.ScheduleData
+	qryMentor   mentors.MentorData
 	validate    *validator.Validate
 	googleApi   helper.GoogleAPI
 }
 
 // LoginOauth implements auth.AuthService
-func (*authUseCase) LoginOauth(code string) error {
-	panic("unimplemented")
+func (auc *authUseCase) LoginOauth(code string) error {
+	// get token oauth2
+	token, errToken := auc.googleApi.GetToken(code)
+	if errToken != nil {
+		return errors.New("failed to get google oauth2 token")
+	}
+
+	// get user info with token
+	coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(token)
+	if errUserInfo != nil {
+		return errUserInfo
+	}
+
+	coreMentor, errMentor := auc.qry.LoginMentor(coreGoogle.Email)
+	if errMentor != nil {
+		return errMentor
+	}
+
+	// insert tokent oauth2 to mentor data
+	inputMentor := mentors.Core{}
+	inputMentor.TokenOauth = token.AccessToken
+
+	errUpdateMentor := auc.qryMentor.UpdateData(coreMentor.ID, inputMentor)
+	if errUpdateMentor != nil {
+		return errUpdateMentor
+	}
+
+	return nil
 }
 
 // CreateEvent implements auth.AuthService
-func (auc *authUseCase) CreateEvent(code, orderID string) error {
+func (auc *authUseCase) CreateEvent(input auth.Core) error {
 	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
 	if errToken != nil {
@@ -116,7 +144,7 @@ func (auc *authUseCase) CreateEvent(code, orderID string) error {
 
 // Register implements auth.AuthService
 func (auc *authUseCase) Register(newUser auth.Core) error {
-	errValidate := auc.validate.Struct(newUser)
+	errValidate := auc.validate.StructExcept(newUser, "TransactionID")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
 	}
@@ -163,7 +191,7 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 }
 
 func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
-	errValidate := auc.validate.StructExcept(user, "Name")
+	errValidate := auc.validate.StructExcept(user, "Name", "TransactionID")
 	if errValidate != nil {
 		return "", auth.Core{}, errors.New("validate: " + errValidate.Error())
 	}
@@ -196,13 +224,14 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	return token, res, nil
 }
 
-func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData) auth.AuthService {
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData, md mentors.MentorData) auth.AuthService {
 	return &authUseCase{
 		qry:         ud,
 		qryTrans:    td,
 		qryClass:    cd,
 		qryStudent:  sd,
 		qrySchedule: scd,
+		qryMentor:   md,
 		validate:    validator.New(),
 		googleApi:   ga,
 	}

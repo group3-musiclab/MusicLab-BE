@@ -33,3 +33,13 @@ func loginToCore(data LoginRequest) auth.Core {
 		Role:     data.Role,
 	}
 }
+
+type CreateEventRequest struct {
+	TransactionID uint `json:"transaction_id"`
+}
+
+func createEventToCore(data CreateEventRequest) auth.Core {
+	return auth.Core{
+		TransactionID: data.TransactionID,
+	}
+}

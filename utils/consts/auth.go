@@ -14,6 +14,7 @@ const (
 
 // Success Response
 const (
-	AUTH_SuccessCreate string = "success create account"
-	AUTH_SuccessLogin  string = "login success"
+	AUTH_SuccessCreate      string = "success create account"
+	AUTH_SuccessLogin       string = "login success"
+	AUTH_SuccessCreateEvent string = "success create event"
 )

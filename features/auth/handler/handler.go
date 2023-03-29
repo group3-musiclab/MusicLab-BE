@@ -18,6 +18,23 @@ type authControl struct {
 	googleApi helper.GoogleAPI
 }
 
+// CreateEvent implements auth.AuthHandler
+func (ac *authControl) CreateEvent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := CreateEventRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		err := ac.srv.CreateEvent(createEventToCore(input))
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusCreated, helper.Response(consts.AUTH_SuccessCreateEvent))
+	}
+}
+
 // GoogleCallback implements auth.AuthHandler
 func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 	return func(c echo.Context) error {

@@ -18,6 +18,7 @@ type Core struct {
 	NewPassword          string
 	ConfirmationPassword string
 	Role                 string
+	TokenOauth           string
 	Sex                  string
 	Phone                string `validate:"number,max=12"`
 	Address              string
