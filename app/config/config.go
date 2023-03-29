@@ -84,6 +84,10 @@ func ReadEnv() *DBConfig {
 		app.ACCESS_KEY_SECRET = val
 		isRead = false
 	}
+	if val, found := os.LookupEnv("SERVER_KEY_MIDTRANS"); found {
+		app.SERVER_KEY_MIDTRANS = val
+		isRead = false
+	}
 	if val, found := os.LookupEnv("GOOGLE_REDIRECT_CALLBACK"); found {
 		app.GOOGLE_REDIRECT_CALLBACK = val
 		isRead = false
