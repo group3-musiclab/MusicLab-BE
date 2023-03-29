@@ -10,6 +10,21 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 )
 
+// func testsometing(dbTest *gorm.DB) {
+// 	// gmt, _ := time.LoadLocation("Asia/Jakarta")
+// 	s := gocron.NewScheduler()
+// 	s.Every(1).Seconds().Do(
+// 		func() {
+// 			err := dbTest.Raw("INSERT into genres (name) values ('Reage')")
+// 			log.Println(err)
+// 			if err != nil {
+// 				log.Println(err.Error)
+// 			}
+// 		},
+// 	)
+
+// }
+
 func main() {
 	cfg := config.InitConfig()
 	db := database.InitDB(*cfg)
@@ -24,8 +39,26 @@ func main() {
 	}))
 
 	router.InitRouter(db, e)
+	//test scheduling(belum works)
+	// gmt, _ := time.LoadLocation("Asia/Jakarta")
+	// s := gocron.NewScheduler(gmt)
+	// s.Every(1).Day().At("00:00").Do(
+	// 	func() {
+	// 		err := db.Raw("INSERT into genres (name) values ('Rocks')")
+	// 		log.Println(err)
+	// 		if err != nil {
+	// 			log.Println(err.Error)
+	// 		}
+	// 	},
+	// )
+	// s.StartBlocking()
+
+	// // s := gocron.NewScheduler()
+	// // s.Every(1).Seconds().Do(testsometing, db)
+	// // <-s.Start()
 
 	if err := e.Start(":8000"); err != nil {
 		log.Println(err.Error())
 	}
+
 }
