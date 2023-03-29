@@ -14,7 +14,7 @@ func TestAddMentorGenre(t *testing.T) {
 	repo := mocks.NewGenreData(t)
 	inputData := genres.Core{Name: "Jazz", GenreID: 1}
 
-	t.Run("success add mentor book", func(t *testing.T) {
+	t.Run("success add mentor genre", func(t *testing.T) {
 		repo.On("AddMentorGenre", inputData).Return(nil).Once()
 		srv := New(repo)
 		err := srv.AddMentorGenre(inputData)
