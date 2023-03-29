@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/oauth2"
 )
 
 type authUseCase struct {
@@ -59,14 +60,19 @@ func (auc *authUseCase) LoginOauth(code string) error {
 
 // CreateEvent implements auth.AuthService
 func (auc *authUseCase) CreateEvent(input auth.Core) error {
-	// get token oauth2
-	token, errToken := auc.googleApi.GetToken(code)
-	if errToken != nil {
-		return errors.New("failed to create event in calendar")
+	// get token oauth2 from mentor data
+	coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
+	if errMentor != nil {
+		return errMentor
+	}
+
+	// token oauth2 validation
+	if coreMentor.TokenOauth == "" {
+		return errors.New("token oauth not generated yet, please login with google account first")
 	}
 
 	// transaction detail
-	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
+	coreTrans, errTrans := auc.qryTrans.SelectOne(input.TransactionID)
 	if errTrans != nil {
 		return errTrans
 	}
@@ -132,6 +138,10 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error {
 		EndDate:     endDateRFC,
 		DisplayName: coreStudent.Name,
 		Email:       coreStudent.Email,
+	}
+
+	token := &oauth2.Token{
+		AccessToken: coreMentor.TokenOauth,
 	}
 
 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
