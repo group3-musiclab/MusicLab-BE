@@ -131,13 +131,15 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error {
 	endDateRFC := endDate.Format(time.RFC3339)
 
 	detailCal := helper.CalendarDetail{
-		Summary:     coreClass.Name,
-		Location:    coreStudent.Address,
-		StartTime:   startRFC,
-		EndTime:     endRFC,
-		EndDate:     endDateRFC,
-		DisplayName: coreStudent.Name,
-		Email:       coreStudent.Email,
+		Summary:             coreClass.Name,
+		Location:            coreStudent.Address,
+		StartTime:           startRFC,
+		EndTime:             endRFC,
+		EndDate:             endDateRFC,
+		CreatorDisplayName:  coreMentor.Name,
+		CreatorEmail:        coreMentor.Email,
+		AttendeeDisplayName: coreStudent.Name,
+		AttendeeEmail:       coreStudent.Email,
 	}
 
 	token := &oauth2.Token{
