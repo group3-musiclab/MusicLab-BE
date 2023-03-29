@@ -24,6 +24,11 @@ type authUseCase struct {
 	googleApi   helper.GoogleAPI
 }
 
+// LoginOauth implements auth.AuthService
+func (*authUseCase) LoginOauth(code string) error {
+	panic("unimplemented")
+}
+
 // CreateEvent implements auth.AuthService
 func (auc *authUseCase) CreateEvent(code, orderID string) error {
 	// get token oauth2
