@@ -4,6 +4,7 @@ import (
 	"errors"
 	"musiclab-be/features/auth"
 	"musiclab-be/features/classes"
+	"musiclab-be/features/mentors"
 	"musiclab-be/features/schedules"
 	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
@@ -12,6 +13,7 @@ import (
 	"time"
 
 	"github.com/go-playground/validator/v10"
+	"golang.org/x/oauth2"
 )
 
 type authUseCase struct {
@@ -20,20 +22,57 @@ type authUseCase struct {
 	qryClass    classes.ClassData
 	qryStudent  students.StudentData
 	qrySchedule schedules.ScheduleData
+	qryMentor   mentors.MentorData
 	validate    *validator.Validate
 	googleApi   helper.GoogleAPI
 }
 
-// CreateEvent implements auth.AuthService
-func (auc *authUseCase) CreateEvent(code, orderID string) error {
+// LoginOauth implements auth.AuthService
+func (auc *authUseCase) LoginOauth(code string) error {
 	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
 	if errToken != nil {
-		return errors.New("failed to create event in calendar")
+		return errors.New("failed to get google oauth2 token")
+	}
+
+	// get user info with token
+	coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(token)
+	if errUserInfo != nil {
+		return errUserInfo
+	}
+
+	coreMentor, errMentor := auc.qry.LoginMentor(coreGoogle.Email)
+	if errMentor != nil {
+		return errMentor
+	}
+
+	// insert tokent oauth2 to mentor data
+	inputMentor := mentors.Core{}
+	inputMentor.TokenOauth = token.AccessToken
+
+	errUpdateMentor := auc.qryMentor.UpdateData(coreMentor.ID, inputMentor)
+	if errUpdateMentor != nil {
+		return errUpdateMentor
+	}
+
+	return nil
+}
+
+// CreateEvent implements auth.AuthService
+func (auc *authUseCase) CreateEvent(input auth.Core) error {
+	// get token oauth2 from mentor data
+	coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
+	if errMentor != nil {
+		return errMentor
+	}
+
+	// token oauth2 validation
+	if coreMentor.TokenOauth == "" {
+		return errors.New("token oauth not generated yet, please login with google account first")
 	}
 
 	// transaction detail
-	coreTrans, errTrans := auc.qryTrans.SelectOne("ALTA-MusicLab-2-iJykzCx5x5U99hva8SnWf8")
+	coreTrans, errTrans := auc.qryTrans.SelectOne(input.TransactionID)
 	if errTrans != nil {
 		return errTrans
 	}
@@ -101,6 +140,10 @@ func (auc *authUseCase) CreateEvent(code, orderID string) error {
 		Email:       coreStudent.Email,
 	}
 
+	token := &oauth2.Token{
+		AccessToken: coreMentor.TokenOauth,
+	}
+
 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
 	if errCreateEvent != nil {
 		return errors.New("failed to create event in calendar")
@@ -111,7 +154,7 @@ func (auc *authUseCase) CreateEvent(code, orderID string) error {
 
 // Register implements auth.AuthService
 func (auc *authUseCase) Register(newUser auth.Core) error {
-	errValidate := auc.validate.Struct(newUser)
+	errValidate := auc.validate.StructExcept(newUser, "TransactionID")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
 	}
@@ -158,7 +201,7 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 }
 
 func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
-	errValidate := auc.validate.StructExcept(user, "Name")
+	errValidate := auc.validate.StructExcept(user, "Name", "TransactionID")
 	if errValidate != nil {
 		return "", auth.Core{}, errors.New("validate: " + errValidate.Error())
 	}
@@ -191,13 +234,14 @@ func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) {
 	return token, res, nil
 }
 
-func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData) auth.AuthService {
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData, md mentors.MentorData) auth.AuthService {
 	return &authUseCase{
 		qry:         ud,
 		qryTrans:    td,
 		qryClass:    cd,
 		qryStudent:  sd,
 		qrySchedule: scd,
+		qryMentor:   md,
 		validate:    validator.New(),
 		googleApi:   ga,
 	}

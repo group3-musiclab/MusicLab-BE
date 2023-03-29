@@ -2,8 +2,12 @@ package helper
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
 	"musiclab-be/app/config"
+	"net/http"
 	"strings"
 
 	"golang.org/x/oauth2"
@@ -16,6 +20,7 @@ type GoogleAPI interface {
 	GetUrlAuth(state string) string
 	GetToken(code string) (*oauth2.Token, error)
 	CreateCalendar(token *oauth2.Token, detail CalendarDetail) error
+	GetUserInfo(token *oauth2.Token) (GoogleCore, error)
 }
 
 type CalendarDetail struct {
@@ -26,6 +31,18 @@ type CalendarDetail struct {
 	EndDate     string
 	DisplayName string
 	Email       string
+}
+
+type GoogleCore struct {
+	Sub           string `json:"sub"`
+	Name          string `json:"name"`
+	GivenName     string `json:"given_name"`
+	FamilyName    string `json:"family_name"`
+	Profile       string `json:"profile"`
+	Picture       string `json:"picture"`
+	Email         string `json:"email"`
+	EmailVerified bool   `json:"email_verified"`
+	Gender        string `json:"gender"`
 }
 
 type googleAPI struct {
@@ -96,4 +113,41 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 	}
 
 	return nil
+}
+
+func (ga *googleAPI) GetUserInfo(token *oauth2.Token) (GoogleCore, error) {
+
+	var userGoogleCore GoogleCore
+
+	// if state != oauthStateString {
+	//     log.Println("invalid oauth state")
+	//     return user.GoogleCore{}, fmt.Errorf("invalid oauth state")
+	// }
+
+	// token, err := oauth.Exchange(context.Background(), code)
+	// if err != nil {
+	//     log.Println("code exchange failed")
+	//     return user.GoogleCore{}, fmt.Errorf("code exchange failed: %s", err.Error())
+	// }
+
+	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
+	if err != nil {
+		log.Println("failed getting user info")
+		return GoogleCore{}, fmt.Errorf("failed getting user info: %s", err.Error())
+	}
+
+	defer response.Body.Close()
+	contents, err := ioutil.ReadAll(response.Body)
+	if err != nil {
+		log.Println("failed reading response body")
+		return GoogleCore{}, fmt.Errorf("failed reading response body: %s", err.Error())
+	}
+
+	errjson := json.Unmarshal(contents, &userGoogleCore)
+	if errjson != nil {
+		log.Println("cant unmarshal json")
+		return GoogleCore{}, fmt.Errorf("cant unmarshal json")
+	}
+
+	return userGoogleCore, nil
 }

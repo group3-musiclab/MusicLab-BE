@@ -20,9 +20,9 @@ func New(db *gorm.DB) transactions.TransactionData {
 }
 
 // SelectOne implements transactions.TransactionData
-func (tq *transactionQuery) SelectOne(orderID string) (transactions.Core, error) {
+func (tq *transactionQuery) SelectOne(transactionID uint) (transactions.Core, error) {
 	dataModel := Transaction{}
-	txSelect := tq.db.Where("order_id = ?", orderID).First(&dataModel)
+	txSelect := tq.db.Where("id = ?", transactionID).First(&dataModel)
 	if txSelect.Error != nil {
 		return transactions.Core{}, errors.New(consts.QUERY_NotFound)
 	}

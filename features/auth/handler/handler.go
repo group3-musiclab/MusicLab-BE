@@ -18,10 +18,30 @@ type authControl struct {
 	googleApi helper.GoogleAPI
 }
 
+// CreateEvent implements auth.AuthHandler
+func (ac *authControl) CreateEvent() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		mentorID := helper.ExtractTokenUserId(c)
+		input := CreateEventRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		inputCore := createEventToCore(input)
+		inputCore.ID = mentorID
+
+		err := ac.srv.CreateEvent(inputCore)
+		if err != nil {
+			return c.JSON(helper.ErrorResponse(err))
+		}
+		return c.JSON(http.StatusCreated, helper.Response(consts.AUTH_SuccessCreateEvent))
+	}
+}
+
 // GoogleCallback implements auth.AuthHandler
 func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 	return func(c echo.Context) error {
-		orderID := c.QueryParam("orderid")
 		state := c.QueryParam("state")
 		if state != oauthStateString {
 			return c.HTML(http.StatusUnauthorized, "invalid oauth state")
@@ -29,12 +49,12 @@ func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 
 		code := c.QueryParam("code")
 
-		err := ac.srv.CreateEvent(code, orderID)
+		err := ac.srv.LoginOauth(code)
 		if err != nil {
 			return c.HTML(http.StatusInternalServerError, err.Error())
 		}
 
-		return c.HTML(http.StatusOK, "success create event")
+		return c.HTML(http.StatusOK, "success login with google")
 	}
 }
 

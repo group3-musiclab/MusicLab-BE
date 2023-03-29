@@ -67,5 +67,5 @@ type TransactionData interface {
 	GetMentorTransaction(mentorID uint, limit, offset int) ([]Core, error)
 	GetStudentTransaction(studentID uint, limit, offset int) ([]Core, error)
 	UpdateTransaction(input Core) error
-	SelectOne(orderID string) (Core, error)
+	SelectOne(transactionID uint) (Core, error)
 }

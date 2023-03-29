@@ -21,6 +21,7 @@ type Mentor struct {
 	Email             string `gorm:"not null;unique;type:varchar(50)"`
 	Password          string
 	Role              string `gorm:"type:varchar(25) not null default 'Mentor'"`
+	TokenOauth        string
 	Sex               string `gorm:"type:enum('','Male','Female')"`
 	Phone             string `gorm:"type:varchar(12)"`
 	Address           string `gorm:"type:varchar(100)"`
@@ -55,6 +56,7 @@ func ModelToCore(data Mentor) mentors.Core {
 		Email:        data.Email,
 		Password:     data.Password,
 		Role:         data.Role,
+		TokenOauth:   data.TokenOauth,
 		Sex:          data.Sex,
 		Phone:        data.Phone,
 		Address:      data.Address,
@@ -79,6 +81,7 @@ func CoreToModel(data mentors.Core) Mentor {
 		Email:        data.Email,
 		Password:     data.Password,
 		Role:         data.Role,
+		TokenOauth:   data.TokenOauth,
 		Sex:          data.Sex,
 		Phone:        data.Phone,
 		Address:      data.Address,
