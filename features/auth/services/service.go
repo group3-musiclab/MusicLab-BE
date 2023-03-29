@@ -148,7 +148,7 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error {
 
 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
 	if errCreateEvent != nil {
-		return errors.New("failed to create event in calendar")
+		return errCreateEvent
 	}
 
 	return nil
