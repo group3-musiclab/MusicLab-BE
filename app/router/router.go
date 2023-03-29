@@ -95,7 +95,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	// Auth
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
-	e.GET("/GoogleLogin", aHdl.GoogleLogin())
+	e.GET("/login/oauth", aHdl.GoogleLogin())
 	e.GET("/GoogleCallBack", aHdl.GoogleCallback())
 
 	// Mentors
