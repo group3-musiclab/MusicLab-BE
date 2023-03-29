@@ -5,9 +5,7 @@ import (
 	"musiclab-be/app/config"
 	"musiclab-be/app/database"
 	"musiclab-be/app/router"
-	"time"
 
-	"github.com/go-co-op/gocron"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -41,18 +39,19 @@ func main() {
 	}))
 
 	router.InitRouter(db, e)
-	gmt, _ := time.LoadLocation("Asia/Jakarta")
-	s := gocron.NewScheduler(gmt)
-	s.Every(1).Day().At("00:00").Do(
-		func() {
-			err := db.Raw("INSERT into genres (name) values ('Rocks')")
-			log.Println(err)
-			if err != nil {
-				log.Println(err.Error)
-			}
-		},
-	)
-	s.StartBlocking()
+	//test scheduling(belum work)
+	// gmt, _ := time.LoadLocation("Asia/Jakarta")
+	// s := gocron.NewScheduler(gmt)
+	// s.Every(1).Day().At("00:00").Do(
+	// 	func() {
+	// 		err := db.Raw("INSERT into genres (name) values ('Rocks')")
+	// 		log.Println(err)
+	// 		if err != nil {
+	// 			log.Println(err.Error)
+	// 		}
+	// 	},
+	// )
+	// s.StartBlocking()
 
 	// // s := gocron.NewScheduler()
 	// // s.Every(1).Seconds().Do(testsometing, db)
