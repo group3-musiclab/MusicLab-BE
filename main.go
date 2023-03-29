@@ -39,7 +39,7 @@ func main() {
 	}))
 
 	router.InitRouter(db, e)
-	//test scheduling(belum work)
+	//test scheduling(belum works)
 	// gmt, _ := time.LoadLocation("Asia/Jakarta")
 	// s := gocron.NewScheduler(gmt)
 	// s.Every(1).Day().At("00:00").Do(
