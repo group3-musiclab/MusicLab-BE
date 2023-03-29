@@ -109,7 +109,7 @@ func (tuc *transactionUseCase) GetMentorTransaction(mentorID uint, page, limit i
 // GetStudentTransaction implements transactions.TransactionService
 func (tuc *transactionUseCase) GetStudentTransaction(studentID uint, page, limit int) ([]transactions.Core, error) {
 	offset := (page - 1) * limit
-	res, err := tuc.qry.GetMentorTransaction(studentID, limit, offset)
+	res, err := tuc.qry.GetStudentTransaction(studentID, limit, offset)
 
 	if err != nil {
 		msg := ""

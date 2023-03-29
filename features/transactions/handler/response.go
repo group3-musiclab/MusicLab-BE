@@ -16,7 +16,6 @@ func TransactionResponseResponse(data transactions.Core) TransactionResponse {
 
 type ShowAllMentorTransaction struct {
 	ID          uint    `json:"id"`
-	OrderID     string  `json:"order_id"`
 	StudentName string  `json:"student_name"`
 	ClassName   string  `json:"class_name"`
 	StartDate   string  `json:"start_date"`
@@ -30,7 +29,6 @@ func ShowAllMentorTransactionResponse(data transactions.Core) ShowAllMentorTrans
 	EndDate := data.EndDate.Format("2006-01-02")
 	return ShowAllMentorTransaction{
 		ID:          data.ID,
-		OrderID:     data.OrderID,
 		StudentName: data.Student.Name,
 		ClassName:   data.Class.Name,
 		StartDate:   StartDate,
@@ -42,7 +40,7 @@ func ShowAllMentorTransactionResponse(data transactions.Core) ShowAllMentorTrans
 
 type ShowAllStudentTransaction struct {
 	ID         uint    `json:"id"`
-	OrderID    string  `json:"order_id"`
+	MentorID   uint    `json:"mentor_id"`
 	MentorName string  `json:"mentor_name"`
 	ClassName  string  `json:"class_name"`
 	StartDate  string  `json:"start_date"`
@@ -56,7 +54,7 @@ func ShowAllStudentTransactionResponse(data transactions.Core) ShowAllStudentTra
 	EndDate := data.EndDate.Format("2006-01-02")
 	return ShowAllStudentTransaction{
 		ID:         data.ID,
-		OrderID:    data.OrderID,
+		MentorID:   data.MentorID,
 		MentorName: data.Mentor.Name,
 		ClassName:  data.Class.Name,
 		StartDate:  StartDate,
