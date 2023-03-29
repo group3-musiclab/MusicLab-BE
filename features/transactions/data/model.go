@@ -74,11 +74,11 @@ func ToCore(data Transaction) transactions.Core {
 			Price:    data.Class.Price,
 		},
 		Mentor: transactions.Mentor{
-			ID:      data.Student.ID,
-			Name:    data.Student.Name,
-			Email:   data.Student.Email,
-			Phone:   data.Student.Phone,
-			Address: data.Student.Address,
+			ID:      data.Mentor.ID,
+			Name:    data.Mentor.Name,
+			Email:   data.Mentor.Email,
+			Phone:   data.Mentor.Phone,
+			Address: data.Mentor.Address,
 		},
 	}
 }
