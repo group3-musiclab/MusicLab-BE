@@ -24,13 +24,15 @@ type GoogleAPI interface {
 }
 
 type CalendarDetail struct {
-	Summary     string
-	Location    string
-	StartTime   string
-	EndTime     string
-	EndDate     string
-	DisplayName string
-	Email       string
+	Summary             string
+	Location            string
+	StartTime           string
+	EndTime             string
+	EndDate             string
+	CreatorDisplayName  string
+	CreatorEmail        string
+	AttendeeDisplayName string
+	AttendeeEmail       string
 }
 
 type GoogleCore struct {
@@ -91,19 +93,22 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 		Summary:  detail.Summary,
 		Location: detail.Location,
 		Start: &calendar.EventDateTime{
-			DateTime: detail.StartTime, // Wajib format RFC3339
+			DateTime: detail.StartTime,
 			TimeZone: "Asia/Jakarta",
 		},
 		End: &calendar.EventDateTime{
-			// DateTime: time.Date(2023, 02, 10, 13, 20, 10, 10, time.Local).Format(time.RFC3339), // artinya YYYY-MM-DD HH-MM-SS-NS Location
 			DateTime: detail.EndTime,
 			TimeZone: "Asia/Jakarta",
 		},
 		Recurrence: []string{
 			RecurrenceString,
 		},
+		Creator: &calendar.EventCreator{
+			DisplayName: detail.CreatorDisplayName,
+			Email:       detail.CreatorEmail,
+		},
 		Attendees: []*calendar.EventAttendee{
-			{Email: detail.Email, DisplayName: detail.DisplayName},
+			{Email: detail.AttendeeEmail, DisplayName: detail.AttendeeDisplayName},
 		},
 	}
 
@@ -118,17 +123,6 @@ func (ga *googleAPI) CreateCalendar(token *oauth2.Token, detail CalendarDetail) 
 func (ga *googleAPI) GetUserInfo(token *oauth2.Token) (GoogleCore, error) {
 
 	var userGoogleCore GoogleCore
-
-	// if state != oauthStateString {
-	//     log.Println("invalid oauth state")
-	//     return user.GoogleCore{}, fmt.Errorf("invalid oauth state")
-	// }
-
-	// token, err := oauth.Exchange(context.Background(), code)
-	// if err != nil {
-	//     log.Println("code exchange failed")
-	//     return user.GoogleCore{}, fmt.Errorf("code exchange failed: %s", err.Error())
-	// }
 
 	response, err := http.Get("https://www.googleapis.com/oauth2/v2/userinfo?access_token=" + token.AccessToken)
 	if err != nil {

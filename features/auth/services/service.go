@@ -131,13 +131,15 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error {
 	endDateRFC := endDate.Format(time.RFC3339)
 
 	detailCal := helper.CalendarDetail{
-		Summary:     coreClass.Name,
-		Location:    coreStudent.Address,
-		StartTime:   startRFC,
-		EndTime:     endRFC,
-		EndDate:     endDateRFC,
-		DisplayName: coreStudent.Name,
-		Email:       coreStudent.Email,
+		Summary:             coreClass.Name,
+		Location:            coreStudent.Address,
+		StartTime:           startRFC,
+		EndTime:             endRFC,
+		EndDate:             endDateRFC,
+		CreatorDisplayName:  coreMentor.Name,
+		CreatorEmail:        coreMentor.Email,
+		AttendeeDisplayName: coreStudent.Name,
+		AttendeeEmail:       coreStudent.Email,
 	}
 
 	token := &oauth2.Token{
@@ -146,7 +148,7 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error {
 
 	errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
 	if errCreateEvent != nil {
-		return errors.New("failed to create event in calendar")
+		return errCreateEvent
 	}
 
 	return nil
