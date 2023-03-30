@@ -16,7 +16,7 @@ type mentorQuery struct {
 // SelectAllByRating implements mentors.MentorData
 func (mq *mentorQuery) SelectAllByRating() ([]mentors.Core, error) {
 	var dataModel []Mentor
-	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(4).Order("avg_rating DESC").Find(&dataModel)
+	txSelect := mq.db.Raw("SELECT * FROM top_mentor_week ORDER BY avg_rating DESC LIMIT 6").Find(&dataModel)
 	if txSelect.Error != nil {
 		return nil, errors.New(consts.QUERY_ErrorReadData)
 	}
