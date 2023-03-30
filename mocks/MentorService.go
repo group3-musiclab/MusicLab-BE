@@ -41,13 +41,13 @@ func (_m *MentorService) InsertCredential(input mentors.CredentialCore) error {
 	return r0
 }
 
-// SelectAll provides a mock function with given fields: page, limit
-func (_m *MentorService) SelectAll(page int, limit int) ([]mentors.Core, error) {
-	ret := _m.Called(page, limit)
+// SelectAll provides a mock function with given fields: page, limit, filter
+func (_m *MentorService) SelectAll(page int, limit int, filter mentors.MentorFilter) ([]mentors.Core, error) {
+	ret := _m.Called(page, limit, filter)
 
 	var r0 []mentors.Core
-	if rf, ok := ret.Get(0).(func(int, int) []mentors.Core); ok {
-		r0 = rf(page, limit)
+	if rf, ok := ret.Get(0).(func(int, int, mentors.MentorFilter) []mentors.Core); ok {
+		r0 = rf(page, limit, filter)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]mentors.Core)
@@ -55,8 +55,8 @@ func (_m *MentorService) SelectAll(page int, limit int) ([]mentors.Core, error) 
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(page, limit)
+	if rf, ok := ret.Get(1).(func(int, int, mentors.MentorFilter) error); ok {
+		r1 = rf(page, limit, filter)
 	} else {
 		r1 = ret.Error(1)
 	}
