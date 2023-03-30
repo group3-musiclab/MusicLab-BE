@@ -52,6 +52,7 @@ func TestCheckSchedule(t *testing.T) {
 
 }
 
+// s
 func TestPostSchedule(t *testing.T) {
 	repo := mocks.NewScheduleData(t)
 	repoClass := mocks.NewClassData(t)
