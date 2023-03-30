@@ -41,13 +41,13 @@ func (_m *MentorData) InsertCredential(input mentors.CredentialCore) error {
 	return r0
 }
 
-// SelectAll provides a mock function with given fields: limit, offset
-func (_m *MentorData) SelectAll(limit int, offset int) ([]mentors.Core, error) {
-	ret := _m.Called(limit, offset)
+// SelectAll provides a mock function with given fields: limit, offset, filter
+func (_m *MentorData) SelectAll(limit int, offset int, filter mentors.MentorFilter) ([]mentors.Core, error) {
+	ret := _m.Called(limit, offset, filter)
 
 	var r0 []mentors.Core
-	if rf, ok := ret.Get(0).(func(int, int) []mentors.Core); ok {
-		r0 = rf(limit, offset)
+	if rf, ok := ret.Get(0).(func(int, int, mentors.MentorFilter) []mentors.Core); ok {
+		r0 = rf(limit, offset, filter)
 	} else {
 		if ret.Get(0) != nil {
 			r0 = ret.Get(0).([]mentors.Core)
@@ -55,8 +55,8 @@ func (_m *MentorData) SelectAll(limit int, offset int) ([]mentors.Core, error) {
 	}
 
 	var r1 error
-	if rf, ok := ret.Get(1).(func(int, int) error); ok {
-		r1 = rf(limit, offset)
+	if rf, ok := ret.Get(1).(func(int, int, mentors.MentorFilter) error); ok {
+		r1 = rf(limit, offset, filter)
 	} else {
 		r1 = ret.Error(1)
 	}

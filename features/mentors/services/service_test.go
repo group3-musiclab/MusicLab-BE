@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 var (
@@ -28,7 +29,7 @@ var (
 
 func TestSelectAllByRating(t *testing.T) {
 	repo := mocks.NewMentorData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
@@ -67,13 +68,16 @@ func TestSelectAllByRating(t *testing.T) {
 
 func TestSelectAll(t *testing.T) {
 	repo := mocks.NewMentorData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
 	}
 	imageTrueCnv := &multipart.FileHeader{
 		Filename: imageTrue.Name(),
+	}
+	inputData := mentors.MentorFilter{
+		Name: "Alif",
 	}
 
 	resData := []mentors.Core{{
@@ -88,18 +92,18 @@ func TestSelectAll(t *testing.T) {
 	offset := (page - 1) * limit
 
 	t.Run("succes get all mentor", func(t *testing.T) {
-		repo.On("SelectAll", limit, offset).Return(resData, nil).Once()
+		repo.On("SelectAll", limit, offset, inputData).Return(resData, nil).Once()
 		srv := New(repo)
-		res, err := srv.SelectAll(page, limit)
+		res, err := srv.SelectAll(page, limit, inputData)
 		assert.Nil(t, err)
 		assert.Equal(t, len(resData), len(res))
 		repo.AssertExpectations(t)
 	})
 
 	t.Run("error read data", func(t *testing.T) {
-		repo.On("SelectAll", limit, offset).Return([]mentors.Core{}, errors.New("error read data")).Once()
+		repo.On("SelectAll", limit, offset, inputData).Return([]mentors.Core{}, errors.New("error read data")).Once()
 		srv := New(repo)
-		res, err := srv.SelectAll(page, limit)
+		res, err := srv.SelectAll(page, limit, inputData)
 		assert.NotNil(t, err)
 		assert.ErrorContains(t, err, "error read data")
 		assert.Equal(t, 0, len(res))
@@ -220,22 +224,70 @@ func TestSelectProfile(t *testing.T) {
 	})
 }
 
-// func TestUpdatePassword(t *testing.T) {
-// 	repo := mocks.NewMentorData(t)
-// 	core := mock_data_mentor
-// 	id := mock_data_mentor.ID
-// 	t.Run("success update mentor password", func(t *testing.T) {
-// 		input := mentors.Core{
-// 			Password:             "thegreatest",
-// 			NewPassword:          "goat",
-// 			ConfirmationPassword: "goat",
-// 		}
-// 		repo.On("UpdateData", id, input).Return(nil).Once()
-// 		repo.On("SelectProfile", id).Return(core, nil).Once()
-// 		srv := New(repo)
-// 		err := srv.UpdatePassword(id, input)
-// 		assert.Nil(t, err)
-// 		repo.AssertExpectations(t)
-// 	})
+func TestUpdatePassword(t *testing.T) {
+	core := mock_data_mentor
+	id := mock_data_mentor.ID
+	repo := mocks.NewMentorData(t)
+	input := mentors.Core{
+		Password:             "thegreatest",
+		NewPassword:          "goat",
+		ConfirmationPassword: "goat",
+	}
 
-// }
+	t.Run("success update mentor password", func(t *testing.T) {
+
+		repo.On("UpdateData", mock.Anything, mock.Anything).Return(nil).Once()
+		repo.On("SelectProfile", mock.Anything).Return(core, nil).Once()
+
+		srv := New(repo)
+		err := srv.UpdatePassword(id, input)
+		assert.Nil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Failed when select data", func(t *testing.T) {
+		repo.On("SelectProfile", mock.Anything).Return(mentors.Core{}, errors.New("error select")).Once()
+
+		srv := New(repo)
+		err := srv.UpdatePassword(id, input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("password not matched", func(t *testing.T) {
+		input := mentors.Core{
+			Password:             "asdasd",
+			NewPassword:          "goat",
+			ConfirmationPassword: "asdsad",
+		}
+		repo.On("SelectProfile", mock.Anything).Return(core, nil).Once()
+
+		srv := New(repo)
+		err := srv.UpdatePassword(id, input)
+		assert.NotNil(t, err)
+		assert.Equal(t, "password not matched", err.Error())
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("failed when update data", func(t *testing.T) {
+		repo.On("SelectProfile", mock.Anything).Return(core, nil).Once()
+		repo.On("UpdateData", mock.Anything, mock.Anything).Return(errors.New("error update")).Once()
+
+		srv := New(repo)
+		err := srv.UpdatePassword(id, input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("failed validate", func(t *testing.T) {
+		inputWrong := mentors.Core{
+			Password:             "",
+			NewPassword:          "",
+			ConfirmationPassword: "",
+		}
+		srv := New(repo)
+		err := srv.UpdatePassword(id, inputWrong)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+}

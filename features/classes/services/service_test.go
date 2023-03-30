@@ -18,7 +18,7 @@ import (
 func TestPostClass(t *testing.T) {
 	repo := mocks.NewClassData(t)
 
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
@@ -68,7 +68,7 @@ func TestPostClass(t *testing.T) {
 
 func TestGetMentorClass(t *testing.T) {
 	repo := mocks.NewClassData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
@@ -123,7 +123,7 @@ func TestGetMentorClass(t *testing.T) {
 
 func TestGetMentorClassDetail(t *testing.T) {
 	repo := mocks.NewClassData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
@@ -171,7 +171,7 @@ func TestGetMentorClassDetail(t *testing.T) {
 
 func TestUpdate(t *testing.T) {
 	repo := mocks.NewClassData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab.jpg")
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
 	imageTrue, err := os.Open(filePath)
 	if err != nil {
 		log.Println(err.Error())
