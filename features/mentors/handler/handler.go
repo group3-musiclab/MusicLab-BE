@@ -51,7 +51,25 @@ func (mc *mentorControl) GetAll() echo.HandlerFunc {
 			}
 		}
 
-		dataCore, err := mc.srv.SelectAll(page, limit)
+		rating := float64(0)
+		ratingParam := c.QueryParam("rating")
+		if ratingParam != "" {
+			idConv, errConv := strconv.Atoi(ratingParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidRatingParam))
+			}
+			rating = float64(idConv)
+		}
+
+		mentorFilter := mentors.MentorFilter{
+			Name:          c.QueryParam("name"),
+			Instrument:    c.QueryParam("instrument"),
+			Genre:         c.QueryParam("genre"),
+			Rating:        rating,
+			Qualification: c.QueryParam("qualification"),
+		}
+
+		dataCore, err := mc.srv.SelectAll(page, limit, mentorFilter)
 		if err != nil {
 			return c.JSON(helper.ErrorResponse(err))
 		}

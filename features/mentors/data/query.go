@@ -24,12 +24,66 @@ func (mq *mentorQuery) SelectAllByRating() ([]mentors.Core, error) {
 }
 
 // SelectAll implements mentors.MentorData
-func (mq *mentorQuery) SelectAll(limit int, offset int) ([]mentors.Core, error) {
+func (mq *mentorQuery) SelectAll(limit int, offset int, filter mentors.MentorFilter) ([]mentors.Core, error) {
 	var dataModel []Mentor
-	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
-	if txSelect.Error != nil {
-		return nil, errors.New(consts.QUERY_ErrorReadData)
+
+	// if all filter empty
+	if filter.Name == "" && filter.Instrument == "" && filter.Genre == "" && filter.Rating == 0 && filter.Qualification == "" {
+		txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
+		if txSelect.Error != nil {
+			return nil, errors.New(consts.QUERY_ErrorReadData)
+		}
 	}
+
+	// if filter.Instrument != "" {
+	// 	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Where("db_musiclab.instruments.name = ?", filter.Instrument).Find(&dataModel)
+	// 	if txSelect.Error != nil {
+	// 		return nil, errors.New(consts.QUERY_ErrorReadData)
+	// 	}
+	// }
+
+	// queryRaw := `SELECT m.id AS id, m.avatar AS avatar, m.name AS name,  m.about AS about, m.instagram AS instagram, m.avg_rating AS rating, i.name AS instrument_name, g.name AS genre_name, c.type AS qualification FROM mentors m
+	// LEFT JOIN mentor_instruments mi ON 	mi.mentor_id = m.id
+	// LEFT JOIN instruments i ON i.id = mi.instrument_id
+	// LEFT JOIN mentor_genres mg ON mg.mentor_id = m.id
+	// LEFT JOIN genres g ON g.id = mg.mentor_id
+	// LEFT JOIN credentials c ON c.mentor_id = m.id`
+
+	// tx := mq.db.Raw(queryRaw).Distinct("name").Find(&dataModel)
+	// if tx.Error != nil {
+	// 	return nil, errors.New(consts.QUERY_ErrorReadData)
+	// }
+
+	// if filter not empty
+
+	// if filter.Name != "" {
+	// 	nameSearch := "%" + filter.Name + "%"
+	// 	name := fmt.Sprintf("name LIKE %s", nameSearch)
+	// }
+
+	// if filter.Instrument != "" {
+	// 	instrument := fmt.Sprintf("MentorInstrument.Instrument.Name = %s", filter.Instrument)
+	// }
+
+	// if filter.Genre != "" {
+	// 	genre := fmt.Sprintf("MentorGenre.Genre.Name = %s", filter.Genre)
+	// }
+
+	// if filter.Rating != 0 {
+	// 	var rating string
+	// 	min := filter.Rating
+	// 	max := filter.Rating + 0.9
+	// 	if filter.Rating == 5 {
+	// 		rating = fmt.Sprintf("avg_rating = %f", filter.Rating)
+	// 	} else {
+	// 		rating = fmt.Sprintf("avg_rating BETWEEN %f AND  %f", min, max)
+	// 	}
+	// }
+
+	// if filter.Qualification != "" {
+	// 	qualification := fmt.Sprintf("Mentor.Credential.Type")
+	// }
+
 	return ListModelToCore(dataModel), nil
 }
 

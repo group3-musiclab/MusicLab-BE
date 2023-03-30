@@ -40,6 +40,14 @@ type CredentialCore struct {
 	Certificate     string
 }
 
+type MentorFilter struct {
+	Name          string
+	Instrument    string
+	Genre         string
+	Rating        float64
+	Qualification string
+}
+
 type MentorsHandler interface {
 	GetAll() echo.HandlerFunc
 	GetProfile() echo.HandlerFunc
@@ -53,7 +61,7 @@ type MentorsHandler interface {
 
 type MentorService interface {
 	SelectAllByRating() ([]Core, error)
-	SelectAll(page, limit int) ([]Core, error)
+	SelectAll(page, limit int, filter MentorFilter) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	UpdatePassword(mentorID uint, input Core) error
@@ -63,7 +71,7 @@ type MentorService interface {
 
 type MentorData interface {
 	SelectAllByRating() ([]Core, error)
-	SelectAll(limit, offset int) ([]Core, error)
+	SelectAll(limit, offset int, filter MentorFilter) ([]Core, error)
 	SelectProfile(mentorID uint) (Core, error)
 	UpdateData(mentorID uint, input Core) error
 	InsertCredential(input CredentialCore) error
