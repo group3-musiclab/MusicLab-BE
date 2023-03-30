@@ -48,7 +48,7 @@ func (rq *reviewQuery) PostMentorReview(mentorID uint, newReview reviews.Core) e
 
 	var avgRating float32
 
-	tx = txTransaction.Model(&cnv).Where("mentor_id = ?", cnv.MentorID).Select("AVG(rating)").First(&avgRating)
+	tx = txTransaction.Model(&cnv).Where("mentor_id = ?", cnv.MentorID).Select("ROUND(AVG(rating), 1)").First(&avgRating)
 	if tx.Error != nil || tx.RowsAffected == 0 {
 		txTransaction.Rollback()
 		return txTransaction.Error
