@@ -1,6 +1,7 @@
 package database
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"musiclab-be/app/config"
@@ -45,4 +46,14 @@ func Migrate(db *gorm.DB) {
 		&_modelTransaction.Transaction{},
 		&_modelReview.Review{},
 	)
+}
+
+func CreateTableView(db *gorm.DB) error {
+	query := "CREATE OR REPLACE VIEW top_mentor_week AS SELECT m.id , m.name, AVG(r.rating), m.about, m.instagram FROM mentors m LEFT JOIN reviews r ON m.id = r.mentor_id WHERE r.created_at > date_sub(now(), interval 1 week) GROUP BY m.id"
+
+	tx := db.Exec(query)
+	if tx.Error != nil {
+		return errors.New(tx.Error.Error())
+	}
+	return nil
 }
