@@ -2,25 +2,50 @@ package services
 
 import (
 	"errors"
+	"log"
+	"mime/multipart"
+	"musiclab-be/features/classes"
 	"musiclab-be/features/schedules"
 	"musiclab-be/mocks"
+	"os"
+	"path/filepath"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 )
 
 func TestCheckSchedule(t *testing.T) {
 	repo := mocks.NewScheduleData(t)
 	repoClass := mocks.NewClassData(t)
+	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
+	imageTrue, err := os.Open(filePath)
+	if err != nil {
+		log.Println(err.Error())
+	}
+	imageTrueCnv := &multipart.FileHeader{
+		Filename: imageTrue.Name(),
+	}
 
-	inputData := schedules.Core{ID: 1, ClassID: 1, Transaction: schedules.Transaction{ScheduleID: 1}}
+	resData := classes.Core{
+		ID:      1,
+		Name:    "Guitar Class",
+		Level:   "Basic",
+		Image:   imageTrueCnv.Filename,
+		ForWhom: "Newbie",
+	}
+
+	startDate := "2023-03-31"
+	StartDate, _ := time.Parse("2006-01-02", startDate)
+
+	inputData := schedules.Core{ID: 1, ClassID: 1, Transaction: schedules.Transaction{ScheduleID: 1, StartDate: StartDate}}
+	var row int64 = 1
 
 	t.Run("success check schedule", func(t *testing.T) {
-		repo.On("CheckSchedule", inputData).Return(nil).Once()
-		repo.On("GetMentorClassDetail", mock.Anything).Return()
+		repo.On("CheckSchedule", inputData).Return(row, nil).Once()
+		repo.On("GetMentorClassDetail", uint(1)).Return(resData, nil).Once()
 		srv := New(repo, repoClass)
-		err := srv.PostSchedule(inputData)
+		err := srv.CheckSchedule(inputData)
 		assert.Nil(t, err)
 		repo.AssertExpectations(t)
 	})
