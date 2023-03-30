@@ -28,12 +28,12 @@ func (mq *mentorQuery) SelectAll(limit int, offset int, filter mentors.MentorFil
 	var dataModel []Mentor
 
 	// if all filter empty
-	if filter.Name == "" && filter.Instrument == "" && filter.Genre == "" && filter.Rating == 0 && filter.Qualification == "" {
-		txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
-		if txSelect.Error != nil {
-			return nil, errors.New(consts.QUERY_ErrorReadData)
-		}
+	txSelect := mq.db.Joins("MentorInstrument", "instrument_id = ?", filter.Instrument).Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
+	if txSelect.Error != nil {
+		return nil, errors.New(consts.QUERY_ErrorReadData)
 	}
+	// if filter.Name == "" && filter.Instrument != "" && filter.Genre == "" && filter.Rating == 0 && filter.Qualification == "" {
+	// }
 
 	// if filter.Instrument != "" {
 	// 	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Where("db_musiclab.instruments.name = ?", filter.Instrument).Find(&dataModel)
