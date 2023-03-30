@@ -42,8 +42,8 @@ type CredentialCore struct {
 
 type MentorFilter struct {
 	Name          string
-	Instrument    string
-	Genre         string
+	Instrument    int
+	Genre         int
 	Rating        float64
 	Qualification string
 }
