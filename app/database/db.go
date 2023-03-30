@@ -50,7 +50,7 @@ func Migrate(db *gorm.DB) {
 
 func CreateTableView(db *gorm.DB) error {
 	query := `CREATE OR REPLACE VIEW top_mentor_week AS
-			SELECT m.id , m.name, ROUND(AVG(r.rating), 1) AS avg_rating, m.about, m.instagram FROM mentors m 
+			SELECT m.id , m.avatar , m.name, ROUND(AVG(r.rating), 1) AS avg_rating, m.about, m.instagram FROM mentors m 
 			LEFT JOIN reviews r ON m.id = r.mentor_id
 			WHERE r.created_at > date_sub(now(), interval 1 week)
 			GROUP BY m.id`
