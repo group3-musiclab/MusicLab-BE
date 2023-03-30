@@ -28,12 +28,12 @@ func (mq *mentorQuery) SelectAll(limit int, offset int, filter mentors.MentorFil
 	var dataModel []Mentor
 
 	// if all filter empty
-	// if filter.Name == "" && filter.Instrument == "" && filter.Genre == "" && filter.Rating == 0 && filter.Qualification == "" {
-	// 	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
-	// 	if txSelect.Error != nil {
-	// 		return nil, errors.New(consts.QUERY_ErrorReadData)
-	// 	}
-	// }
+	if filter.Name == "" && filter.Instrument == "" && filter.Genre == "" && filter.Rating == 0 && filter.Qualification == "" {
+		txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Find(&dataModel)
+		if txSelect.Error != nil {
+			return nil, errors.New(consts.QUERY_ErrorReadData)
+		}
+	}
 
 	// if filter.Instrument != "" {
 	// 	txSelect := mq.db.Preload("MentorInstrument.Instrument").Limit(limit).Offset(offset).Where("db_musiclab.instruments.name = ?", filter.Instrument).Find(&dataModel)
@@ -42,17 +42,17 @@ func (mq *mentorQuery) SelectAll(limit int, offset int, filter mentors.MentorFil
 	// 	}
 	// }
 
-	queryRaw := `SELECT m.id AS id, m.avatar AS avatar, m.name AS name,  m.about AS about, m.instagram AS instagram, m.avg_rating AS rating, i.name AS instrument_name, g.name AS genre_name, c.type AS qualification FROM mentors m
-	LEFT JOIN mentor_instruments mi ON 	mi.mentor_id = m.id
-	LEFT JOIN instruments i ON i.id = mi.instrument_id
-	LEFT JOIN mentor_genres mg ON mg.mentor_id = m.id
-	LEFT JOIN genres g ON g.id = mg.mentor_id
-	LEFT JOIN credentials c ON c.mentor_id = m.id`
+	// queryRaw := `SELECT m.id AS id, m.avatar AS avatar, m.name AS name,  m.about AS about, m.instagram AS instagram, m.avg_rating AS rating, i.name AS instrument_name, g.name AS genre_name, c.type AS qualification FROM mentors m
+	// LEFT JOIN mentor_instruments mi ON 	mi.mentor_id = m.id
+	// LEFT JOIN instruments i ON i.id = mi.instrument_id
+	// LEFT JOIN mentor_genres mg ON mg.mentor_id = m.id
+	// LEFT JOIN genres g ON g.id = mg.mentor_id
+	// LEFT JOIN credentials c ON c.mentor_id = m.id`
 
-	tx := mq.db.Raw(queryRaw).Distinct("name").Find(&dataModel)
-	if tx.Error != nil {
-		return nil, errors.New(consts.QUERY_ErrorReadData)
-	}
+	// tx := mq.db.Raw(queryRaw).Distinct("name").Find(&dataModel)
+	// if tx.Error != nil {
+	// 	return nil, errors.New(consts.QUERY_ErrorReadData)
+	// }
 
 	// if filter not empty
 
