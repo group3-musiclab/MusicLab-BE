@@ -23,10 +23,6 @@ func CreateTableView(db *gorm.DB) error {
 }
 
 func executeCronJob(db *gorm.DB) {
-	// gmt, _ := time.LoadLocation("Asia/Jakarta")
-	// s := gocron.NewScheduler(gmt)
-	// s.Every(1).Monday().At("00:00").Do(CreateTableView, db)
-
 	gocron.Every(1).Monday().At("00:00").Do(CreateTableView, db)
 	<-gocron.Start()
 }
