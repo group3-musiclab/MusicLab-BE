@@ -18,18 +18,17 @@ func CreateTableView(db *gorm.DB) error {
 		log.Println(errView.Error())
 		return errView
 	}
+	log.Println("success create table view")
 	return nil
 }
 
 func executeCronJob(db *gorm.DB) {
 	// gmt, _ := time.LoadLocation("Asia/Jakarta")
-	// s := gocron.NewScheduler()
+	// s := gocron.NewScheduler(gmt)
 	// s.Every(1).Monday().At("00:00").Do(CreateTableView, db)
 
 	gocron.Every(1).Monday().At("00:00").Do(CreateTableView, db)
 	<-gocron.Start()
-
-	// gocron.Every(1).Seconds().Do(CreateTableView, db)
 }
 
 func main() {
