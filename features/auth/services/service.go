@@ -57,6 +57,25 @@ func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) {
 		res = coreStudent
 	}
 
+	// insert token oauth to data mentor or student
+	if res.Role == "Mentor" {
+		inputMentor := mentors.Core{}
+		inputMentor.TokenOauth = input.TokenOauth
+
+		errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
+		if errUpdateMentor != nil {
+			return "", auth.Core{}, errUpdateMentor
+		}
+	} else if res.Role == "Student" {
+		inputStudent := students.Core{}
+		inputStudent.TokenOauth = input.TokenOauth
+
+		errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
+		if errUpdateStudent != nil {
+			return "", auth.Core{}, errUpdateStudent
+		}
+	}
+
 	// generate token jwt
 	tokenJWT, errTokenJWT := helper.CreateToken(res.ID, res.Role)
 	if errTokenJWT != nil {
@@ -99,6 +118,12 @@ func (auc *authUseCase) RedirectGoogleCallback(code string) error {
 
 // CreateEvent implements auth.AuthService
 func (auc *authUseCase) CreateEvent(input auth.Core) error {
+	// validation
+	errValidate := auc.validate.StructExcept(input, "Name", "Email", "Password", "Role")
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
 	// get token oauth2 from mentor data
 	coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
 	if errMentor != nil {
