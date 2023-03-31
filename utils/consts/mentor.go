@@ -12,5 +12,7 @@ const (
 
 // Error Response
 const (
-	AWS_ErrorUpload string = "error upload to s3"
+	AWS_ErrorUpload           string = "error upload to s3"
+	MENTOR_NameOnlyLetters    string = "name must be filled only letters"
+	MENTOR_ErrorQualification string = "qualification can only filled by International or National"
 )

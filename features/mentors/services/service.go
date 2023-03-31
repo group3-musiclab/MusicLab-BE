@@ -25,6 +25,11 @@ func (muc *mentorUseCase) SelectAllByRating() ([]mentors.Core, error) {
 
 // SelectAll implements mentors.MentorService
 func (muc *mentorUseCase) SelectAll(page int, limit int, filter mentors.MentorFilter) ([]mentors.Core, error) {
+	errName := helper.OnlyLettersValidation(filter.Name)
+	if errName != nil {
+		return []mentors.Core{}, errors.New(consts.MENTOR_NameOnlyLetters)
+	}
+
 	offset := (page - 1) * limit
 	dataCore, err := muc.qry.SelectAll(limit, offset, filter)
 	if err != nil {
