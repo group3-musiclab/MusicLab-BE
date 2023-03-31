@@ -117,6 +117,82 @@ paths:
                   message: "account not registered"
         500:
           $ref: "#/components/responses/500"
+  /login/oauth:
+    post:
+      tags:
+        - "Google Oauth2"
+      description: login with google account
+      summary: login with google account
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token_oauth:
+                  type: string
+            example:
+              token_oauth: "ya29.a0Ael9sCMR6YG5PO88J6RWVxUR9mh3wD4oPFiv8b8bxZayWqLFJOTQAhj6QxoGNAYT9lAxM8HD7NH5UCBfwLUT277bV4BfTgk6SxY-Ha85inndPzpdlape9zAnduUgDYtj2LfyZyPEi6-OgAoQ4TRPN6fymUtRaCgYKAXcSARISFQF4udJhzJNKRiDSW3liD_ShRnsH4A0163"
+      responses:
+        200:
+          description: "login success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                data:
+                  id: 1
+                  name: "Alif Muhamad Hafidz"
+                  role: "Mentor"
+                  token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdXRob3JpemVkIjp0cnVlLCJ1c2VySUQiOjR9.QTZxERh4CwC_UnL_eJvTi_A_qdLeBZ-IjR4nqoxjodk"
+                message: "login success"
+                
+        400:
+          $ref: "#/components/responses/400"
+        404:
+          description: data not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                  message: "account not registered"
+  /oauth/create-event:
+    post:
+      tags:
+        - "Google Oauth2"
+      description: create event with google calendar by id transaction
+      summary: create event with google calendar by id transaction
+      security:
+        - JWTAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                transaction_id:
+                  type: integer
+            example:
+              transaction_id: 1
+      responses:
+        201:
+          description: "transaction success"
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/responseObject"
+              example:
+                message: "success create event"
+        400:
+          $ref: "#/components/responses/400"
+        500:
+          $ref: "#/components/responses/500"
   /students/profile:
     get:
       tags:
@@ -334,17 +410,17 @@ paths:
       - name: instrument
         in: query
         schema:
-          type: string
+          type: integer
         examples:       
-          Drum:         
-            value: Drum
+          instrument id:         
+            value: 1
       - name: genre
         in: query
         schema:
-          type: string
+          type: integer
         examples:       
-          Jazz:         
-            value: Jazz
+          genre id:         
+            value: 1
       - name: rating
         in: query
         schema:
@@ -355,10 +431,12 @@ paths:
       - name: qualification
         in: query
         schema:
-          type: integer
+          type: string
         examples:       
           International:         
             value: International
+          National:         
+            value: National
       responses:
         200:
           description: "to get all mentor list"
@@ -813,9 +891,11 @@ paths:
                 data:
                   [
                     {
+                      id: 1,
                       name: "Drum",
                     },
                     {
+                      id: 2,
                       name: "Guitar",
                       },
                   ]
@@ -953,6 +1033,7 @@ paths:
                 data:
                   [
                     {
+                      id: 1,
                       name: "Dangdut",
                     },
                     {
@@ -1076,7 +1157,7 @@ paths:
                       name: "Alif Muhamad Hafidz",
                       rating: 3,
                       comment: "Very Good",
-                      created_at: "2023-03-23"
+                      created_at: "March 26, 2023"
                     },
                     {
                       id: 2,
@@ -1084,7 +1165,7 @@ paths:
                       name: "Kharisma",
                       rating: 4,
                       comment: "Perfect",
-                      created_at: "2023-03-22"
+                      created_at: "March 26, 2023"
                     },
                   ]
                 message: "success show all mentor review"
@@ -1200,13 +1281,15 @@ paths:
                 data:
                   [
                     {
-                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      mentor_id: 1,
                       student_id: 1,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
                       student_name: "Alif",
                     },
                     {
-                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
+                      mentor_id: 1,
                       student_id: 2,
+                      avatar: "https://kurabsent.s3.amazonaws.com/2022-07-06%2006%3A40%3A47.jpg",
                       student_name: "Kharisma",
                     },
                   ]
@@ -1684,7 +1767,7 @@ paths:
             example:
               class_id: 1
               schedule_id: 3
-              start_date: "2023-23-03"
+              start_date: "2023-03-23"
       responses:
         200:
           description: "schedule available"
@@ -1716,16 +1799,16 @@ paths:
             schema:
               type: object
               properties:
-                mentor_id:
-                  type: integer
                 class_id:
                   type: integer
                 schedule_id:
                   type: integer
+                start_date:
+                  type: string
             example:
-              mentor_id: 1
               class_id: 1
               schedule_id: 1
+              start_date: "2023-03-23"
       responses:
         201:
           description: "transaction success"
@@ -1735,8 +1818,6 @@ paths:
                 $ref: "#/components/schemas/responseObject"
               example:
                 data:
-                  id: 1
-                  class_id: 1
                   payment_url: "midtrans.com/payment"
                 message: "success make transaction"
         400:
@@ -1751,6 +1832,21 @@ paths:
       summary: get mentor transaction
       security:
         - JWTAuth: []
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        examples:       
+          page:         
+            value: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        examples:       
+          limit:         
+            value: 15
       responses:
         200:
           description: success get mentor transaction
@@ -1768,7 +1864,7 @@ paths:
                       start_date: "2023-03-23",
                       end_date: "2023-03-29",
                       price: 325000,
-                      status_payment: "Settlement"
+                      status: "settlement"
                     },
                     {
                       id: 2,
@@ -1777,7 +1873,7 @@ paths:
                       start_date: "2023-03-27",
                       end_date: "2023-04-27",
                       price: 325000,
-                      status_payment: "Pending"
+                      status: "pending"
                     },
                   ]
                 message: "success show mentor transaction history"
@@ -1789,10 +1885,25 @@ paths:
     get:
       tags:
         - "Transaction"
-      description: get mentor student
-      summary: get mentor student
+      description: get student transaction
+      summary: get student transaction
       security:
         - JWTAuth: []
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        examples:       
+          page:         
+            value: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        examples:       
+          limit:         
+            value: 15
       responses:
         200:
           description: success get student transaction
@@ -1805,21 +1916,23 @@ paths:
                   [
                     {
                       id: 1,
+                      mentor_id: 2,
                       mentor_name: "Joko",
                       class_name: "Guitar Class",
                       start_date: "2023-03-23",
                       end_date: "2023-03-29",
                       price: 325000,
-                      status_payment: "Settlement"
+                      status: "settlement"
                     },
                     {
                       id: 2,
+                      mentor_id: 3,
                       mentor_name: "Budi",
                       class_name: "Piano Class",
                       start_date: "2023-03-27",
                       end_date: "2023-04-27",
                       price: 325000,
-                      status_payment: "Pending"
+                      status: "pending"
                     },
                   ]
                 message: "success show student transaction history"
