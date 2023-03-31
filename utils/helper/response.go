@@ -74,6 +74,8 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusBadRequest
 	case strings.Contains(msg, consts.AUTH_DuplicateEmail):
 		code = http.StatusBadRequest
+	case strings.Contains(msg, "token oauth cannot empty"):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }

@@ -16,6 +16,7 @@ type Core struct {
 type AuthHandler interface {
 	Register() echo.HandlerFunc
 	Login() echo.HandlerFunc
+	GoogleOauth() echo.HandlerFunc
 	GoogleLogin() echo.HandlerFunc
 	GoogleCallback() echo.HandlerFunc
 	CreateEvent() echo.HandlerFunc
@@ -24,7 +25,8 @@ type AuthHandler interface {
 type AuthService interface {
 	Register(newUser Core) error
 	Login(user Core) (string, Core, error)
-	LoginOauth(code string) error
+	LoginOauth(input Core) (string, Core, error)
+	RedirectGoogleCallback(code string) error
 	CreateEvent(input Core) error
 }
 

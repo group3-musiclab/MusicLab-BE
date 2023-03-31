@@ -28,7 +28,46 @@ type authUseCase struct {
 }
 
 // LoginOauth implements auth.AuthService
-func (auc *authUseCase) LoginOauth(code string) error {
+func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) {
+	// validation
+	if input.TokenOauth == "" {
+		return "", auth.Core{}, errors.New("token oauth cannot empty")
+	}
+
+	// get user info with token
+	tokenOauth := &oauth2.Token{
+		AccessToken: input.TokenOauth,
+	}
+
+	coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(tokenOauth)
+	if errUserInfo != nil {
+		return "", auth.Core{}, errUserInfo
+	}
+
+	// find data by email sequential
+	res := auth.Core{}
+	coreMentor, _ := auc.qry.LoginMentor(coreGoogle.Email)
+	res = coreMentor
+
+	if res.Name == "" {
+		coreStudent, errStudent := auc.qry.LoginStudent(coreGoogle.Email)
+		if errStudent != nil {
+			return "", auth.Core{}, errStudent
+		}
+		res = coreStudent
+	}
+
+	// generate token jwt
+	tokenJWT, errTokenJWT := helper.CreateToken(res.ID, res.Role)
+	if errTokenJWT != nil {
+		return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
+	}
+
+	return tokenJWT, res, nil
+}
+
+// LoginOauth implements auth.AuthService
+func (auc *authUseCase) RedirectGoogleCallback(code string) error {
 	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
 	if errToken != nil {

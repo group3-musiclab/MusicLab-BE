@@ -35,11 +35,21 @@ func loginToCore(data LoginRequest) auth.Core {
 }
 
 type CreateEventRequest struct {
-	TransactionID uint `json:"transaction_id"`
+	TransactionID uint `json:"transaction_id" form:"transaction_id"`
 }
 
 func createEventToCore(data CreateEventRequest) auth.Core {
 	return auth.Core{
 		TransactionID: data.TransactionID,
+	}
+}
+
+type GoogleOauthRequest struct {
+	TokenOauth string `json:"token_oauth" form:"token_oauth"`
+}
+
+func googleOauthRequestToCore(data GoogleOauthRequest) auth.Core {
+	return auth.Core{
+		TokenOauth: data.TokenOauth,
 	}
 }

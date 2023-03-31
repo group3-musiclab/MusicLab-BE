@@ -18,6 +18,29 @@ type authControl struct {
 	googleApi helper.GoogleAPI
 }
 
+// GoogleOauth implements auth.AuthHandler
+func (ac *authControl) GoogleOauth() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		input := GoogleOauthRequest{}
+		errBind := c.Bind(&input)
+		if errBind != nil {
+			return c.JSON(http.StatusBadRequest, helper.Response(consts.AUTH_ErrorBind))
+		}
+
+		token, res, errLogin := ac.srv.LoginOauth(googleOauthRequestToCore(input))
+		if errLogin != nil {
+			return c.JSON(helper.ErrorResponse(errLogin))
+		}
+		dataResponse := map[string]any{
+			"id":    res.ID,
+			"name":  res.Name,
+			"role":  res.Role,
+			"token": token,
+		}
+		return c.JSON(http.StatusOK, helper.ResponseWithData(consts.AUTH_SuccessLogin, dataResponse))
+	}
+}
+
 // CreateEvent implements auth.AuthHandler
 func (ac *authControl) CreateEvent() echo.HandlerFunc {
 	return func(c echo.Context) error {
@@ -49,7 +72,7 @@ func (ac *authControl) GoogleCallback() echo.HandlerFunc {
 
 		code := c.QueryParam("code")
 
-		err := ac.srv.LoginOauth(code)
+		err := ac.srv.RedirectGoogleCallback(code)
 		if err != nil {
 			return c.HTML(http.StatusInternalServerError, err.Error())
 		}
