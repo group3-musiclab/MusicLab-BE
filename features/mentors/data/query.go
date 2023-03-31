@@ -2,6 +2,7 @@ package data
 
 import (
 	"errors"
+	"fmt"
 	"musiclab-be/features/mentors"
 	"musiclab-be/features/reviews/data"
 	"musiclab-be/utils/consts"
@@ -27,9 +28,75 @@ func (mq *mentorQuery) SelectAllByRating() ([]mentors.Core, error) {
 func (mq *mentorQuery) SelectAll(limit int, offset int, filter mentors.MentorFilter) ([]mentors.Core, error) {
 	var dataModel []Mentor
 
-	// if all filter empty
+	sliceInnerJoin := []string{}
+	sliceWhereClause := []string{}
+
+	if filter.Instrument != 0 {
+		joinInstrument := "INNER JOIN mentor_instruments mi ON m.id = mi.mentor_id "
+		sliceInnerJoin = append(sliceInnerJoin, joinInstrument)
+		clauseInstrument := fmt.Sprintf("mi.instrument_id = %d", filter.Instrument)
+		sliceWhereClause = append(sliceWhereClause, clauseInstrument)
+	}
+
+	if filter.Genre != 0 {
+		joinGenre := "INNER JOIN mentor_genres mg ON mg.mentor_id = m.id "
+		sliceInnerJoin = append(sliceInnerJoin, joinGenre)
+		clauseGenre := fmt.Sprintf("mg.genre_id = %d", filter.Genre)
+		sliceWhereClause = append(sliceWhereClause, clauseGenre)
+	}
+
+	if filter.Qualification != "" {
+		joinQualification := "INNER JOIN credentials c ON c.mentor_id = m.id "
+		sliceInnerJoin = append(sliceInnerJoin, joinQualification)
+		clauseQualification := fmt.Sprintf("c.type = '%s'", filter.Qualification)
+		sliceWhereClause = append(sliceWhereClause, clauseQualification)
+	}
+
+	if filter.Name != "" {
+		nameLike := "%" + filter.Name + "%"
+		name := fmt.Sprintf("m.name LIKE '%s'", nameLike)
+		sliceWhereClause = append(sliceWhereClause, name)
+	}
+
+	if filter.Rating != 0 {
+		if filter.Rating == 5 {
+			strRating := fmt.Sprintf("m.avg_rating = %.f", filter.Rating)
+			sliceWhereClause = append(sliceWhereClause, strRating)
+		} else if filter.Rating == 1 {
+			max := filter.Rating + 0.9
+			strRating := fmt.Sprintf("m.avg_rating BETWEEN 0 AND %.1f", max)
+			sliceWhereClause = append(sliceWhereClause, strRating)
+		} else {
+			min := filter.Rating
+			max := filter.Rating + 0.9
+			strRating := fmt.Sprintf("m.avg_rating BETWEEN %.f AND %.1f", min, max)
+			sliceWhereClause = append(sliceWhereClause, strRating)
+		}
+	}
+
+	querySelect := "SELECT m.id, m.avatar, m.name,  m.about, m.instagram, m.avg_rating FROM mentors m "
+
+	for _, v := range sliceInnerJoin {
+		querySelect += v
+	}
+
+	querySelect += "WHERE "
+
+	for i, v := range sliceWhereClause {
+		if i == 0 {
+			querySelect += v
+		} else {
+			querySelect += " AND " + v
+		}
+	}
+
 	if filter.Name == "" && filter.Instrument == 0 && filter.Genre == 0 && filter.Rating == 0 && filter.Qualification == "" {
 		txSelect := mq.db.Select("id, avatar, name, about, instagram, avg_rating").Limit(limit).Offset(offset).Find(&dataModel)
+		if txSelect.Error != nil {
+			return nil, errors.New(consts.QUERY_ErrorReadData)
+		}
+	} else {
+		txSelect := mq.db.Raw(querySelect).Limit(limit).Offset(offset).Find(&dataModel)
 		if txSelect.Error != nil {
 			return nil, errors.New(consts.QUERY_ErrorReadData)
 		}
