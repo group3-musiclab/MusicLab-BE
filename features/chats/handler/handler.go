@@ -64,7 +64,29 @@ func (cc *chatControl) GetByStudent() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		mentorID := helper.ExtractTokenUserId(c)
 
-		dataCore, errSelect := cc.srv.GetByStudent(mentorID)
+		var page int = 1
+		pageParam := c.QueryParam("page")
+		if pageParam != "" {
+			pageConv, errConv := strconv.Atoi(pageParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				page = pageConv
+			}
+		}
+
+		var limit int = 10
+		limitParam := c.QueryParam("limit")
+		if limitParam != "" {
+			limitConv, errConv := strconv.Atoi(limitParam)
+			if errConv != nil {
+				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidPageParam))
+			} else {
+				limit = limitConv
+			}
+		}
+
+		dataCore, errSelect := cc.srv.GetByStudent(page, limit, mentorID)
 		if errSelect != nil {
 			return c.JSON(helper.ErrorResponse(errSelect))
 		}

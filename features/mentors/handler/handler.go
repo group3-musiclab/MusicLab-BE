@@ -54,31 +54,31 @@ func (mc *mentorControl) GetAll() echo.HandlerFunc {
 		rating := float64(0)
 		ratingParam := c.QueryParam("rating")
 		if ratingParam != "" {
-			idConv, errConv := strconv.Atoi(ratingParam)
+			ratingConv, errConv := strconv.Atoi(ratingParam)
 			if errConv != nil {
 				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidRatingParam))
 			}
-			rating = float64(idConv)
+			rating = float64(ratingConv)
 		}
 
 		instrument := 0
 		instrumentParam := c.QueryParam("instrument")
 		if instrumentParam != "" {
-			idConv, errConv := strconv.Atoi(instrumentParam)
+			instrumentConv, errConv := strconv.Atoi(instrumentParam)
 			if errConv != nil {
 				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidInstrumentParam))
 			}
-			instrument = idConv
+			instrument = instrumentConv
 		}
 
 		genre := 0
 		genreParam := c.QueryParam("genre")
 		if genreParam != "" {
-			idConv, errConv := strconv.Atoi(genreParam)
+			genreConv, errConv := strconv.Atoi(genreParam)
 			if errConv != nil {
 				return c.JSON(http.StatusBadRequest, helper.Response(consts.HANDLER_InvalidGenreParam))
 			}
-			genre = idConv
+			genre = genreConv
 		}
 
 		mentorFilter := mentors.MentorFilter{

@@ -225,6 +225,11 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 		return errors.New("validate: " + errValidate.Error())
 	}
 
+	errName := helper.OnlyLettersValidation(newUser.Name)
+	if errName != nil {
+		return errors.New(consts.MENTOR_NameOnlyLetters)
+	}
+
 	// check duplicate email
 	if newUser.Role == "Mentor" {
 		_, errMentorLogin := auc.qry.LoginMentor(newUser.Email)

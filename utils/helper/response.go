@@ -76,6 +76,8 @@ func ErrorResponse(err error) (int, interface{}) {
 		code = http.StatusBadRequest
 	case strings.Contains(msg, "token oauth cannot empty"):
 		code = http.StatusBadRequest
+	case strings.Contains(msg, consts.MENTOR_NameOnlyLetters):
+		code = http.StatusBadRequest
 	}
 	return code, resp
 }

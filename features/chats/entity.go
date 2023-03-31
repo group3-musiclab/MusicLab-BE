@@ -33,11 +33,11 @@ type ChatHandler interface {
 type ChatService interface {
 	InsertChat(input Core) error
 	GetAll(mentorID, studentID uint) ([]Core, error)
-	GetByStudent(mentorID uint) ([]Core, error)
+	GetByStudent(page, limit int, mentorID uint) ([]Core, error)
 }
 
 type ChatData interface {
 	InsertChat(input Core) error
 	GetAll(mentorID, studentID uint) ([]Core, error)
-	GetByStudent(mentorID uint) ([]Core, error)
+	GetByStudent(limit, offset int, mentorID uint) ([]Core, error)
 }

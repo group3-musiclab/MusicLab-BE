@@ -25,6 +25,11 @@ func (muc *mentorUseCase) SelectAllByRating() ([]mentors.Core, error) {
 
 // SelectAll implements mentors.MentorService
 func (muc *mentorUseCase) SelectAll(page int, limit int, filter mentors.MentorFilter) ([]mentors.Core, error) {
+	errName := helper.OnlyLettersValidation(filter.Name)
+	if errName != nil {
+		return []mentors.Core{}, errors.New(consts.MENTOR_NameOnlyLetters)
+	}
+
 	offset := (page - 1) * limit
 	dataCore, err := muc.qry.SelectAll(limit, offset, filter)
 	if err != nil {
@@ -103,6 +108,11 @@ func (muc *mentorUseCase) UpdateData(mentorID uint, input mentors.Core) error {
 	errValidate := muc.validate.StructExcept(input, "Password", "MentorInstrument")
 	if errValidate != nil {
 		return errors.New("validate: " + errValidate.Error())
+	}
+
+	errName := helper.OnlyLettersValidation(input.Name)
+	if errName != nil {
+		return errors.New(consts.MENTOR_NameOnlyLetters)
 	}
 
 	url, errUpload := helper.GetUrlImagesFromAWS(input.AvatarFile)
