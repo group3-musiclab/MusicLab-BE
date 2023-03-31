@@ -39,6 +39,11 @@ func (suc *studentUseCase) UpdateData(studentID uint, input students.Core) error
 		return errors.New("validate: " + errValidate.Error())
 	}
 
+	errName := helper.OnlyLettersValidation(input.Name)
+	if errName != nil {
+		return errors.New(consts.MENTOR_NameOnlyLetters)
+	}
+
 	url, errUpload := helper.GetUrlImagesFromAWS(input.AvatarFile)
 	if errUpload != nil {
 		return errors.New(consts.AWS_ErrorUpload)
