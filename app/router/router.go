@@ -96,6 +96,7 @@ func InitRouter(db *gorm.DB, e *echo.Echo) {
 	e.POST("/login", aHdl.Login())
 	e.POST("/register", aHdl.Register())
 	e.POST("/login/oauth", aHdl.GoogleOauth())
+	e.GET("/GoogleLogin", aHdl.GoogleLogin())
 	e.GET("/GoogleCallBack", aHdl.GoogleCallback())
 	e.POST("/oauth/create-event", aHdl.CreateEvent(), helper.JWTMiddleware())
 
