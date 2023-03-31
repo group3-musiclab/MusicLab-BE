@@ -27,8 +27,9 @@ func (cuc *chatUseCase) GetAll(mentorID uint, studentID uint) ([]chats.Core, err
 }
 
 // GetByStudent implements chats.ChatService
-func (cuc *chatUseCase) GetByStudent(mentorID uint) ([]chats.Core, error) {
-	dataCore, err := cuc.qry.GetByStudent(mentorID)
+func (cuc *chatUseCase) GetByStudent(page, limit int, mentorID uint) ([]chats.Core, error) {
+	offset := (page - 1) * limit
+	dataCore, err := cuc.qry.GetByStudent(limit, offset, mentorID)
 	if err != nil {
 		return []chats.Core{}, err
 	}

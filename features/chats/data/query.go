@@ -23,9 +23,9 @@ func (cq *chatQuery) GetAll(mentorID uint, studentID uint) ([]chats.Core, error)
 }
 
 // GetByStudent implements chats.ChatData
-func (cq *chatQuery) GetByStudent(mentorID uint) ([]chats.Core, error) {
+func (cq *chatQuery) GetByStudent(limit, offset int, mentorID uint) ([]chats.Core, error) {
 	var dataModel []Chat
-	txSelect := cq.db.Preload("Student").Where("mentor_id", mentorID).Distinct("student_id", "mentor_id").Find(&dataModel)
+	txSelect := cq.db.Preload("Student").Where("mentor_id", mentorID).Distinct("student_id", "mentor_id").Limit(limit).Offset(offset).Find(&dataModel)
 	if txSelect.Error != nil {
 		return nil, errors.New(consts.QUERY_ErrorReadData)
 	}
