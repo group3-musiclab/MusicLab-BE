@@ -16,6 +16,7 @@ type Student struct {
 	Email        string `gorm:"not null;unique;type:varchar(50)"`
 	Password     string
 	Role         string `gorm:"type:varchar(25) not null default 'Student'"`
+	TokenOauth   string
 	Sex          string `gorm:"type:enum('','Male','Female')"`
 	Phone        string `gorm:"type:varchar(12)"`
 	Address      string `gorm:"type:varchar(100)"`
@@ -26,29 +27,31 @@ type Student struct {
 
 func ModelToCore(data Student) students.Core {
 	return students.Core{
-		ID:        data.ID,
-		Avatar:    data.Avatar,
-		Name:      data.Name,
-		Email:     data.Email,
-		Password:  data.Password,
-		Role:      data.Role,
-		Sex:       data.Sex,
-		Phone:     data.Phone,
-		Address:   data.Address,
-		CreatedAt: data.CreatedAt,
-		UpdatedAt: data.UpdatedAt,
+		ID:         data.ID,
+		Avatar:     data.Avatar,
+		Name:       data.Name,
+		Email:      data.Email,
+		Password:   data.Password,
+		Role:       data.Role,
+		Sex:        data.Sex,
+		Phone:      data.Phone,
+		Address:    data.Address,
+		TokenOauth: data.TokenOauth,
+		CreatedAt:  data.CreatedAt,
+		UpdatedAt:  data.UpdatedAt,
 	}
 }
 
 func CoreToModel(data students.Core) Student {
 	return Student{
-		Avatar:   data.Avatar,
-		Name:     data.Name,
-		Email:    data.Email,
-		Password: data.Password,
-		Role:     data.Role,
-		Sex:      data.Sex,
-		Phone:    data.Phone,
-		Address:  data.Address,
+		Avatar:     data.Avatar,
+		Name:       data.Name,
+		Email:      data.Email,
+		Password:   data.Password,
+		Role:       data.Role,
+		Sex:        data.Sex,
+		Phone:      data.Phone,
+		Address:    data.Address,
+		TokenOauth: data.TokenOauth,
 	}
 }

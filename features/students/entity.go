@@ -16,6 +16,7 @@ type Core struct {
 	Password             string `validate:"required,min=3"`
 	NewPassword          string
 	ConfirmationPassword string
+	TokenOauth           string
 	Role                 string
 	Sex                  string
 	Phone                string `validate:"number,max=12"`
