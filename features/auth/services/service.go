@@ -28,7 +28,12 @@ type authUseCase struct {
 }
 
 // LoginOauth implements auth.AuthService
-func (auc *authUseCase) LoginOauth(code string) error {
+func (*authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) {
+	panic("unimplemented")
+}
+
+// LoginOauth implements auth.AuthService
+func (auc *authUseCase) RedirectGoogleCallback(code string) error {
 	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
 	if errToken != nil {
