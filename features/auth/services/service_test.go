@@ -3,9 +3,15 @@ package services
 import (
 	"errors"
 	"musiclab-be/features/auth"
+	"musiclab-be/features/classes"
+	"musiclab-be/features/mentors"
+	"musiclab-be/features/schedules"
+	"musiclab-be/features/students"
+	"musiclab-be/features/transactions"
 	"musiclab-be/mocks"
 	"musiclab-be/utils/helper"
 	"testing"
+	"time"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
@@ -58,6 +64,54 @@ var (
 		TokenOauth: "ya29.a0Ael9sCOjHI7GhoSU5i7to6mJPqNKkwhZY_mncqEZufV6mwGhuCgLUprwGXaa1A3Y36F0mgnvzkqu8X84IeZghJ1GqG62SUKxPaq2gVKmdCNE9_FJILyyvv2k5ZBrlnfbsssqBeDJgzHMOx28zB4V1-2Pvp8aaCgYKAesSARISFQF4udJhsf7dNPhk_fbruZypjDwjig0163",
 	}
 	mock_student_musiclab = auth.Core{
+		Name:       "Student Musiclab",
+		Email:      "studentmusiclab@gmail.com",
+		Password:   "$2a$14$jLh92bx2atws9f.IHTFI..LZ7U6VDKPmd.tKjFtj6hXjnIZXvxEtu",
+		Role:       "Student",
+		TokenOauth: "ya29.a0Ael9sCMVbsszF3oVBGNiZdQJ0baKVZ5vahuavcznUlps9DFdIfeJ7Z7OK3yPyzHlae_Ly5MtWdCG4NgLgA6GkuUG_Pqktf7reTm1VTGuHMruEj9M1i1X9EKb_RF0jygvluLOJ5_VXQ19u9ecJDj52FTtMu_WaCgYKAU0SARASFQF4udJhRo-F0XIqzdmRCeddr7oPUA0163",
+	}
+	mock_transaction = transactions.Core{
+		ID:         1,
+		OrderID:    "order_id",
+		Status:     "settlement",
+		StudentID:  1,
+		MentorID:   1,
+		ClassID:    1,
+		ScheduleID: 1,
+		StartDate:  time.Date(2023, 4, 1, 0, 0, 0, 0, time.UTC),
+		EndDate:    time.Date(2023, 5, 1, 0, 0, 0, 0, time.UTC),
+		Price:      100000,
+		PaymentUrl: "payment-url",
+		Duration:   1,
+	}
+	mock_class = classes.Core{
+		ID:          1,
+		MentorID:    1,
+		Name:        "How to Play Polyrithm Like Daney Carey",
+		Image:       "image-url",
+		Level:       "Intermediate",
+		Description: "Play Like Daney Carey",
+		Syllabus:    "Polyrithmic",
+		Requirement: "Have a drum",
+		ForWhom:     "For Drummer",
+		Price:       100000,
+		Duration:    1,
+	}
+	mock_schedule = schedules.Core{
+		ID:        1,
+		MentorID:  1,
+		Day:       "Monday",
+		StartTime: "13:00",
+		EndTime:   "14:00",
+	}
+	mock_mentor = mentors.Core{
+		Name:       "MusicLab Sejahtera",
+		Email:      "musiclabsejahtera@gmail.com",
+		Password:   "$2a$14$C5UwSnlWEPs4Ga4GNfuPjubIMZgt.6CJKqOX3so4ZiqXHvhsLRLZO",
+		Role:       "Mentor",
+		TokenOauth: "ya29.a0Ael9sCOjHI7GhoSU5i7to6mJPqNKkwhZY_mncqEZufV6mwGhuCgLUprwGXaa1A3Y36F0mgnvzkqu8X84IeZghJ1GqG62SUKxPaq2gVKmdCNE9_FJILyyvv2k5ZBrlnfbsssqBeDJgzHMOx28zB4V1-2Pvp8aaCgYKAesSARISFQF4udJhsf7dNPhk_fbruZypjDwjig0163",
+	}
+	mock_student = students.Core{
 		Name:       "Student Musiclab",
 		Email:      "studentmusiclab@gmail.com",
 		Password:   "$2a$14$jLh92bx2atws9f.IHTFI..LZ7U6VDKPmd.tKjFtj6hXjnIZXvxEtu",
@@ -500,6 +554,99 @@ func TestRedirectGoogleCallback(t *testing.T) {
 		err := srv.RedirectGoogleCallback("code")
 		assert.NotNil(t, err)
 		assert.Equal(t, err.Error(), err.Error())
+		repoAuth.AssertExpectations(t)
+	})
+}
+
+func TestCreateEvent(t *testing.T) {
+	repoAuth := new(mocks.AuthData)
+	repoGoogle := new(mocks.GoogleAPI)
+	repoTransaction := new(mocks.TransactionData)
+	repoClass := new(mocks.ClassData)
+	repoStudent := new(mocks.StudentData)
+	repoSchedule := new(mocks.ScheduleData)
+	repoMentor := new(mocks.MentorData)
+
+	inputData := auth.Core{
+		TransactionID: 1,
+	}
+
+	t.Run("Success Create Event", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mock_mentor, nil).Once()
+		repoTransaction.On("SelectOne", mock.Anything).Return(mock_transaction, nil).Once()
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repoStudent.On("SelectProfile", mock.Anything).Return(mock_student, nil).Once()
+		repoSchedule.On("DetailSchedule", mock.Anything).Return(mock_schedule, nil).Once()
+		repoGoogle.On("CreateCalendar", mock.Anything, mock.Anything).Return(nil)
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.Nil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Failed Validate", func(t *testing.T) {
+		inputData := auth.Core{
+			TransactionID: 0,
+		}
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Error Select Mentor", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mentors.Core{}, errors.New("error")).Once()
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Error Select Transaction", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mock_mentor, nil).Once()
+		repoTransaction.On("SelectOne", mock.Anything).Return(transactions.Core{}, errors.New("error")).Once()
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Error Select Class", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mock_mentor, nil).Once()
+		repoTransaction.On("SelectOne", mock.Anything).Return(mock_transaction, nil).Once()
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(classes.Core{}, errors.New("error")).Once()
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Error Select Student", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mock_mentor, nil).Once()
+		repoTransaction.On("SelectOne", mock.Anything).Return(mock_transaction, nil).Once()
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repoStudent.On("SelectProfile", mock.Anything).Return(students.Core{}, errors.New("error")).Once()
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
+		repoAuth.AssertExpectations(t)
+	})
+
+	t.Run("Error Select Schedule", func(t *testing.T) {
+		repoMentor.On("SelectProfile", mock.Anything).Return(mock_mentor, nil).Once()
+		repoTransaction.On("SelectOne", mock.Anything).Return(mock_transaction, nil).Once()
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repoStudent.On("SelectProfile", mock.Anything).Return(mock_student, nil).Once()
+		repoSchedule.On("DetailSchedule", mock.Anything).Return(schedules.Core{}, errors.New("error")).Once()
+
+		srv := New(repoAuth, repoGoogle, repoTransaction, repoClass, repoStudent, repoSchedule, repoMentor)
+		err := srv.CreateEvent(inputData)
+		assert.NotNil(t, err)
 		repoAuth.AssertExpectations(t)
 	})
 }

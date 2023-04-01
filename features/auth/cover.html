@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">musiclab-be/features/auth/services/service.go (62.7%)</option>
+				<option value="file0">musiclab-be/features/auth/services/service.go (94.4%)</option>
 				
 				</select>
 			</div>
@@ -191,78 +191,78 @@ func (auc *authUseCase) RedirectGoogleCallback(code string) error <span class="c
 }
 
 // CreateEvent implements auth.AuthService
-func (auc *authUseCase) CreateEvent(input auth.Core) error <span class="cov0" title="0">{
+func (auc *authUseCase) CreateEvent(input auth.Core) error <span class="cov8" title="1">{
         // validation
         errValidate := auc.validate.StructExcept(input, "Name", "Email", "Password", "Role")
-        if errValidate != nil </span><span class="cov0" title="0">{
+        if errValidate != nil </span><span class="cov8" title="1">{
                 return errors.New("validate: " + errValidate.Error())
         }</span>
 
         // get token oauth2 from mentor data
-        <span class="cov0" title="0">coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
-        if errMentor != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
+        if errMentor != nil </span><span class="cov8" title="1">{
                 return errMentor
         }</span>
 
         // token oauth2 validation
-        <span class="cov0" title="0">if coreMentor.TokenOauth == "" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if coreMentor.TokenOauth == "" </span><span class="cov0" title="0">{
                 return errors.New("token oauth not generated yet, please login with google account first")
         }</span>
 
         // transaction detail
-        <span class="cov0" title="0">coreTrans, errTrans := auc.qryTrans.SelectOne(input.TransactionID)
-        if errTrans != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreTrans, errTrans := auc.qryTrans.SelectOne(input.TransactionID)
+        if errTrans != nil </span><span class="cov8" title="1">{
                 return errTrans
         }</span>
 
         // class detail
-        <span class="cov0" title="0">coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
-        if errClass != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
+        if errClass != nil </span><span class="cov8" title="1">{
                 return errClass
         }</span>
 
         // student detail
-        <span class="cov0" title="0">coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
-        if errStudent != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
+        if errStudent != nil </span><span class="cov8" title="1">{
                 return errStudent
         }</span>
 
         // schedule detail
-        <span class="cov0" title="0">coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
-        if errSchedule != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
+        if errSchedule != nil </span><span class="cov8" title="1">{
                 return errSchedule
         }</span>
 
-        <span class="cov0" title="0">mapDay := map[time.Time]string{}
+        <span class="cov8" title="1">mapDay := map[time.Time]string{}
 
         start := coreTrans.StartDate
         end := coreTrans.EndDate
-        for d := start; !d.After(end); d = d.AddDate(0, 0, 1) </span><span class="cov0" title="0">{
+        for d := start; !d.After(end); d = d.AddDate(0, 0, 1) </span><span class="cov8" title="1">{
                 dayString := d.Format("Monday")
-                if dayString == coreSchedule.Day </span><span class="cov0" title="0">{
+                if dayString == coreSchedule.Day </span><span class="cov8" title="1">{
                         mapDay[d] = dayString
                         break</span>
                 }
         }
 
-        <span class="cov0" title="0">var firstDay time.Time
-        for k := range mapDay </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">var firstDay time.Time
+        for k := range mapDay </span><span class="cov8" title="1">{
                 firstDay = k
         }</span>
 
-        <span class="cov0" title="0">firstDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.StartTime
+        <span class="cov8" title="1">firstDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.StartTime
         startTime, err := time.Parse("2006-01-02 15:04", firstDayStr)
         if err != nil </span><span class="cov0" title="0">{
                 return errors.New("invalid start date format must YYYY-MM-DD")
         }</span>
 
-        <span class="cov0" title="0">endDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.EndTime
+        <span class="cov8" title="1">endDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.EndTime
         endTime, err := time.Parse("2006-01-02 15:04", endDayStr)
         if err != nil </span><span class="cov0" title="0">{
                 return errors.New("invalid start date format must YYYY-MM-DD")
         }</span>
 
-        <span class="cov0" title="0">endDate := coreTrans.EndDate
+        <span class="cov8" title="1">endDate := coreTrans.EndDate
 
         startRFC := startTime.Format(time.RFC3339)
         endRFC := endTime.Format(time.RFC3339)
@@ -289,7 +289,7 @@ func (auc *authUseCase) CreateEvent(input auth.Core) error <span class="cov0" ti
                 return errCreateEvent
         }</span>
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 // Register implements auth.AuthService
