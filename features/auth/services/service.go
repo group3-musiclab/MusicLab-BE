@@ -44,17 +44,10 @@ func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) {
 		return "", auth.Core{}, errUserInfo
 	}
 
-	// find data by email sequential
-	res := auth.Core{}
-	coreMentor, _ := auc.qry.LoginMentor(coreGoogle.Email)
-	res = coreMentor
-
-	if res.Name == "" {
-		coreStudent, errStudent := auc.qry.LoginStudent(coreGoogle.Email)
-		if errStudent != nil {
-			return "", auth.Core{}, errStudent
-		}
-		res = coreStudent
+	// find data by email
+	res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+	if errFindUser != nil {
+		return "", auth.Core{}, errFindUser
 	}
 
 	// insert token oauth to data mentor or student
@@ -85,7 +78,7 @@ func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) {
 	return tokenJWT, res, nil
 }
 
-// LoginOauth implements auth.AuthService
+// RedirectGoogleCallback implements auth.AuthService
 func (auc *authUseCase) RedirectGoogleCallback(code string) error {
 	// get token oauth2
 	token, errToken := auc.googleApi.GetToken(code)
@@ -99,18 +92,28 @@ func (auc *authUseCase) RedirectGoogleCallback(code string) error {
 		return errUserInfo
 	}
 
-	coreMentor, errMentor := auc.qry.LoginMentor(coreGoogle.Email)
-	if errMentor != nil {
-		return errMentor
+	res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+	if errFindUser != nil {
+		return errFindUser
 	}
 
-	// insert tokent oauth2 to mentor data
-	inputMentor := mentors.Core{}
-	inputMentor.TokenOauth = token.AccessToken
+	// insert token oauth to data mentor or student
+	if res.Role == "Mentor" {
+		inputMentor := mentors.Core{}
+		inputMentor.TokenOauth = token.AccessToken
 
-	errUpdateMentor := auc.qryMentor.UpdateData(coreMentor.ID, inputMentor)
-	if errUpdateMentor != nil {
-		return errUpdateMentor
+		errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
+		if errUpdateMentor != nil {
+			return errUpdateMentor
+		}
+	} else if res.Role == "Student" {
+		inputStudent := students.Core{}
+		inputStudent.TokenOauth = token.AccessToken
+
+		errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
+		if errUpdateStudent != nil {
+			return errUpdateStudent
+		}
 	}
 
 	return nil
