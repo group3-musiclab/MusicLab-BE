@@ -35,4 +35,5 @@ type AuthData interface {
 	RegisterStudent(newUser Core) error
 	LoginMentor(email string) (Core, error)
 	LoginStudent(email string) (Core, error)
+	FindAccount(email string) (Core, error)
 }

@@ -12,6 +12,43 @@ type authQuery struct {
 	db *gorm.DB
 }
 
+// FindAccount implements auth.AuthData
+func (aq *authQuery) FindAccount(email string) (auth.Core, error) {
+	dataMentor := Mentor{}
+	dataStudent := Student{}
+
+	var chanMentor = make(chan Mentor)
+
+	var findMentor = func(email string) {
+		aq.db.Where("email = ?", email).First(&dataMentor)
+		chanMentor <- dataMentor
+	}
+
+	var chanStudent = make(chan Student)
+
+	var findStudent = func(email string) {
+		aq.db.Where("email = ?", email).First(&dataStudent)
+		chanStudent <- dataStudent
+	}
+
+	go findMentor(email)
+	go findStudent(email)
+
+	var mentor = <-chanMentor
+	coreMentor := mentorToCore(mentor)
+	if coreMentor.Name != "" {
+		return coreMentor, nil
+	}
+
+	var student = <-chanStudent
+	coreStudent := studentToCore(student)
+	if coreStudent.Name != "" {
+		return coreStudent, nil
+	}
+
+	return auth.Core{}, errors.New(consts.QUERY_NotFound)
+}
+
 // LoginMentor implements auth.AuthData
 func (aq *authQuery) LoginMentor(email string) (auth.Core, error) {
 	userLogin := Mentor{}
