@@ -4,7 +4,6 @@ import (
 	"errors"
 	"log"
 	"musiclab-be/features/classes"
-	"musiclab-be/features/mentors"
 	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
 	"musiclab-be/utils/helper"
@@ -15,15 +14,13 @@ import (
 type transactionUseCase struct {
 	qry        transactions.TransactionData
 	qryClass   classes.ClassData
-	qryMentor  mentors.MentorData
 	qryStudent students.StudentData
 }
 
-func New(td transactions.TransactionData, md mentors.MentorData, sd students.StudentData, cd classes.ClassData) transactions.TransactionService {
+func New(td transactions.TransactionData, sd students.StudentData, cd classes.ClassData) transactions.TransactionService {
 	return &transactionUseCase{
 		qry:        td,
 		qryClass:   cd,
-		qryMentor:  md,
 		qryStudent: sd,
 	}
 }
