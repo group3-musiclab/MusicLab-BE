@@ -1,0 +1,416 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>services: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">musiclab-be/features/auth/services/service.go (16.9%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package services
+
+import (
+        "errors"
+        "musiclab-be/features/auth"
+        "musiclab-be/features/classes"
+        "musiclab-be/features/mentors"
+        "musiclab-be/features/schedules"
+        "musiclab-be/features/students"
+        "musiclab-be/features/transactions"
+        "musiclab-be/utils/consts"
+        "musiclab-be/utils/helper"
+        "time"
+
+        "github.com/go-playground/validator/v10"
+        "golang.org/x/oauth2"
+)
+
+type authUseCase struct {
+        qry         auth.AuthData
+        qryTrans    transactions.TransactionData
+        qryClass    classes.ClassData
+        qryStudent  students.StudentData
+        qrySchedule schedules.ScheduleData
+        qryMentor   mentors.MentorData
+        validate    *validator.Validate
+        googleApi   helper.GoogleAPI
+}
+
+// LoginOauth implements auth.AuthService
+func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) <span class="cov0" title="0">{
+        // validation
+        if input.TokenOauth == "" </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errors.New("token oauth cannot empty")
+        }</span>
+
+        // get user info with token
+        <span class="cov0" title="0">tokenOauth := &amp;oauth2.Token{
+                AccessToken: input.TokenOauth,
+        }
+
+        coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(tokenOauth)
+        if errUserInfo != nil </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errUserInfo
+        }</span>
+
+        // find data by email
+        <span class="cov0" title="0">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+        if errFindUser != nil </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errFindUser
+        }</span>
+
+        // insert token oauth to data mentor or student
+        <span class="cov0" title="0">if res.Role == "Mentor" </span><span class="cov0" title="0">{
+                inputMentor := mentors.Core{}
+                inputMentor.TokenOauth = input.TokenOauth
+
+                errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
+                if errUpdateMentor != nil </span><span class="cov0" title="0">{
+                        return "", auth.Core{}, errUpdateMentor
+                }</span>
+        } else<span class="cov0" title="0"> if res.Role == "Student" </span><span class="cov0" title="0">{
+                inputStudent := students.Core{}
+                inputStudent.TokenOauth = input.TokenOauth
+
+                errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
+                if errUpdateStudent != nil </span><span class="cov0" title="0">{
+                        return "", auth.Core{}, errUpdateStudent
+                }</span>
+        }
+
+        // generate token jwt
+        <span class="cov0" title="0">tokenJWT, errTokenJWT := helper.CreateToken(res.ID, res.Role)
+        if errTokenJWT != nil </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
+        }</span>
+
+        <span class="cov0" title="0">return tokenJWT, res, nil</span>
+}
+
+// RedirectGoogleCallback implements auth.AuthService
+func (auc *authUseCase) RedirectGoogleCallback(code string) error <span class="cov0" title="0">{
+        // get token oauth2
+        token, errToken := auc.googleApi.GetToken(code)
+        if errToken != nil </span><span class="cov0" title="0">{
+                return errors.New("failed to get google oauth2 token")
+        }</span>
+
+        // get user info with token
+        <span class="cov0" title="0">coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(token)
+        if errUserInfo != nil </span><span class="cov0" title="0">{
+                return errUserInfo
+        }</span>
+
+        <span class="cov0" title="0">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+        if errFindUser != nil </span><span class="cov0" title="0">{
+                return errFindUser
+        }</span>
+
+        // insert token oauth to data mentor or student
+        <span class="cov0" title="0">if res.Role == "Mentor" </span><span class="cov0" title="0">{
+                inputMentor := mentors.Core{}
+                inputMentor.TokenOauth = token.AccessToken
+
+                errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
+                if errUpdateMentor != nil </span><span class="cov0" title="0">{
+                        return errUpdateMentor
+                }</span>
+        } else<span class="cov0" title="0"> if res.Role == "Student" </span><span class="cov0" title="0">{
+                inputStudent := students.Core{}
+                inputStudent.TokenOauth = token.AccessToken
+
+                errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
+                if errUpdateStudent != nil </span><span class="cov0" title="0">{
+                        return errUpdateStudent
+                }</span>
+        }
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// CreateEvent implements auth.AuthService
+func (auc *authUseCase) CreateEvent(input auth.Core) error <span class="cov0" title="0">{
+        // validation
+        errValidate := auc.validate.StructExcept(input, "Name", "Email", "Password", "Role")
+        if errValidate != nil </span><span class="cov0" title="0">{
+                return errors.New("validate: " + errValidate.Error())
+        }</span>
+
+        // get token oauth2 from mentor data
+        <span class="cov0" title="0">coreMentor, errMentor := auc.qryMentor.SelectProfile(input.ID)
+        if errMentor != nil </span><span class="cov0" title="0">{
+                return errMentor
+        }</span>
+
+        // token oauth2 validation
+        <span class="cov0" title="0">if coreMentor.TokenOauth == "" </span><span class="cov0" title="0">{
+                return errors.New("token oauth not generated yet, please login with google account first")
+        }</span>
+
+        // transaction detail
+        <span class="cov0" title="0">coreTrans, errTrans := auc.qryTrans.SelectOne(input.TransactionID)
+        if errTrans != nil </span><span class="cov0" title="0">{
+                return errTrans
+        }</span>
+
+        // class detail
+        <span class="cov0" title="0">coreClass, errClass := auc.qryClass.GetMentorClassDetail(coreTrans.ClassID)
+        if errClass != nil </span><span class="cov0" title="0">{
+                return errClass
+        }</span>
+
+        // student detail
+        <span class="cov0" title="0">coreStudent, errStudent := auc.qryStudent.SelectProfile(coreTrans.StudentID)
+        if errStudent != nil </span><span class="cov0" title="0">{
+                return errStudent
+        }</span>
+
+        // schedule detail
+        <span class="cov0" title="0">coreSchedule, errSchedule := auc.qrySchedule.DetailSchedule(coreTrans.ScheduleID)
+        if errSchedule != nil </span><span class="cov0" title="0">{
+                return errSchedule
+        }</span>
+
+        <span class="cov0" title="0">mapDay := map[time.Time]string{}
+
+        start := coreTrans.StartDate
+        end := coreTrans.EndDate
+        for d := start; !d.After(end); d = d.AddDate(0, 0, 1) </span><span class="cov0" title="0">{
+                dayString := d.Format("Monday")
+                if dayString == coreSchedule.Day </span><span class="cov0" title="0">{
+                        mapDay[d] = dayString
+                        break</span>
+                }
+        }
+
+        <span class="cov0" title="0">var firstDay time.Time
+        for k := range mapDay </span><span class="cov0" title="0">{
+                firstDay = k
+        }</span>
+
+        <span class="cov0" title="0">firstDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.StartTime
+        startTime, err := time.Parse("2006-01-02 15:04", firstDayStr)
+        if err != nil </span><span class="cov0" title="0">{
+                return errors.New("invalid start date format must YYYY-MM-DD")
+        }</span>
+
+        <span class="cov0" title="0">endDayStr := firstDay.Format("2006-01-02 ") + coreSchedule.EndTime
+        endTime, err := time.Parse("2006-01-02 15:04", endDayStr)
+        if err != nil </span><span class="cov0" title="0">{
+                return errors.New("invalid start date format must YYYY-MM-DD")
+        }</span>
+
+        <span class="cov0" title="0">endDate := coreTrans.EndDate
+
+        startRFC := startTime.Format(time.RFC3339)
+        endRFC := endTime.Format(time.RFC3339)
+        endDateRFC := endDate.Format(time.RFC3339)
+
+        detailCal := helper.CalendarDetail{
+                Summary:             coreClass.Name,
+                Location:            coreStudent.Address,
+                StartTime:           startRFC,
+                EndTime:             endRFC,
+                EndDate:             endDateRFC,
+                CreatorDisplayName:  coreMentor.Name,
+                CreatorEmail:        coreMentor.Email,
+                AttendeeDisplayName: coreStudent.Name,
+                AttendeeEmail:       coreStudent.Email,
+        }
+
+        token := &amp;oauth2.Token{
+                AccessToken: coreMentor.TokenOauth,
+        }
+
+        errCreateEvent := auc.googleApi.CreateCalendar(token, detailCal)
+        if errCreateEvent != nil </span><span class="cov0" title="0">{
+                return errCreateEvent
+        }</span>
+
+        <span class="cov0" title="0">return nil</span>
+}
+
+// Register implements auth.AuthService
+func (auc *authUseCase) Register(newUser auth.Core) error <span class="cov8" title="1">{
+        errValidate := auc.validate.StructExcept(newUser, "TransactionID")
+        if errValidate != nil </span><span class="cov8" title="1">{
+                return errors.New("validate: " + errValidate.Error())
+        }</span>
+
+        <span class="cov8" title="1">errName := helper.OnlyLettersValidation(newUser.Name)
+        if errName != nil </span><span class="cov8" title="1">{
+                return errors.New(consts.MENTOR_NameOnlyLetters)
+        }</span>
+
+        // check duplicate email
+        <span class="cov8" title="1">_, errFindUser := auc.qry.FindAccount(newUser.Email)
+        if errFindUser == nil </span><span class="cov8" title="1">{
+                return errors.New(consts.AUTH_DuplicateEmail)
+        }</span>
+
+        // default avatar
+        <span class="cov8" title="1">newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
+
+        hashed, errHash := helper.HashPassword(newUser.Password)
+        if errHash != nil </span><span class="cov0" title="0">{
+                return errors.New(consts.AUTH_ErrorHash)
+        }</span>
+        <span class="cov8" title="1">newUser.Password = string(hashed)
+
+        if newUser.Role == "Mentor" </span><span class="cov8" title="1">{
+                errMentor := auc.qry.RegisterMentor(newUser)
+                if errMentor != nil </span><span class="cov8" title="1">{
+                        return errMentor
+                }</span>
+        } else<span class="cov8" title="1"> if newUser.Role == "Student" </span><span class="cov8" title="1">{
+                errStudent := auc.qry.RegisterStudent(newUser)
+                if errStudent != nil </span><span class="cov8" title="1">{
+                        return errStudent
+                }</span>
+        } else<span class="cov8" title="1"> {
+                return errors.New(consts.AUTH_ErrorRole)
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (auc *authUseCase) Login(user auth.Core) (string, auth.Core, error) <span class="cov0" title="0">{
+        errValidate := auc.validate.StructExcept(user, "Name", "TransactionID")
+        if errValidate != nil </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errors.New("validate: " + errValidate.Error())
+        }</span>
+        <span class="cov0" title="0">res := auth.Core{}
+        if user.Role == "Mentor" </span><span class="cov0" title="0">{
+                var err error
+                res, err = auc.qry.LoginMentor(user.Email)
+                if err != nil </span><span class="cov0" title="0">{
+                        return "", auth.Core{}, err
+                }</span>
+        } else<span class="cov0" title="0"> if user.Role == "Student" </span><span class="cov0" title="0">{
+                var err error
+                res, err = auc.qry.LoginStudent(user.Email)
+                if err != nil </span><span class="cov0" title="0">{
+                        return "", auth.Core{}, err
+                }</span>
+        } else<span class="cov0" title="0"> {
+                return "", auth.Core{}, errors.New(consts.AUTH_ErrorRole)
+        }</span>
+
+        <span class="cov0" title="0">if !helper.CompareHashPassword(user.Password, res.Password) </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errors.New(consts.AUTH_ErrorComparePassword)
+        }</span>
+
+        <span class="cov0" title="0">token, errToken := helper.CreateToken(res.ID, res.Role)
+        if errToken != nil </span><span class="cov0" title="0">{
+                return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
+        }</span>
+
+        <span class="cov0" title="0">return token, res, nil</span>
+}
+
+func New(ud auth.AuthData, ga helper.GoogleAPI, td transactions.TransactionData, cd classes.ClassData, sd students.StudentData, scd schedules.ScheduleData, md mentors.MentorData) auth.AuthService <span class="cov8" title="1">{
+        return &amp;authUseCase{
+                qry:         ud,
+                qryTrans:    td,
+                qryClass:    cd,
+                qryStudent:  sd,
+                qrySchedule: scd,
+                qryMentor:   md,
+                validate:    validator.New(),
+                googleApi:   ga,
+        }
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
