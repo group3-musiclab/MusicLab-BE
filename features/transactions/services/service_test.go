@@ -3,7 +3,6 @@ package services
 import (
 	"errors"
 	"musiclab-be/features/classes"
-	"musiclab-be/features/schedules"
 	"musiclab-be/features/students"
 	"musiclab-be/features/transactions"
 	"musiclab-be/mocks"
@@ -27,13 +26,6 @@ var (
 		ForWhom:     "For Drummer",
 		Price:       100000,
 		Duration:    1,
-	}
-	mock_schedule = schedules.Core{
-		ID:        1,
-		MentorID:  1,
-		Day:       "Monday",
-		StartTime: "13:00",
-		EndTime:   "14:00",
 	}
 	mock_student = students.Core{
 		Name:       "Student Musiclab",
