@@ -2,51 +2,106 @@ package services
 
 import (
 	"errors"
-	"log"
-	"mime/multipart"
 	"musiclab-be/features/classes"
 	"musiclab-be/features/schedules"
 	"musiclab-be/mocks"
-	"os"
-	"path/filepath"
 	"testing"
 	"time"
 
 	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
+)
+
+var (
+	mock_class = classes.Core{
+		ID:          1,
+		MentorID:    1,
+		Name:        "How to Play Polyrithm Like Daney Carey",
+		Image:       "image-url",
+		Level:       "Intermediate",
+		Description: "Play Like Daney Carey",
+		Syllabus:    "Polyrithmic",
+		Requirement: "Have a drum",
+		ForWhom:     "For Drummer",
+		Price:       100000,
+		Duration:    1,
+	}
 )
 
 func TestCheckSchedule(t *testing.T) {
 	repo := mocks.NewScheduleData(t)
 	repoClass := mocks.NewClassData(t)
-	filePath := filepath.Join("..", "..", "..", "ERD_MusicLab@2x.png")
-	imageTrue, err := os.Open(filePath)
-	if err != nil {
-		log.Println(err.Error())
-	}
-	imageTrueCnv := &multipart.FileHeader{
-		Filename: imageTrue.Name(),
-	}
 
-	resData := classes.Core{
-		ID:      1,
-		Name:    "Guitar Class",
-		Level:   "Basic",
-		Image:   imageTrueCnv.Filename,
-		ForWhom: "Newbie",
+	input := schedules.Core{
+		ClassID: 1,
+		Transaction: schedules.Transaction{
+			ScheduleID: 1,
+			StartDate:  time.Date(2023, 4, 2, 0, 0, 0, 0, time.UTC),
+		},
 	}
 
-	startDate := "2023-03-31"
-	StartDate, _ := time.Parse("2006-01-02", startDate)
+	t.Run("Failed Validate", func(t *testing.T) {
+		input := schedules.Core{
+			ClassID: 1,
+		}
 
-	inputData := schedules.Core{ID: 1, ClassID: 1, Transaction: schedules.Transaction{ScheduleID: 1, StartDate: StartDate}}
-	var row int64 = 1
-
-	t.Run("success check schedule", func(t *testing.T) {
-		repo.On("CheckSchedule", inputData).Return(row, nil).Once()
-		repo.On("GetMentorClassDetail", uint(1)).Return(resData, nil).Once()
 		srv := New(repo, repoClass)
-		err := srv.CheckSchedule(inputData)
+		err := srv.CheckSchedule(input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Failed Date Validation", func(t *testing.T) {
+		input := schedules.Core{
+			ClassID: 1,
+			Transaction: schedules.Transaction{
+				ScheduleID: 1,
+				StartDate:  time.Date(2023, 3, 2, 0, 0, 0, 0, time.UTC),
+			},
+		}
+
+		srv := New(repo, repoClass)
+		err := srv.CheckSchedule(input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Schedule Available", func(t *testing.T) {
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repo.On("CheckSchedule", mock.Anything).Return(int64(0), nil).Once()
+
+		srv := New(repo, repoClass)
+		err := srv.CheckSchedule(input)
 		assert.Nil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Schedule Not Available", func(t *testing.T) {
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repo.On("CheckSchedule", mock.Anything).Return(int64(1), nil).Once()
+
+		srv := New(repo, repoClass)
+		err := srv.CheckSchedule(input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Error Get Class", func(t *testing.T) {
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(classes.Core{}, errors.New("error")).Once()
+
+		srv := New(repo, repoClass)
+		err := srv.CheckSchedule(input)
+		assert.NotNil(t, err)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Error Check Available", func(t *testing.T) {
+		repoClass.On("GetMentorClassDetail", mock.Anything).Return(mock_class, nil).Once()
+		repo.On("CheckSchedule", mock.Anything).Return(int64(0), errors.New("error")).Once()
+
+		srv := New(repo, repoClass)
+		err := srv.CheckSchedule(input)
+		assert.NotNil(t, err)
 		repo.AssertExpectations(t)
 	})
 
