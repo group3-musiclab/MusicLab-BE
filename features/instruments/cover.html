@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">musiclab-be/features/instruments/services/service.go (31.2%)</option>
+				<option value="file0">musiclab-be/features/instruments/services/service.go (75.0%)</option>
 				
 				</select>
 			</div>
@@ -93,17 +93,17 @@ func (iuc *instrumentUseCase) Delete(mentorID uint, instrumentID uint) error <sp
 }
 
 // Insert implements instruments.InstrumentService
-func (iuc *instrumentUseCase) Insert(input instruments.MentorInstrumentCore) error <span class="cov0" title="0">{
+func (iuc *instrumentUseCase) Insert(input instruments.MentorInstrumentCore) error <span class="cov8" title="1">{
         errValidate := iuc.validate.Struct(input)
-        if errValidate != nil </span><span class="cov0" title="0">{
+        if errValidate != nil </span><span class="cov8" title="1">{
                 return errors.New("validate: " + errValidate.Error())
         }</span>
 
-        <span class="cov0" title="0">errInsert := iuc.qry.Insert(input)
-        if errInsert != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">errInsert := iuc.qry.Insert(input)
+        if errInsert != nil </span><span class="cov8" title="1">{
                 return errInsert
         }</span>
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 // SelectAll implements instruments.InstrumentService
