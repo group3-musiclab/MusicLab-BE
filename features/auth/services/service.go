@@ -234,21 +234,12 @@ func (auc *authUseCase) Register(newUser auth.Core) error {
 	}
 
 	// check duplicate email
-	if newUser.Role == "Mentor" {
-		_, errMentorLogin := auc.qry.LoginMentor(newUser.Email)
-		if errMentorLogin == nil {
-			return errors.New(consts.AUTH_DuplicateEmail)
-		}
+	_, errFindUser := auc.qry.FindAccount(newUser.Email)
+	if errFindUser == nil {
+		return errors.New(consts.AUTH_DuplicateEmail)
 	}
 
-	if newUser.Role == "Student" {
-		_, errStudentLogin := auc.qry.LoginStudent(newUser.Email)
-		if errStudentLogin == nil {
-			return errors.New(consts.AUTH_DuplicateEmail)
-		}
-	}
-
-	// avatar value
+	// default avatar
 	newUser.Avatar = "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png"
 
 	hashed, errHash := helper.HashPassword(newUser.Password)
