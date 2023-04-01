@@ -72,3 +72,66 @@ func TestInsert(t *testing.T) {
 		repo.AssertExpectations(t)
 	})
 }
+
+func TestGetAll(t *testing.T) {
+	repo := new(mocks.InstrumentData)
+	returnData := []instruments.Core{
+		{
+			ID:   1,
+			Name: "Suling",
+		},
+	}
+
+	t.Run("Success Get All", func(t *testing.T) {
+		repo.On("SelectAll").Return(returnData, nil).Once()
+
+		srv := New(repo)
+		response, err := srv.SelectAll()
+		assert.Nil(t, err)
+		assert.Equal(t, returnData[0].Name, response[0].Name)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Failed Get All", func(t *testing.T) {
+		repo.On("SelectAll").Return([]instruments.Core{}, errors.New("error select")).Once()
+
+		srv := New(repo)
+		response, err := srv.SelectAll()
+		assert.NotNil(t, err)
+		assert.Equal(t, []instruments.Core{}, response)
+		repo.AssertExpectations(t)
+	})
+}
+
+func TestGetAllByMentorID(t *testing.T) {
+	repo := new(mocks.InstrumentData)
+	returnData := []instruments.MentorInstrumentCore{
+		{
+
+			InstrumentID: 1,
+			Instrument: instruments.Core{
+				Name: "Suling",
+			},
+		},
+	}
+
+	t.Run("Success Get All", func(t *testing.T) {
+		repo.On("SelectAllByMentorID", mock.Anything).Return(returnData, nil).Once()
+
+		srv := New(repo)
+		response, err := srv.SelectAllByMentorID(1)
+		assert.Nil(t, err)
+		assert.Equal(t, returnData[0].Instrument.Name, response[0].Instrument.Name)
+		repo.AssertExpectations(t)
+	})
+
+	t.Run("Failed Get All", func(t *testing.T) {
+		repo.On("SelectAllByMentorID", mock.Anything).Return([]instruments.MentorInstrumentCore{}, errors.New("error select")).Once()
+
+		srv := New(repo)
+		response, err := srv.SelectAllByMentorID(1)
+		assert.NotNil(t, err)
+		assert.Equal(t, []instruments.MentorInstrumentCore{}, response)
+		repo.AssertExpectations(t)
+	})
+}
