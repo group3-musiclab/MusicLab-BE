@@ -55,7 +55,7 @@
 			<div id="nav">
 				<select id="files">
 				
-				<option value="file0">musiclab-be/features/auth/services/service.go (31.0%)</option>
+				<option value="file0">musiclab-be/features/auth/services/service.go (62.7%)</option>
 				
 				</select>
 			</div>
@@ -99,58 +99,58 @@ type authUseCase struct {
 }
 
 // LoginOauth implements auth.AuthService
-func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) <span class="cov0" title="0">{
+func (auc *authUseCase) LoginOauth(input auth.Core) (string, auth.Core, error) <span class="cov8" title="1">{
         // validation
-        if input.TokenOauth == "" </span><span class="cov0" title="0">{
+        if input.TokenOauth == "" </span><span class="cov8" title="1">{
                 return "", auth.Core{}, errors.New("token oauth cannot empty")
         }</span>
 
         // get user info with token
-        <span class="cov0" title="0">tokenOauth := &amp;oauth2.Token{
+        <span class="cov8" title="1">tokenOauth := &amp;oauth2.Token{
                 AccessToken: input.TokenOauth,
         }
 
         coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(tokenOauth)
-        if errUserInfo != nil </span><span class="cov0" title="0">{
+        if errUserInfo != nil </span><span class="cov8" title="1">{
                 return "", auth.Core{}, errUserInfo
         }</span>
 
         // find data by email
-        <span class="cov0" title="0">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
-        if errFindUser != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+        if errFindUser != nil </span><span class="cov8" title="1">{
                 return "", auth.Core{}, errFindUser
         }</span>
 
         // insert token oauth to data mentor or student
-        <span class="cov0" title="0">if res.Role == "Mentor" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if res.Role == "Mentor" </span><span class="cov8" title="1">{
                 inputMentor := mentors.Core{}
                 inputMentor.TokenOauth = input.TokenOauth
 
                 errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
-                if errUpdateMentor != nil </span><span class="cov0" title="0">{
+                if errUpdateMentor != nil </span><span class="cov8" title="1">{
                         return "", auth.Core{}, errUpdateMentor
                 }</span>
-        } else<span class="cov0" title="0"> if res.Role == "Student" </span><span class="cov0" title="0">{
+        } else<span class="cov8" title="1"> if res.Role == "Student" </span><span class="cov8" title="1">{
                 inputStudent := students.Core{}
                 inputStudent.TokenOauth = input.TokenOauth
 
                 errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
-                if errUpdateStudent != nil </span><span class="cov0" title="0">{
+                if errUpdateStudent != nil </span><span class="cov8" title="1">{
                         return "", auth.Core{}, errUpdateStudent
                 }</span>
         }
 
         // generate token jwt
-        <span class="cov0" title="0">tokenJWT, errTokenJWT := helper.CreateToken(res.ID, res.Role)
+        <span class="cov8" title="1">tokenJWT, errTokenJWT := helper.CreateToken(res.ID, res.Role)
         if errTokenJWT != nil </span><span class="cov0" title="0">{
                 return "", auth.Core{}, errors.New(consts.AUTH_ErrorCreateToken)
         }</span>
 
-        <span class="cov0" title="0">return tokenJWT, res, nil</span>
+        <span class="cov8" title="1">return tokenJWT, res, nil</span>
 }
 
 // RedirectGoogleCallback implements auth.AuthService
-func (auc *authUseCase) RedirectGoogleCallback(code string) error <span class="cov0" title="0">{
+func (auc *authUseCase) RedirectGoogleCallback(code string) error <span class="cov8" title="1">{
         // get token oauth2
         token, errToken := auc.googleApi.GetToken(code)
         if errToken != nil </span><span class="cov0" title="0">{
@@ -158,36 +158,36 @@ func (auc *authUseCase) RedirectGoogleCallback(code string) error <span class="c
         }</span>
 
         // get user info with token
-        <span class="cov0" title="0">coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(token)
-        if errUserInfo != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">coreGoogle, errUserInfo := auc.googleApi.GetUserInfo(token)
+        if errUserInfo != nil </span><span class="cov8" title="1">{
                 return errUserInfo
         }</span>
 
-        <span class="cov0" title="0">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
-        if errFindUser != nil </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">res, errFindUser := auc.qry.FindAccount(coreGoogle.Email)
+        if errFindUser != nil </span><span class="cov8" title="1">{
                 return errFindUser
         }</span>
 
         // insert token oauth to data mentor or student
-        <span class="cov0" title="0">if res.Role == "Mentor" </span><span class="cov0" title="0">{
+        <span class="cov8" title="1">if res.Role == "Mentor" </span><span class="cov8" title="1">{
                 inputMentor := mentors.Core{}
                 inputMentor.TokenOauth = token.AccessToken
 
                 errUpdateMentor := auc.qryMentor.UpdateData(res.ID, inputMentor)
-                if errUpdateMentor != nil </span><span class="cov0" title="0">{
+                if errUpdateMentor != nil </span><span class="cov8" title="1">{
                         return errUpdateMentor
                 }</span>
-        } else<span class="cov0" title="0"> if res.Role == "Student" </span><span class="cov0" title="0">{
+        } else<span class="cov8" title="1"> if res.Role == "Student" </span><span class="cov8" title="1">{
                 inputStudent := students.Core{}
                 inputStudent.TokenOauth = token.AccessToken
 
                 errUpdateStudent := auc.qryStudent.UpdateData(res.ID, inputStudent)
-                if errUpdateStudent != nil </span><span class="cov0" title="0">{
+                if errUpdateStudent != nil </span><span class="cov8" title="1">{
                         return errUpdateStudent
                 }</span>
         }
 
-        <span class="cov0" title="0">return nil</span>
+        <span class="cov8" title="1">return nil</span>
 }
 
 // CreateEvent implements auth.AuthService
