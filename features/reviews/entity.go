@@ -11,7 +11,7 @@ type Core struct {
 	MentorID   uint
 	StudentID  uint
 	Rating     uint
-	Comment    string
+	Comment    string `validate:"required,max=300"`
 	Mentor     Mentor
 	Student    Student
 	ReviewDate string

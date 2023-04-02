@@ -5,19 +5,29 @@ import (
 	"log"
 	"musiclab-be/features/reviews"
 	"strings"
+
+	"github.com/go-playground/validator/v10"
 )
 
 type reviewUseCase struct {
-	qry reviews.ReviewData
+	qry      reviews.ReviewData
+	validate *validator.Validate
 }
 
 func New(rd reviews.ReviewData) reviews.ReviewService {
 	return &reviewUseCase{
-		qry: rd,
+		qry:      rd,
+		validate: validator.New(),
 	}
 }
 
 func (ruc *reviewUseCase) PostMentorReview(mentorID uint, newReview reviews.Core) error {
+	// validation
+	errValidate := ruc.validate.StructExcept(newReview, "Mentor", "Student")
+	if errValidate != nil {
+		return errors.New("validate: " + errValidate.Error())
+	}
+
 	err := ruc.qry.PostMentorReview(mentorID, newReview)
 	if err != nil {
 		msg := ""
