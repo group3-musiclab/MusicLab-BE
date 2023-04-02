@@ -1270,6 +1270,21 @@ paths:
       summary: get all chat group by student
       security:
         - JWTAuth: []
+      parameters:
+      - in: query
+        name: page
+        schema:
+          type: integer
+        examples:       
+          page:         
+            value: 1
+      - in: query
+        name: limit
+        schema:
+          type: integer
+        examples:       
+          limit:         
+            value: 10
       responses:
         200:
           description: "get all chat group by student"
